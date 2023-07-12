@@ -14,36 +14,22 @@ class Missile ( StarObject ) :
         self.maxAcc = 0.03 # thrusters power
         self.chaseDecelerate = True
         self.explosionAnimation = AnimatedSprite( "explosion.png", 8, 6, self.get_size() * 2 )
-        self.exploding = None
-        self.currentIcon = None
         self.fuel = 700
 
     def ticktack( self ) :
-        if self.exploding != None :
-            self.exploding += 1
-        else :
+        if self.fuel > 0 :
             self.fuel -= 1
-            if self.fuel == 0 :
-                self.exploding = 0
-            elif self.order != None and self.distance_to(self.order) < self.get_size() :
-                self.exploding = 0
-        if self.exploding != None :
-            self.currentIcon = self.explosionAnimation.get_frame(self.exploding)
-            if self.currentIcon == None :
-                self.game.remove_object( self )
-                Missile.fire( self.game )
-                return
+            if self.fuel == 0 or ( self.order != None and self.distance_to(self.order) < self.get_size() ):
+                self.fuel = 0
+                self.animate( self.explosionAnimation, Missile.onExploded )
         super().ticktack()
 
+    def onExploded( self ) :
+        self.game.remove_object( self )
+        Missile.fire( self.game )
 
     def get_size( self ) :
         return 48
-
-    def get_icon( self ) :
-        if self.currentIcon :
-            return self.currentIcon
-        else :
-            return super().get_icon()
 
     @staticmethod
     def fire( game ) :

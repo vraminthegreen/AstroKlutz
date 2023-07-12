@@ -11,11 +11,15 @@ class StarObject :
         self.dir = 0  # Direction in degrees
         self.v = pygame.Vector2(0, 0)  # Velocity vector
         self.maxV = 2  # Maximum speed
-        self.maxAcc = 0.01 # thrusters power
+        self.maxAcc = 0.02
+        self.resistance = 0.99 # thrusters power
         self.chaseDecelerate = True
         self.auto = True
         self.order = None
-        self.load_icon(icon_name)
+        self.animationOngoing = None
+        self.animationFrame = None
+        if icon_name != None :
+            self.load_icon(icon_name)
 
 
     def load_icon(self, icon_name):
@@ -43,7 +47,10 @@ class StarObject :
         return 64
 
     def get_icon( self ) :
-        return self.icon
+        if self.animationFrame != None :
+            return self.animationFrame
+        else :
+            return self.icon
 
     def repaint(self, win):
         rotated_icon = pygame.transform.rotate(self.get_icon(), self.dir)
@@ -53,11 +60,27 @@ class StarObject :
     def ticktack(self):
         if self.auto and self.order :
             self.chase( *self.order.get_pos() )
+        if self.animationOngoing != None :
+            self.animateNextFrame()        
         self.x += self.v.x
         self.y += self.v.y
+        self.v *= self.resistance
 
     def get_pos(self) :
         return (self.x, self.y)
+
+    def get_rect(self):
+        width = self.get_size()
+        height = width
+        return pygame.Rect(self.x - width // 2, self.y - height // 2, width, height)
+
+    def get_pos_in_front(self, distance) :
+        # Przeliczamy kierunek na radiany
+        dir_rad = math.radians(self.dir)
+        # Obliczamy nową pozycję
+        new_x = self.x + distance * math.cos(dir_rad)
+        new_y = self.y - distance * math.sin(dir_rad)  # Odejmujemy, ponieważ os Y w Pygame jest skierowana w dół
+        return (new_x, new_y)
 
     def distance_to(self, other) :
         point1 = pygame.math.Vector2(self.x, self.y)
@@ -114,10 +137,36 @@ class StarObject :
 
         # Determine whether to accelerate or decelerate
         distance_to_target = target_vector.length()
-        if distance_to_target > 40 :  # Accelerate if far from the target
+        if distance_to_target > 60 :  # Accelerate if far from the target
             if abs(difference_in_direction) < 90 :
                 self.accelerate()
         elif self.chaseDecelerate :  # Decelerate if close to the target
             self.decelerate()
+
+    def is_in_field(self, ox, oy, dir_a, dir_b, dist_min, dist_max):
+        target_vector = pygame.Vector2(ox, oy) - pygame.Vector2(self.x, self.y)
+        # Calculate the direction to the target point
+        direction_to_target = math.degrees(math.atan2(-target_vector.y, target_vector.x)) % 360
+        # Calculate the distance to the target point
+        distance_to_target = target_vector.length()
+        # Check if the direction and distance are within the provided ranges
+        direction_in_range = (dir_a <= direction_to_target <= dir_b) or \
+                             (dir_a <= direction_to_target + 360 <= dir_b) or \
+                             (dir_a <= direction_to_target - 360 <= dir_b)
+        distance_in_range = dist_min <= distance_to_target <= dist_max
+        return direction_in_range and distance_in_range
+
+    def animate(self, animation, after) :
+        self.animationOngoing = animation
+        self.animationAfter = after;
+        self.animationFrameNo = 0
+
+    def animateNextFrame( self ) :
+        self.animationFrame = self.animationOngoing.get_frame(self.animationFrameNo)
+        self.animationFrameNo += 1
+        if self.animationFrame == None :
+            self.animationOngoing = None
+            self.animationAfter( self )
+
 
 

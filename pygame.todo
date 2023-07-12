@@ -1,0 +1,26 @@
+pygame.todo
+
+- kolizje pocisków
+- animacja końcowa pocisków przy trafieniu
+- kolizja zniszczenie
+- animacja tarczy
+- tarcza w zależności od kąta
+- dwa typy statków - swoje i wrogie
+- dwa typy statków - korwety rakietowe i myśliwce
+
++ algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
++ klasa order zakładana przyciskiem myszy
++ autopilot mode
++ rakietka
++ animacja wybuchu
++ kolizja
++ klasa pocisk
++ strzelanie pociskiem
++ znikanie pocisku
++ posiadanie pocisku limit pocisków
++ drugi statek
++ is_in_field(dir-a,dir-b,min-dist,max-dist)
++ przełączanie między trybem 1 a drugim a drugim / stożki 45 stopni, 20 stopni
++ algorytm drugiego statku - tryb 2 - gonienie statku i strzelanie
++ zlecenie animacji + funkcji
++ przeróbka wybuchu na animację + funkcję
