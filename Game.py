@@ -13,8 +13,9 @@ class Game:
         self.focused = None
         self.time = 0
         self.animations = {
-            'explosion' : AnimatedSprite( "explosion.png", 8, 6, 96 ),
-            'spark' : AnimatedSprite( "spark.png", 4, 4, 16 )
+            'explosion' : AnimatedSprite( "explosion.png", 8, 6, 96, False ),
+            'spark' : AnimatedSprite( "spark.png", 4, 4, 16, False ),
+            'shield' : AnimatedSprite( "shield.png", 5, 5, 96, True ),
         }
 
     def add_object(self, obj):
@@ -81,6 +82,15 @@ class Game:
     def get_animation(self, animation_name) :
         return self.animations[animation_name]
 
+    @staticmethod
+    def is_acute_angle(dir1, dir2):
+        # Calculate the difference between the two directions
+        diff = abs(dir1 - dir2) % 360
+        # Adjust for the case where the angle crosses the 0/360 boundary
+        if diff > 180:
+            diff = 360 - diff
+        # Check if the angle is acute
+        return diff < 90
 
 
 

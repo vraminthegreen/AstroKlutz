@@ -21,6 +21,8 @@ class StarObject :
         self.can_be_hit = True
         if icon_name != None :
             self.load_icon(icon_name)
+        else :
+            self.icon = None
 
 
     def load_icon(self, icon_name):
@@ -54,6 +56,10 @@ class StarObject :
             return self.icon
 
     def repaint(self, win):
+        if self.icon != None and self.animationFrame != None and self.animationOverlay :
+            rotated_icon = pygame.transform.rotate(self.icon, self.dir)
+            new_rect = rotated_icon.get_rect(center=(self.x, self.y))
+            win.blit(rotated_icon, new_rect.topleft)
         ico = self.get_icon()
         if ico == None :
             return
@@ -169,6 +175,7 @@ class StarObject :
         self.animationOngoing = animation
         self.animationAfter = after;
         self.animationFrameNo = 0
+        self.animationOverlay = animation.get_overlay()
 
     def animateNextFrame( self ) :
         self.animationFrame = self.animationOngoing.get_frame(self.animationFrameNo)

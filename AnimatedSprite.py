@@ -2,7 +2,7 @@ import pygame
 
 class AnimatedSprite :
 
-    def __init__(self, filename, columns, rows, size, frames=None):
+    def __init__(self, filename, columns, rows, size, overlay, frames=None):
         sprite_sheet = pygame.image.load(filename).convert_alpha()
 
         self.frames = []
@@ -19,8 +19,13 @@ class AnimatedSprite :
         if frames is not None and frames < len(self.frames):
             self.frames = self.frames[:frames]
 
+        self.overlay = overlay
+
     def get_frame(self, frame_number):
         if frame_number < 0 or frame_number >= len(self.frames):
             return None
         else:
             return self.frames[frame_number]
+
+    def get_overlay(self) :
+        return self.overlay

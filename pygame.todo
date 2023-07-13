@@ -1,7 +1,5 @@
 pygame.todo
 
-- animacja tarczy
-- tarcza w zależności od kąta
 - dwa typy statków - swoje i wrogie
 - dwa typy statków - korwety rakietowe i myśliwce
 - przejść na multidziedziczenie z funkcjonalnością hit/dead
@@ -27,3 +25,7 @@ pygame.todo
 + animacja końcowa pocisków przy trafieniu
 + kolizja zniszczenie
 + przejść na animacje globalne (w game, słownik)
++ animacja tarczy
++ overlay animation
++ tarcza w zależności od kąta
+

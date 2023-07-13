@@ -10,6 +10,7 @@ class Bullet ( StarObject ) :
 
     def __init__(self, game, owner, x, y, dir, v ):
         StarObject.__init__( self, game, x, y, None )
+        self.dir = dir
 
         # Convert the ship's direction to radians
         dir_rad = math.radians(dir)

@@ -22,7 +22,7 @@ input_handler.set_focus(player)
 enemy = Starship(game, 50, 550 )
 enemy.set_enemy(player)
 game.add_object(enemy)
-Missile.fire(game)
+# Missile.fire(game)
 
 # Create the game and start the game loop
 game.game_loop()

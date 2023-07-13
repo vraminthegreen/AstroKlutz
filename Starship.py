@@ -1,9 +1,11 @@
 import pygame
 import os
 import math
+import random
 
 from StarObject import StarObject
 from Bullet import Bullet
+from Game import Game
 
 class Starship ( StarObject ) :
 
@@ -15,6 +17,7 @@ class Starship ( StarObject ) :
         self.enemy = None
         self.enemy_chase_mode = 1
         self.dead = False
+        self.shield_active = False
 
     def command( self, cmd ) :
         if cmd == 'a' :
@@ -53,13 +56,27 @@ class Starship ( StarObject ) :
         super().ticktack()
 
     def hit(self, hitter):
-        if self.dead : return
-        self.icon = None
-        self.dead = True
-        self.animate( self.game.get_animation('explosion'), Starship.onExploded )
+        if self.dead or self.shield_active : return
+        ddiff = ( hitter.dir - self.dir - 180 ) % 360
+        if ddiff < 0 : ddiff = -ddiff
+        aa = Game.is_acute_angle( hitter.dir, self.dir )
+        if aa :
+            print("belly hit")
+        else :
+            print("shield hit")
+        if ( aa and random.randint(0, 99) < 50 ) or ( random.randint(0,99) < 10 ) :
+            self.icon = None
+            self.dead = True
+            self.animate( self.game.get_animation('explosion'), Starship.onExploded )
+        else :
+            self.shield_active = True
+            self.animate( self.game.get_animation('shield'), Starship.onShieldEnded )
 
     def onExploded( self ) :
         self.game.remove_object( self )
+
+    def onShieldEnded( self ) :
+        self.shield_active = False
 
 
     # def repaint(self, win):
