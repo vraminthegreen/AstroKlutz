@@ -15,12 +15,16 @@ class Missile ( StarObject ) :
         self.chaseDecelerate = True
         self.explosionAnimation = AnimatedSprite( "explosion.png", 8, 6, self.get_size() * 2 )
         self.fuel = 700
+        self.dead = False
 
     def ticktack( self ) :
         if self.fuel > 0 :
             self.fuel -= 1
-            if self.fuel == 0 or ( self.order != None and self.distance_to(self.order) < self.get_size() ):
+            order_hit = self.order != None and self.distance_to(self.order) < self.get_size()
+            if self.fuel == 0 or order_hit :
                 self.fuel = 0
+                if order_hit :
+                    self.order.hit( self )
                 self.animate( self.explosionAnimation, Missile.onExploded )
         super().ticktack()
 
@@ -30,6 +34,11 @@ class Missile ( StarObject ) :
 
     def get_size( self ) :
         return 48
+
+    def hit( self, hitter ) :
+        if self.dead : return
+        self.dead = True
+        self.animate( self.explosionAnimation, Missile.onExploded )
 
     @staticmethod
     def fire( game ) :

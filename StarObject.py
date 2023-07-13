@@ -18,6 +18,7 @@ class StarObject :
         self.order = None
         self.animationOngoing = None
         self.animationFrame = None
+        self.can_be_hit = True
         if icon_name != None :
             self.load_icon(icon_name)
 
@@ -53,7 +54,10 @@ class StarObject :
             return self.icon
 
     def repaint(self, win):
-        rotated_icon = pygame.transform.rotate(self.get_icon(), self.dir)
+        ico = self.get_icon()
+        if ico == None :
+            return
+        rotated_icon = pygame.transform.rotate(ico, self.dir)
         new_rect = rotated_icon.get_rect(center=(self.x, self.y))
         win.blit(rotated_icon, new_rect.topleft)
 
@@ -69,8 +73,13 @@ class StarObject :
     def get_pos(self) :
         return (self.x, self.y)
 
-    def get_rect(self):
+    def get_rect(self) :
         width = self.get_size()
+        height = width
+        return pygame.Rect(self.x - width // 2, self.y - height // 2, width, height)
+
+    def get_collision_rect(self) :
+        width = self.get_size() / 2
         height = width
         return pygame.Rect(self.x - width // 2, self.y - height // 2, width, height)
 
@@ -167,6 +176,5 @@ class StarObject :
         if self.animationFrame == None :
             self.animationOngoing = None
             self.animationAfter( self )
-
 
 

@@ -4,6 +4,7 @@ import math
 
 from StarObject import StarObject
 from Bullet import Bullet
+from AnimatedSprite import AnimatedSprite
 
 class Starship ( StarObject ) :
 
@@ -14,6 +15,8 @@ class Starship ( StarObject ) :
         self.bullets = []
         self.enemy = None
         self.enemy_chase_mode = 1
+        self.explosionAnimation = AnimatedSprite( "explosion.png", 8, 6, self.get_size() * 2 )
+        self.dead = False
 
     def command( self, cmd ) :
         if cmd == 'a' :
@@ -50,6 +53,16 @@ class Starship ( StarObject ) :
             if self.game.get_time() % 10 == 0 and self.is_in_field( self.enemy.x, self.enemy.y, self.dir - 30, self.dir + 30, 0, 250) :
                 self.fire()
         super().ticktack()
+
+    def hit(self, hitter):
+        if self.dead : return
+        self.icon = None
+        self.dead = True
+        self.animate( self.explosionAnimation, Starship.onExploded )
+
+    def onExploded( self ) :
+        self.game.remove_object( self )
+
 
     # def repaint(self, win):
     #     if self.enemy != None :

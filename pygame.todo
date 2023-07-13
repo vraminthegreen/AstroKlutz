@@ -1,8 +1,7 @@
 pygame.todo
 
-- kolizje pocisków
-- animacja końcowa pocisków przy trafieniu
-- kolizja zniszczenie
+- przejść na animacje globalne (w game, słownik)
+- przejść na multidziedziczenie z funkcjonalnością hit/dead
 - animacja tarczy
 - tarcza w zależności od kąta
 - dwa typy statków - swoje i wrogie
@@ -24,3 +23,7 @@ pygame.todo
 + algorytm drugiego statku - tryb 2 - gonienie statku i strzelanie
 + zlecenie animacji + funkcji
 + przeróbka wybuchu na animację + funkcję
++ kolizje pocisków
++ dodać do kolizji zasięg
++ animacja końcowa pocisków przy trafieniu
++ kolizja zniszczenie

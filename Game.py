@@ -18,14 +18,16 @@ class Game:
 
     def remove_object(self, obj):
         self.objects.remove(obj)
+        if obj==self.focused :
+            self.focused = None
 
     def get_focused( self ) :
         return self.focused
 
-    def get_collisions(self, pygame_rect):
+    def get_collisions(self, pygame_rect ):
         collisions = []
         for obj in self.objects:
-            if obj.get_rect().colliderect(pygame_rect):
+            if obj.can_be_hit and obj.get_collision_rect().colliderect(pygame_rect):
                 collisions.append(obj)
         return collisions
 

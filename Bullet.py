@@ -31,7 +31,7 @@ class Bullet ( StarObject ) :
         self.resistance = 1
         self.owner = owner
         self.explosionAnimation = AnimatedSprite( "spark.png", 4, 4, 16 )
-
+        self.can_be_hit = False
 
     def repaint(self, win) :
         if self.animationFrame != None :
@@ -39,14 +39,22 @@ class Bullet ( StarObject ) :
         else :
             pygame.draw.rect(win, (255, 255, 255), pygame.Rect(self.x, self.y, 2, 2))
 
+    def hit(self, target) :
+        self.fuel = 0
+        target.hit( self )
+        self.v = pygame.Vector2(0, 0)  # Velocity vector
+        self.animate( self.explosionAnimation, Bullet.onExploded )
+
     def ticktack(self) :
         if self.fuel > 0 :
             self.fuel -= 1
             if self.fuel == 0 :
-                self.v = pygame.Vector2(0, 0)  # Velocity vector
-                self.animate( self.explosionAnimation, Bullet.onExploded )
-        if random.randint(0, 99) <= 30 :
-            collisions = self.game.get_collisions( pygame.Rect(self.x, self.y, 2, 2) )
+                self.owner.remove_object( self )
+                return
+            elif random.randint(0, 99) <= 30 :
+                collisions = self.game.get_collisions( pygame.Rect(self.x, self.y, 2, 2) )
+                if len(collisions) > 0 :
+                    self.hit( collisions[0] )
         super().ticktack()
 
     def onExploded( self ) :
