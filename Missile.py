@@ -4,7 +4,7 @@ import math
 import random
 
 from StarObject import StarObject
-from AnimatedSprite import AnimatedSprite
+
 
 class Missile ( StarObject ) :
 
@@ -13,7 +13,6 @@ class Missile ( StarObject ) :
         self.maxV = 1  # Maximum speed
         self.maxAcc = 0.03 # thrusters power
         self.chaseDecelerate = True
-        self.explosionAnimation = AnimatedSprite( "explosion.png", 8, 6, self.get_size() * 2 )
         self.fuel = 700
         self.dead = False
 
@@ -25,7 +24,7 @@ class Missile ( StarObject ) :
                 self.fuel = 0
                 if order_hit :
                     self.order.hit( self )
-                self.animate( self.explosionAnimation, Missile.onExploded )
+                self.animate( self.game.get_animation('explosion'), Missile.onExploded )
         super().ticktack()
 
     def onExploded( self ) :
@@ -38,7 +37,7 @@ class Missile ( StarObject ) :
     def hit( self, hitter ) :
         if self.dead : return
         self.dead = True
-        self.animate( self.explosionAnimation, Missile.onExploded )
+        self.animate( self.game.get_animation('explosion'), Missile.onExploded )
 
     @staticmethod
     def fire( game ) :

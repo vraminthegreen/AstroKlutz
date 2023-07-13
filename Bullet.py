@@ -4,7 +4,6 @@ import math
 import random
 
 from StarObject import StarObject
-from AnimatedSprite import AnimatedSprite
 
 
 class Bullet ( StarObject ) :
@@ -30,7 +29,6 @@ class Bullet ( StarObject ) :
         self.fuel = 100
         self.resistance = 1
         self.owner = owner
-        self.explosionAnimation = AnimatedSprite( "spark.png", 4, 4, 16 )
         self.can_be_hit = False
 
     def repaint(self, win) :
@@ -43,7 +41,7 @@ class Bullet ( StarObject ) :
         self.fuel = 0
         target.hit( self )
         self.v = pygame.Vector2(0, 0)  # Velocity vector
-        self.animate( self.explosionAnimation, Bullet.onExploded )
+        self.animate( self.game.get_animation('spark'), Bullet.onExploded )
 
     def ticktack(self) :
         if self.fuel > 0 :

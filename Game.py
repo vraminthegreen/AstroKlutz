@@ -2,6 +2,8 @@ import pygame
 import os
 import math
 
+from AnimatedSprite import AnimatedSprite
+
 class Game:
     def __init__(self, input_handler):
         self.objects = []
@@ -10,6 +12,10 @@ class Game:
         self.clock = pygame.time.Clock()
         self.focused = None
         self.time = 0
+        self.animations = {
+            'explosion' : AnimatedSprite( "explosion.png", 8, 6, 96 ),
+            'spark' : AnimatedSprite( "spark.png", 4, 4, 16 )
+        }
 
     def add_object(self, obj):
         if self.focused == None :
@@ -72,7 +78,8 @@ class Game:
         # Draw the selection surface on the window at the position of the selection rectangle
         self.win.blit(select_surface, select_rect.topleft)
 
-
+    def get_animation(self, animation_name) :
+        return self.animations[animation_name]
 
 
 

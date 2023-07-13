@@ -1,11 +1,10 @@
 pygame.todo
 
-- przejść na animacje globalne (w game, słownik)
-- przejść na multidziedziczenie z funkcjonalnością hit/dead
 - animacja tarczy
 - tarcza w zależności od kąta
 - dwa typy statków - swoje i wrogie
 - dwa typy statków - korwety rakietowe i myśliwce
+- przejść na multidziedziczenie z funkcjonalnością hit/dead
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
 + klasa order zakładana przyciskiem myszy
@@ -27,3 +26,4 @@ pygame.todo
 + dodać do kolizji zasięg
 + animacja końcowa pocisków przy trafieniu
 + kolizja zniszczenie
++ przejść na animacje globalne (w game, słownik)
