@@ -9,8 +9,12 @@ from Game import Game
 
 class Starship ( StarObject ) :
 
-    def __init__(self, game, x, y ):
-        StarObject.__init__( self, game, x, y, "starship.png" )
+    def __init__(self, game, team, x, y ):
+        StarObject.__init__( self, game, x, y, None )
+        # "fighter_1.png" )
+        self.team = team
+        self.icon = IconRepository.get_icon("fighter", self.team)
+        self.icon
         self.dir = -150
         self.max_bullets = 5
         self.bullets = []

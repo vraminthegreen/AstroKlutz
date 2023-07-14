@@ -1,5 +1,8 @@
 pygame.todo
 
+- przygotowanie kolorów spritów (skalowanie, obracanie)
+- przygotowanie ładowania spritów i mechanizmu wybierania kolorów
+- implementacja animacji odrzutu (osobnej)
 - dwa typy statków - swoje i wrogie
 - dwa typy statków - korwety rakietowe i myśliwce
 - przejść na multidziedziczenie z funkcjonalnością hit/dead
@@ -28,4 +31,8 @@ pygame.todo
 + animacja tarczy
 + overlay animation
 + tarcza w zależności od kąta
++ wygenerowanie sprite midjourney
++ przygotowanie spritów
+x podział sprite na podstawkę i barwy
+x implementacja koloryzacji
 
