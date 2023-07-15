@@ -8,19 +8,20 @@ from Bullet import Bullet
 from Game import Game
 from IconRepository import IconRepository
 
+
 class Starship ( StarObject ) :
 
-    def __init__(self, game, team, x, y ):
+    def __init__(self, game, team, pilot, x, y ):
         StarObject.__init__( self, game, x, y, None )
         self.team = team
-        print(f'creating new ship for team {team.name}, {team.get_filename_sufix()}')
-        self.icon = IconRepository.get_icon( "fighter", self.get_size(), self.team )
+        self.pilot = pilot
+        self.pilot.set_starship( self )
+        self.icon = IconRepository.get_icon( pilot.get_icon_name(), self.get_size(), self.team )
         self.icon
         self.dir = -150
         self.max_bullets = 5
         self.bullets = []
         self.enemy = None
-        self.enemy_chase_mode = 1
         self.dead = False
         self.shield_active = False
 
@@ -45,19 +46,10 @@ class Starship ( StarObject ) :
 
     def set_enemy( self, enemy ) :
         self.enemy = enemy
+        self.pilot.set_enemy( enemy )
 
     def ticktack(self):
-        if self.enemy != None :
-            if self.enemy_chase_mode == 1 :
-                self.chase( * self.enemy.get_pos_in_front(-200) )
-            else :
-                self.chase( * self.enemy.get_pos() )
-            if self.enemy.is_in_field(self.x, self.y, self.dir - (180+25), self.dir - (180-25), 0, 300) :
-                self.enemy_chase_mode = 2
-            elif not self.enemy.is_in_field(self.x, self.y, self.dir - (180+45), self.dir - (180-45), 0, 300) :
-                self.enemy_chase_mode = 1
-            if self.game.get_time() % 10 == 0 and self.is_in_field( self.enemy.x, self.enemy.y, self.dir - 30, self.dir + 30, 0, 250) :
-                self.fire()
+        self.pilot.ticktack()
         super().ticktack()
 
     def hit(self, hitter):

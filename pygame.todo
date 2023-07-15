@@ -1,6 +1,7 @@
 pygame.todo
 
-- nie działa pocisk
+- definicje statku do osobnej klasy, definicja FighterClass
+- definicja RocketFrigateClass
 - dwa typy statków - swoje i wrogie
 - dwa typy statków - korwety rakietowe i myśliwce
 - przejść na multidziedziczenie z funkcjonalnością hit/dead
@@ -39,4 +40,6 @@ x implementacja koloryzacji
 + IconRepository
 + przygotowanie ładowania spritów i mechanizmu wybierania kolorów
 + nie działa kolor
++ nie działa pocisk
++ algorytm walki do klasy pilot
 
