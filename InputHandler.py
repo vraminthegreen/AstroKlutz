@@ -3,6 +3,7 @@ import os
 import math
 
 from StarObject import StarObject
+from ShipClass import Stationary
 
 class InputHandler:
 
@@ -18,9 +19,9 @@ class InputHandler:
     def handle_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            self.focus.rotate(1.5)
+            self.focus.rotateRight()
         if keys[pygame.K_RIGHT]:
-            self.focus.rotate(-1.5)
+            self.focus.rotateLeft()
         if keys[pygame.K_UP]:
             self.focus.accelerate()
         if keys[pygame.K_DOWN]:
@@ -31,7 +32,7 @@ class InputHandler:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
-                star_object = StarObject(self.game, x, y, 'target')
+                star_object = StarObject(self.game, Stationary('target'), x, y )
                 self.game.add_object(star_object)
                 self.focus.set_order(star_object)
             elif event.type == pygame.KEYDOWN:

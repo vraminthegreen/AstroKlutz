@@ -6,9 +6,6 @@ class Pilot :
         self.enemy = None
         self.game = game
 
-    def get_icon_name(self) :
-        return "fighter"
-        
     def set_enemy(self, enemy) :
         self.enemy = enemy
 
@@ -26,9 +23,6 @@ class FighterPilot ( Pilot ) :
         Pilot.__init__(self, game)
         self.enemy_chase_mode = 1
 
-    def get_icon_name(self) :
-        return "fighter"
-
     def ticktack(self) :
         if self.enemy != None :
             if self.enemy_chase_mode == 1 :
@@ -42,4 +36,22 @@ class FighterPilot ( Pilot ) :
             if self.game.get_time() % 10 == 0 and self.starship.is_in_field( self.enemy.x, self.enemy.y, self.starship.dir - 30, self.starship.dir + 30, 0, 250) :
                 self.starship.fire()
 
+
+#################################################
+
+class MissilePilot ( Pilot ) :
+
+    def __init__(self, game) :
+        Pilot.__init__(self, game)
+        self.enemy_chase_mode = 1        
+
+    def ticktack(self) :
+        if self.starship.fuel > 0 :
+            self.starship.fuel -= 1
+            order_hit = self.starship.order != None and self.starship.distance_to(self.starship.order) < self.starship.get_size()
+            if self.starship.fuel == 0 or order_hit :
+                self.starship.fuel = 0
+                if order_hit :
+                    self.starship.order.hit( self.starship )
+                self.starship.explode()
 

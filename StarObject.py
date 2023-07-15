@@ -6,28 +6,28 @@ from IconRepository import IconRepository
 
 class StarObject :
 
-    def __init__(self, game, x, y, icon_name):
+    def __init__(self, game, object_class, x, y):
         self.game = game
+        self.object_class = object_class
         self.x = x
         self.y = y
         self.dir = 0  # Direction in degrees
         self.v = pygame.Vector2(0, 0)  # Velocity vector
-        self.maxV = 2  # Maximum speed
-        self.maxAcc = 0.02
-        self.resistance = 0.99 # thrusters power
         self.chaseDecelerate = True
         self.auto = True
         self.order = None
         self.animationOngoing = None
         self.animationFrame = None
-        self.can_be_hit = True
-        if icon_name != None :
-            self.icon = IconRepository.get_icon(icon_name, self.get_size())
+        if self.object_class.icon_name != None :
+            self.icon = IconRepository.get_icon(self.object_class.icon_name, self.get_size())
         else :
             self.icon = None
 
     def get_size( self ) :
-        return 64
+        return self.object_class.size
+
+    def can_be_hit( self ) :
+        return self.object_class.can_be_hit
 
     def get_icon( self ) :
         if self.animationFrame != None :
@@ -54,7 +54,7 @@ class StarObject :
             self.animateNextFrame()        
         self.x += self.v.x
         self.y += self.v.y
-        self.v *= self.resistance
+        self.v *= self.object_class.resistance
 
     def get_pos(self) :
         return (self.x, self.y)
@@ -90,14 +90,14 @@ class StarObject :
         self.auto = True
 
     def accelerate(self):
-        acceleration_vector = pygame.Vector2(self.maxAcc, 0).rotate(-self.dir)
+        acceleration_vector = pygame.Vector2(self.object_class.maxAcc, 0).rotate(-self.dir)
         self.v += acceleration_vector
-        if self.v.length() > self.maxV:
-            self.v.scale_to_length(self.maxV)
+        if self.v.length() > self.object_class.maxV:
+            self.v.scale_to_length(self.object_class.maxV)
 
     def decelerate(self):
         if self.v.length() > 0:
-            deceleration_vector = pygame.Vector2(-self.maxAcc, 0).rotate(-self.v.angle_to(pygame.Vector2(1, 0)))
+            deceleration_vector = pygame.Vector2(-self.object_class.maxAcc, 0).rotate(-self.v.angle_to(pygame.Vector2(1, 0)))
             self.v += deceleration_vector
 
             # Gradually rotate the starship towards the direction of movement
@@ -115,6 +115,12 @@ class StarObject :
         self.dir += rotation
         self.dir %= 360
 
+    def rotateRight(self) :
+        self.rotate(self.object_class.rotation_speed)
+
+    def rotateLeft(self) :
+        self.rotate(-self.object_class.rotation_speed)
+
     def chase(self, tx, ty):
         target_vector = pygame.Vector2(tx, -ty) - pygame.Vector2(self.x, -self.y)
         direction_to_target = math.degrees(math.atan2(target_vector.y, target_vector.x))
@@ -126,9 +132,9 @@ class StarObject :
 
         # Determine whether to rotate left or right
         if difference_in_direction > 0:
-            self.rotate(1)
+            self.rotateRight()
         elif difference_in_direction < 0:
-            self.rotate(-1)
+            self.rotateLeft()
 
         # Determine whether to accelerate or decelerate
         distance_to_target = target_vector.length()

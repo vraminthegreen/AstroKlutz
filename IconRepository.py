@@ -15,7 +15,6 @@ class IconRepository:
             filename = f'./assets/{name}.png'
         else :
             filename = f'./assets/{name}{team.get_filename_sufix()}.png'
-        print(f'loading asset {filename}')
         icon = pygame.image.load(filename)
 
         orig_width, orig_height = icon.get_size()

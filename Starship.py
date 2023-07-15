@@ -11,15 +11,13 @@ from IconRepository import IconRepository
 
 class Starship ( StarObject ) :
 
-    def __init__(self, game, team, pilot, x, y ):
-        StarObject.__init__( self, game, x, y, None )
+    def __init__(self, game, team, object_class, pilot, x, y ):
+        StarObject.__init__( self, game, object_class, x, y )
         self.team = team
         self.pilot = pilot
         self.pilot.set_starship( self )
-        self.icon = IconRepository.get_icon( pilot.get_icon_name(), self.get_size(), self.team )
-        self.icon
+        self.icon = IconRepository.get_icon( self.object_class.icon_name, self.get_size(), self.team )
         self.dir = -150
-        self.max_bullets = 5
         self.bullets = []
         self.enemy = None
         self.dead = False
@@ -27,6 +25,9 @@ class Starship ( StarObject ) :
 
     def command( self, cmd ) :
         if cmd == 'a' :
+            if self.auto != None and self.order != None:
+                self.game.remove_object(self.order)
+                self.order = None
             self.auto = not self.auto
             return True
         elif cmd == ' ' :
@@ -35,7 +36,7 @@ class Starship ( StarObject ) :
         return False
 
     def fire( self ) :
-        if len(self.bullets) < self.max_bullets :
+        if len(self.bullets) < self.object_class.max_bullets :
             bullet = Bullet( self.game, self, self.x, self.y, self.dir, self.v )
             self.bullets.append( bullet )
             self.game.add_object( bullet )
@@ -61,7 +62,7 @@ class Starship ( StarObject ) :
             print("belly hit")
         else :
             print("shield hit")
-        if ( aa and random.randint(0, 99) < 50 ) or ( random.randint(0,99) < 10 ) :
+        if ( aa and random.randint(0, 99) < (100-self.object_class.rear_shield) ) or ( random.randint(0,99) < (100-self.object_class.front_shield) ) :
             self.icon = None
             self.dead = True
             self.animate( self.game.get_animation('explosion'), Starship.onExploded )

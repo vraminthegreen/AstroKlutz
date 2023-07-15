@@ -1,6 +1,5 @@
 pygame.todo
 
-- definicje statku do osobnej klasy, definicja FighterClass
 - definicja RocketFrigateClass
 - dwa typy statków - swoje i wrogie
 - dwa typy statków - korwety rakietowe i myśliwce
@@ -42,4 +41,5 @@ x implementacja koloryzacji
 + nie działa kolor
 + nie działa pocisk
 + algorytm walki do klasy pilot
++ definicje statku do osobnej klasy, definicja FighterClass
 

@@ -4,12 +4,13 @@ import math
 import random
 
 from StarObject import StarObject
+from ShipClass import BulletClass
 
 
 class Bullet ( StarObject ) :
 
     def __init__(self, game, owner, x, y, dir, v ):
-        StarObject.__init__( self, game, x, y, None )
+        StarObject.__init__( self, game, BulletClass(), x, y )
         self.dir = dir
 
         # Convert the ship's direction to radians
@@ -27,10 +28,8 @@ class Bullet ( StarObject ) :
         self.v = bullet_v
         self.x += 10 * self.v.x
         self.y += 10 * self.v.y
-        self.fuel = 100
-        self.resistance = 1
         self.owner = owner
-        self.can_be_hit = False
+        self.fuel = self.object_class.fuel
 
     def repaint(self, win) :
         if self.animationFrame != None :
