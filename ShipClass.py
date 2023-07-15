@@ -98,6 +98,21 @@ class BulletClass :
 
 #################################################
 
+class DustClass :
+
+    def __init__(self) :
+        self.icon_name = None
+        self.size = 1
+        self.resistance = 1
+        self.can_be_hit = False
+        self.maxV = 0  # Maximum speed
+        self.rotation_speed = 0
+        self.maxAcc = 0 # thrusters power
+        self.chaseDecelerate = False
+        self.layer = 0
+
+#################################################
+
 class Stationary :
 
     def __init__(self, icon_name, size = None) :

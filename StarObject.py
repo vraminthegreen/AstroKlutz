@@ -46,11 +46,13 @@ class StarObject :
         else :
             return self.icon
 
-    def repaint(self, win, camera_offset, camb):
+    def repaint(self, win, pan1, pan2, pan3):
         if self.layer == 0 :
-            co = camera_offset
+            co = pan1
+        elif self.layer == 1 :
+            co = pan2
         else :
-            co = camb
+            co = pan3
         if self.icon != None and self.animationFrame != None and self.animationOverlay :
             rotated_icon = pygame.transform.rotate(self.icon, self.dir)
             new_rect = rotated_icon.get_rect(center=(self.x - co[0], self.y - co[1]))

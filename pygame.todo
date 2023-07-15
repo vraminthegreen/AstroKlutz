@@ -1,11 +1,11 @@
 pygame.todo
 
+- dust
 - zoom out / zoom in manualny
 - nebula się zoomuje powoli
 - zoom automatyczny żeby zawierały się wszystkie statki
 - move camery 
 - move camery automatyczny żeby zawierały się wszystkie statki
-- paralaksa nebuli / kilka warstw
 - implementacja animacji odrzutu (osobnej)
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
@@ -52,4 +52,6 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + RocketFrigateClass - pilot - gdy odpalona rakieta
 + RocketFrigateClass - pilot - gdy nie odpalona rakieta
 + nebula
++ paralaksa nebuli / kilka warstw
++ przejście na współrzędne dookoła zera + camera_offset
 

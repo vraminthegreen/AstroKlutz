@@ -75,11 +75,12 @@ class Game:
             # self.win.fill((0, 0, 0))
             if self.input_handler.handle_input() == False :
                 running = False
-            pan = (self.camera[0]-self.game_window[0]/2,self.camera[1]-self.game_window[1]/2)
-            panb = (self.camera[0]/5-self.game_window[0]/2,self.camera[1]/5-self.game_window[1]/2)
+            pan1 = (self.camera[0]-self.game_window[0]/2,self.camera[1]-self.game_window[1]/2)
+            pan2 = (self.camera[0]/2.5-self.game_window[0]/2,self.camera[1]/2.5-self.game_window[1]/2)
+            pan3 = (self.camera[0]/5-self.game_window[0]/2,self.camera[1]/5-self.game_window[1]/2)
             for obj in self.objects:
                 obj.ticktack()
-                obj.repaint(self.win, pan, panb)
+                obj.repaint(self.win, pan1, pan2, pan3)
             if self.focused != None :
                 self.draw_select(self.focused, (0,255,0))
 

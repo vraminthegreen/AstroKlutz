@@ -31,11 +31,11 @@ class Bullet ( StarObject ) :
         self.owner = owner
         self.fuel = self.object_class.fuel
 
-    def repaint(self, win, camera_offset, camb) :
+    def repaint(self, win, cam1, cam2, cam3) :
         if self.animationFrame != None :
-            super().repaint(win, camera_offset, camb)
+            super().repaint(win, cam1, cam2, cam3)
         else :
-            pygame.draw.rect(win, (255, 255, 255), pygame.Rect(self.x - camera_offset[0], self.y - camera_offset[1], 2, 2))
+            pygame.draw.rect(win, (255, 255, 255), pygame.Rect(self.x - cam1[0], self.y - cam1[1], 2, 2))
 
     def hit(self, target) :
         self.fuel = 0

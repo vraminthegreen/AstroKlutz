@@ -2,12 +2,14 @@
 import pygame
 import os
 import math
+import random
 
 from Game import Game
 from StarObject import StarObject
 from Starship import Starship
 from InputHandler import InputHandler
 from Missile import Missile
+from Dust import Dust
 from Team import Team
 from Pilot import Pilot, FighterPilot, RocketFrigatePilot
 from ShipClass import FighterClass, RocketFrigateClass, Stationary, Background
@@ -48,6 +50,10 @@ enemies = [
 for enemy in enemies :
     enemy.set_enemy(player)
     game.add_object(enemy)
+
+for i in range(0,50) :
+    game.add_object(Dust(game, random.randint(-1024/2,1024/2), random.randint(-768/2,768/2)))
+
 
 # Missile.fire(game)
 
