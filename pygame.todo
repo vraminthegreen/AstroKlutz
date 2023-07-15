@@ -1,11 +1,10 @@
 pygame.todo
 
-- przygotowanie kolorów spritów (skalowanie, obracanie)
-- przygotowanie ładowania spritów i mechanizmu wybierania kolorów
-- implementacja animacji odrzutu (osobnej)
+- nie działa pocisk
 - dwa typy statków - swoje i wrogie
 - dwa typy statków - korwety rakietowe i myśliwce
 - przejść na multidziedziczenie z funkcjonalnością hit/dead
+- implementacja animacji odrzutu (osobnej)
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
 + klasa order zakładana przyciskiem myszy
@@ -35,4 +34,9 @@ pygame.todo
 + przygotowanie spritów
 x podział sprite na podstawkę i barwy
 x implementacja koloryzacji
++ przygotowanie kolorów spritów (skalowanie, obracanie)
++ Team
++ IconRepository
++ przygotowanie ładowania spritów i mechanizmu wybierania kolorów
++ nie działa kolor
 

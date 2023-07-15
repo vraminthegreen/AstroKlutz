@@ -2,6 +2,8 @@ import pygame
 import os
 import math
 
+from IconRepository import IconRepository
+
 class StarObject :
 
     def __init__(self, game, x, y, icon_name):
@@ -20,31 +22,9 @@ class StarObject :
         self.animationFrame = None
         self.can_be_hit = True
         if icon_name != None :
-            self.load_icon(icon_name)
+            self.icon = IconRepository.get_icon(icon_name, self.get_size())
         else :
             self.icon = None
-
-
-    def load_icon(self, icon_name):
-        # Load and resize the icon
-        self.icon = pygame.image.load(os.path.join('.', icon_name))
-
-        orig_width, orig_height = self.icon.get_size()
-
-        # Determine the aspect ratio
-        aspect_ratio = orig_width / orig_height
-
-        # Calculate new dimensions
-        if aspect_ratio >= 1:  # Width is greater than height
-            new_width = self.get_size()
-            new_height = int(self.get_size() / aspect_ratio)
-        else:  # Height is greater than width
-            new_height = self.get_size()
-            new_width = int(self.get_size() * aspect_ratio)
-
-        # Resize the image with anti-aliasing
-        self.icon = pygame.transform.smoothscale(self.icon, (new_width, new_height))
-        self.icon = self.icon.convert_alpha()
 
     def get_size( self ) :
         return 64

@@ -9,7 +9,7 @@ from StarObject import StarObject
 class Missile ( StarObject ) :
 
     def __init__(self, game, x, y ):
-        StarObject.__init__( self, game, x, y, "missile.png" )
+        StarObject.__init__( self, game, x, y, "missile" )
         self.maxV = 1  # Maximum speed
         self.maxAcc = 0.03 # thrusters power
         self.chaseDecelerate = True

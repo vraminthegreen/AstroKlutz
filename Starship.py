@@ -6,14 +6,15 @@ import random
 from StarObject import StarObject
 from Bullet import Bullet
 from Game import Game
+from IconRepository import IconRepository
 
 class Starship ( StarObject ) :
 
     def __init__(self, game, team, x, y ):
         StarObject.__init__( self, game, x, y, None )
-        # "fighter_1.png" )
         self.team = team
-        self.icon = IconRepository.get_icon("fighter", self.team)
+        print(f'creating new ship for team {team.name}, {team.get_filename_sufix()}')
+        self.icon = IconRepository.get_icon( "fighter", self.get_size(), self.team )
         self.icon
         self.dir = -150
         self.max_bullets = 5

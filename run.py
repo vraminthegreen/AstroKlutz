@@ -22,13 +22,13 @@ team_blue = Team( "blue", (0,0,255), 2 )
 team_green = Team( "green", (0,255,0), 3 )
 team_yellow = Team( "yellow", (255,255,0), 4 )
 
-player = Starship(game, team_red, 750, 50)
+player = Starship(game, team_green, 750, 50)
 game.add_object(player)
 input_handler.set_focus(player)
-enemy = Starship(game, team_blue, 50, 550 )
+enemy = Starship(game, team_yellow, 50, 550 )
 enemy.set_enemy(player)
 game.add_object(enemy)
-# Missile.fire(game)
+Missile.fire(game)
 
 # Create the game and start the game loop
 game.game_loop()

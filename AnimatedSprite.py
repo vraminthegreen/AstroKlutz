@@ -3,7 +3,7 @@ import pygame
 class AnimatedSprite :
 
     def __init__(self, filename, columns, rows, size, overlay, frames=None):
-        sprite_sheet = pygame.image.load(filename).convert_alpha()
+        sprite_sheet = pygame.image.load("./assets/" + filename).convert_alpha()
 
         self.frames = []
         self.size = size
