@@ -5,6 +5,9 @@ import random
 
 from StarObject import StarObject
 from Bullet import Bullet
+from Missile import Missile
+from ShipClass import MissileClass
+from Pilot import MissilePilot
 from Game import Game
 from IconRepository import IconRepository
 
@@ -19,6 +22,7 @@ class Starship ( StarObject ) :
         self.icon = IconRepository.get_icon( self.object_class.icon_name, self.get_size(), self.team )
         self.dir = -150
         self.bullets = []
+        self.missiles = []
         self.enemy = None
         self.dead = False
         self.shield_active = False
@@ -40,6 +44,22 @@ class Starship ( StarObject ) :
             bullet = Bullet( self.game, self, self.x, self.y, self.dir, self.v )
             self.bullets.append( bullet )
             self.game.add_object( bullet )
+
+    def fire_missile( self ) :
+        missiles_cnt = len(self.missiles)
+        if missiles_cnt < self.object_class.max_missiles :
+            missile_dir = ( self.dir + 150 + 60 * ( missiles_cnt % 2 ) ) % 360
+            displacement = pygame.Vector2(self.size, 0).rotate(-missile_dir)
+            missile_pos = pygame.Vector2(self.x, self.y) + displacement
+            missile = Missile(self.game, MissileClass(), MissilePilot(self.game), missile_pos.x, missile_pos.y )
+            missile.set_order(self.enemy)
+            missile.set_owner(self)
+            missile.dir = missile_dir
+            self.missiles.append( missile )
+            self.game.add_object(missile)
+
+    def on_missile_exploded( self, missile ) :
+        self.missiles.remove( missile )
 
     def remove_object( self, obj ) :
         self.bullets.remove( obj )

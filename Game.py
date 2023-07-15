@@ -34,7 +34,7 @@ class Game:
     def get_collisions(self, pygame_rect ):
         collisions = []
         for obj in self.objects:
-            if obj.can_be_hit() and obj.get_collision_rect().colliderect(pygame_rect):
+            if obj.can_be_hit and obj.get_collision_rect().colliderect(pygame_rect):
                 collisions.append(obj)
         return collisions
 

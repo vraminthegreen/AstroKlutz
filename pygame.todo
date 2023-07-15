@@ -1,9 +1,13 @@
 pygame.todo
 
-- definicja RocketFrigateClass
-- dwa typy statków - swoje i wrogie
-- dwa typy statków - korwety rakietowe i myśliwce
-- przejść na multidziedziczenie z funkcjonalnością hit/dead
+- RocketFrigateClass - pilot - gdy odpalona rakieta
+- RocketFrigateClass - pilot - gdy nie odpalona rakieta
+- nebula
+- zoom out / zoom in manualny
+- zoom automatyczny żeby zawierały się wszystkie statki
+- move camery 
+- move camery automatyczny żeby zawierały się wszystkie statki
+- paralaksa nebuli / kilka warstw
 - implementacja animacji odrzutu (osobnej)
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
@@ -25,6 +29,9 @@ pygame.todo
 + kolizje pocisków
 + dodać do kolizji zasięg
 + animacja końcowa pocisków przy trafieniu
++ RocketFrigateClass - obrazek
++ RocketFrigateClass - pilot - odpalanie rakiety
+
 + kolizja zniszczenie
 + przejść na animacje globalne (w game, słownik)
 + animacja tarczy
@@ -42,4 +49,6 @@ x implementacja koloryzacji
 + nie działa pocisk
 + algorytm walki do klasy pilot
 + definicje statku do osobnej klasy, definicja FighterClass
++ dwa typy statków - swoje i wrogie
+x przejść na multidziedziczenie z funkcjonalnością hit/dead
 

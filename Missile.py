@@ -24,9 +24,14 @@ class Missile ( StarObject ) :
     def explode( self ) :
         self.animate( self.game.get_animation('explosion'), Missile.onExploded )
 
+    def set_owner( self, owner ) :
+        self.owner = owner
+
     def onExploded( self ) :
         self.game.remove_object( self )
-        Missile.fire( self.game )
+        if self.owner != None :
+            self.owner.on_missile_exploded( self )
+        #Missile.fire( self.game )
 
     def get_size( self ) :
         return self.object_class.size

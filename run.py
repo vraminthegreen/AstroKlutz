@@ -8,8 +8,8 @@ from Starship import Starship
 from InputHandler import InputHandler
 from Missile import Missile
 from Team import Team
-from Pilot import Pilot, FighterPilot
-from ShipClass import FighterClass
+from Pilot import Pilot, FighterPilot, RocketFrigatePilot
+from ShipClass import FighterClass, RocketFrigateClass
 
 
 # Initialize Pygame
@@ -35,7 +35,7 @@ crippled_fighter.max_bullets = 3
 
 enemies = [
     Starship(game, team_yellow, crippled_fighter, FighterPilot(game), 50, 550 ),
-    Starship(game, team_red, crippled_fighter, FighterPilot(game), 50, 250 ),
+    Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 50, 250 ),
     Starship(game, team_blue, crippled_fighter, FighterPilot(game), 50, 50 )
 ]
 

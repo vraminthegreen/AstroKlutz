@@ -36,6 +36,27 @@ class FighterPilot ( Pilot ) :
             if self.game.get_time() % 10 == 0 and self.starship.is_in_field( self.enemy.x, self.enemy.y, self.starship.dir - 30, self.starship.dir + 30, 0, 250) :
                 self.starship.fire()
 
+#################################################
+
+class RocketFrigatePilot ( Pilot ) :
+
+    def __init__(self, game) :
+        Pilot.__init__(self, game)
+        self.enemy_chase_mode = 1
+
+    def ticktack(self) :
+        if self.enemy != None :
+            if self.enemy_chase_mode == 1 :
+                self.starship.chase( * self.enemy.get_pos_in_front(-200) )
+            else :
+                self.starship.chase( * self.enemy.get_pos() )
+            if self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+25), self.starship.dir - (180-25), 0, 300) :
+                self.enemy_chase_mode = 2
+            elif not self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+45), self.starship.dir - (180-45), 0, 300) :
+                self.enemy_chase_mode = 1
+            if self.game.get_time() % 100 <= 1 and self.starship.distance_to( self.enemy ) < 500:
+                self.starship.fire_missile()
+
 
 #################################################
 
@@ -54,4 +75,8 @@ class MissilePilot ( Pilot ) :
                 if order_hit :
                     self.starship.order.hit( self.starship )
                 self.starship.explode()
+            else :
+                (self.starship.maxV, self.starship.rotation_speed, self.starship.maxAcc) = self.starship.object_class.select_phase(self.starship.fuel)
+                self.starship.chase(self.starship.order.x, self.starship.order.y)                
+
 
