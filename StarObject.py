@@ -28,6 +28,8 @@ class StarObject :
         #
         if self.object_class.icon_name != None :
             self.icon = IconRepository.get_icon(self.object_class.icon_name, self.get_size())
+            if self.size == None :
+                self.size = max(*self.icon.get_size())
         else :
             self.icon = None
 
@@ -85,9 +87,20 @@ class StarObject :
         new_y = self.y - distance * math.sin(dir_rad)  # Odejmujemy, ponieważ os Y w Pygame jest skierowana w dół
         return (new_x, new_y)
 
+    def get_displaced_pos(self, dir, distance) :
+        displacement = pygame.Vector2(self.size, 0).rotate(-dir)
+        pos = pygame.Vector2(self.x, self.y) + displacement
+        return (pos.x, pos.y)
+
     def distance_to(self, other) :
         point1 = pygame.math.Vector2(self.x, self.y)
         point2 = pygame.math.Vector2(other.x, other.y)
+        distance = point1.distance_to(point2)
+        return distance
+
+    def distance_to_xy(self, x, y) :
+        point1 = pygame.math.Vector2(self.x, self.y)
+        point2 = pygame.math.Vector2(x, y)
         distance = point1.distance_to(point2)
         return distance
 

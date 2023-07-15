@@ -49,9 +49,8 @@ class Starship ( StarObject ) :
         missiles_cnt = len(self.missiles)
         if missiles_cnt < self.object_class.max_missiles :
             missile_dir = ( self.dir + 150 + 60 * ( missiles_cnt % 2 ) ) % 360
-            displacement = pygame.Vector2(self.size, 0).rotate(-missile_dir)
-            missile_pos = pygame.Vector2(self.x, self.y) + displacement
-            missile = Missile(self.game, MissileClass(), MissilePilot(self.game), missile_pos.x, missile_pos.y )
+            (mx, my) = self.get_displaced_pos(missile_dir,self.size)
+            missile = Missile(self.game, MissileClass(), MissilePilot(self.game), mx, my )
             missile.set_order(self.enemy)
             missile.set_owner(self)
             missile.dir = missile_dir

@@ -32,7 +32,7 @@ class InputHandler:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
-                star_object = StarObject(self.game, Stationary('target'), x, y )
+                star_object = StarObject(self.game, Stationary('target', 48), x, y )
                 self.game.add_object(star_object)
                 self.focus.set_order(star_object)
             elif event.type == pygame.KEYDOWN:

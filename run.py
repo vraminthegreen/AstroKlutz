@@ -4,12 +4,13 @@ import os
 import math
 
 from Game import Game
+from StarObject import StarObject
 from Starship import Starship
 from InputHandler import InputHandler
 from Missile import Missile
 from Team import Team
 from Pilot import Pilot, FighterPilot, RocketFrigatePilot
-from ShipClass import FighterClass, RocketFrigateClass
+from ShipClass import FighterClass, RocketFrigateClass, Stationary
 
 
 # Initialize Pygame
@@ -23,6 +24,10 @@ team_red = Team( "red", (255,0,0), 1 )
 team_blue = Team( "blue", (0,0,255), 2 )
 team_green = Team( "green", (0,255,0), 3 )
 team_yellow = Team( "yellow", (255,255,0), 4 )
+
+background = StarObject(game, Stationary('background'), 100, 100)
+game.add_object(background)
+
 
 player = Starship(game, team_green, FighterClass(), Pilot(game), 750, 50)
 game.add_object(player)

@@ -17,21 +17,22 @@ class IconRepository:
             filename = f'./assets/{name}{team.get_filename_sufix()}.png'
         icon = pygame.image.load(filename)
 
-        orig_width, orig_height = icon.get_size()
+        if size != None :
+            orig_width, orig_height = icon.get_size()
 
-        # Determine the aspect ratio
-        aspect_ratio = orig_width / orig_height
+            # Determine the aspect ratio
+            aspect_ratio = orig_width / orig_height
 
-        # Calculate new dimensions
-        if aspect_ratio >= 1:  # Width is greater than height
-            new_width = size
-            new_height = int(size / aspect_ratio)
-        else:  # Height is greater than width
-            new_height = size
-            new_width = int(size * aspect_ratio)
+            # Calculate new dimensions
+            if aspect_ratio >= 1:  # Width is greater than height
+                new_width = size
+                new_height = int(size / aspect_ratio)
+            else:  # Height is greater than width
+                new_height = size
+                new_width = int(size * aspect_ratio)
 
-        # Resize the image with anti-aliasing
-        icon = pygame.transform.smoothscale(icon, (new_width, new_height))
+            # Resize the image with anti-aliasing
+            icon = pygame.transform.smoothscale(icon, (new_width, new_height))
         icon = icon.convert_alpha()
         return icon
 

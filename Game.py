@@ -8,7 +8,7 @@ class Game:
     def __init__(self, input_handler):
         self.objects = []
         self.input_handler = input_handler
-        self.win = pygame.display.set_mode((800, 600))
+        self.win = pygame.display.set_mode((1024, 768))
         self.clock = pygame.time.Clock()
         self.focused = None
         self.time = 0

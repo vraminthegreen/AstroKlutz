@@ -56,7 +56,7 @@ class MissileClass :
             0: (2, 1, 0.03),
             1: (self.maxV,self.rotation_speed,self.maxAcc)
         }
-        self.resistance = 0.99 # thrusters power
+        self.resistance = 1
         self.chaseDecelerate = False
         self.fuel = 300
         self.can_be_hit = True
@@ -95,12 +95,16 @@ class BulletClass :
 
 class Stationary :
 
-    def __init__(self, icon_name) :
+    def __init__(self, icon_name, size = None) :
         self.icon_name = icon_name
-        self.size = 48
+        self.size = size
         self.resistance = 1
         self.can_be_hit = False
         self.chaseDecelerate = False
+        self.maxV = 0  # Maximum speed
+        self.rotation_speed = 0
+        self.maxAcc = 0
+
 
         # self.maxV = 1  # Maximum speed
         # self.rotation_speed = 0.5

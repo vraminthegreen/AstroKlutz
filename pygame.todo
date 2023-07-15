@@ -1,9 +1,7 @@
 pygame.todo
 
-- RocketFrigateClass - pilot - gdy odpalona rakieta
-- RocketFrigateClass - pilot - gdy nie odpalona rakieta
-- nebula
 - zoom out / zoom in manualny
+- nebula się zoomuje powoli
 - zoom automatyczny żeby zawierały się wszystkie statki
 - move camery 
 - move camery automatyczny żeby zawierały się wszystkie statki
@@ -51,4 +49,7 @@ x implementacja koloryzacji
 + definicje statku do osobnej klasy, definicja FighterClass
 + dwa typy statków - swoje i wrogie
 x przejść na multidziedziczenie z funkcjonalnością hit/dead
++ RocketFrigateClass - pilot - gdy odpalona rakieta
++ RocketFrigateClass - pilot - gdy nie odpalona rakieta
++ nebula
 
