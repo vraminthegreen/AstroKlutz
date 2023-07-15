@@ -31,11 +31,11 @@ class Bullet ( StarObject ) :
         self.owner = owner
         self.fuel = self.object_class.fuel
 
-    def repaint(self, win) :
+    def repaint(self, win, camera_offset, camb) :
         if self.animationFrame != None :
-            super().repaint(win)
+            super().repaint(win, camera_offset, camb)
         else :
-            pygame.draw.rect(win, (255, 255, 255), pygame.Rect(self.x, self.y, 2, 2))
+            pygame.draw.rect(win, (255, 255, 255), pygame.Rect(self.x - camera_offset[0], self.y - camera_offset[1], 2, 2))
 
     def hit(self, target) :
         self.fuel = 0
@@ -50,7 +50,7 @@ class Bullet ( StarObject ) :
                 self.owner.remove_object( self )
                 return
             elif random.randint(0, 99) <= 30 :
-                collisions = self.game.get_collisions( pygame.Rect(self.x, self.y, 2, 2) )
+                collisions = self.game.get_collisions( pygame.Rect(self.x, self.y, 3, 3) )
                 if len(collisions) > 0 :
                     self.hit( collisions[0] )
         super().ticktack()

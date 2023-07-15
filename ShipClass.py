@@ -20,6 +20,8 @@ class FighterClass :
         self.resistance = 0.99 # thrusters power
         self.can_be_hit = True
         self.chaseDecelerate = True
+        self.layer = 0
+
 
 
 #################################################
@@ -39,6 +41,7 @@ class RocketFrigateClass :
         self.resistance = 0.99 # thrusters power
         self.can_be_hit = True
         self.chaseDecelerate = True
+        self.layer = 0
 
 
 #################################################
@@ -60,6 +63,7 @@ class MissileClass :
         self.chaseDecelerate = False
         self.fuel = 300
         self.can_be_hit = True
+        self.layer = 0
 
     def select_phase(self, current_fuel) :
         if current_fuel > self.fuel - 150 : 
@@ -82,7 +86,7 @@ class BulletClass :
 
     def __init__(self) :
         self.icon_name = None
-        self.size = 2
+        self.size = 3
         self.fuel = 100
         self.resistance = 1
         self.can_be_hit = False
@@ -90,6 +94,7 @@ class BulletClass :
         self.rotation_speed = 0
         self.maxAcc = 0 # thrusters power
         self.chaseDecelerate = False
+        self.layer = 0
 
 #################################################
 
@@ -104,7 +109,15 @@ class Stationary :
         self.maxV = 0  # Maximum speed
         self.rotation_speed = 0
         self.maxAcc = 0
+        self.layer = 0
 
+#################################################
+
+class Background( Stationary ) :
+
+    def __init__(self, icon_name, size = None) :
+        Stationary.__init__(self, icon_name, size)
+        self.layer = 5
 
         # self.maxV = 1  # Maximum speed
         # self.rotation_speed = 0.5

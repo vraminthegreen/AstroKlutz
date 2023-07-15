@@ -8,7 +8,8 @@ class Game:
     def __init__(self, input_handler):
         self.objects = []
         self.input_handler = input_handler
-        self.win = pygame.display.set_mode((1024, 768))
+        self.game_window = (1024,768)
+        self.win = pygame.display.set_mode(self.game_window)
         self.clock = pygame.time.Clock()
         self.focused = None
         self.time = 0
@@ -31,6 +32,9 @@ class Game:
     def get_focused( self ) :
         return self.focused
 
+    def set_focused(self, focused) :
+        self.focused = focused
+
     def get_collisions(self, pygame_rect ):
         collisions = []
         for obj in self.objects:
@@ -41,18 +45,41 @@ class Game:
     def get_time( self ) :
         return self.time
 
+    def pan_camera(self) :
+        if self.focused == None :
+            return
+        left = self.camera[0] - self.game_window[0]/2 + 100
+        right = self.camera[0] + self.game_window[0]/2 - 100
+        top = self.camera[1] + self.game_window[1]/2 - 100
+        bottom = self.camera[1] - self.game_window[1]/2 + 100
+
+        if self.focused.x < left :
+            self.camera[0] = self.focused.x + self.game_window[0]/2 - 100
+        elif self.focused.x > right :
+            self.camera[0] = self.focused.x - self.game_window[0]/2 + 100
+        if self.focused.y < bottom :
+            self.camera[1] = self.focused.y + self.game_window[1]/2 - 100
+        elif self.focused.y > top :
+            self.camera[1] = self.focused.y - self.game_window[1]/2 + 100
+
+
     def game_loop(self):
         running = True
+        self.camera = [0,0]
         while running:
             self.time += 1
             self.clock.tick(60)  # Limit the game loop to 60 frames per second
 
-            self.win.fill((0, 0, 0))
+            self.pan_camera()
+
+            # self.win.fill((0, 0, 0))
             if self.input_handler.handle_input() == False :
                 running = False
+            pan = (self.camera[0]-self.game_window[0]/2,self.camera[1]-self.game_window[1]/2)
+            panb = (self.camera[0]/5-self.game_window[0]/2,self.camera[1]/5-self.game_window[1]/2)
             for obj in self.objects:
                 obj.ticktack()
-                obj.repaint(self.win)
+                obj.repaint(self.win, pan, panb)
             if self.focused != None :
                 self.draw_select(self.focused, (0,255,0))
 

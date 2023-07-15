@@ -25,6 +25,7 @@ class StarObject :
         self.maxV = self.object_class.maxV
         self.rotation_speed = self.object_class.rotation_speed
         self.chaseDecelerate = self.object_class.chaseDecelerate
+        self.layer = self.object_class.layer
         #
         if self.object_class.icon_name != None :
             self.icon = IconRepository.get_icon(self.object_class.icon_name, self.get_size())
@@ -45,16 +46,20 @@ class StarObject :
         else :
             return self.icon
 
-    def repaint(self, win):
+    def repaint(self, win, camera_offset, camb):
+        if self.layer == 0 :
+            co = camera_offset
+        else :
+            co = camb
         if self.icon != None and self.animationFrame != None and self.animationOverlay :
             rotated_icon = pygame.transform.rotate(self.icon, self.dir)
-            new_rect = rotated_icon.get_rect(center=(self.x, self.y))
+            new_rect = rotated_icon.get_rect(center=(self.x - co[0], self.y - co[1]))
             win.blit(rotated_icon, new_rect.topleft)
         ico = self.get_icon()
         if ico == None :
             return
         rotated_icon = pygame.transform.rotate(ico, self.dir)
-        new_rect = rotated_icon.get_rect(center=(self.x, self.y))
+        new_rect = rotated_icon.get_rect(center=(self.x - co[0], self.y - co[1]))
         win.blit(rotated_icon, new_rect.topleft)
 
     def ticktack(self):

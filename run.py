@@ -10,7 +10,7 @@ from InputHandler import InputHandler
 from Missile import Missile
 from Team import Team
 from Pilot import Pilot, FighterPilot, RocketFrigatePilot
-from ShipClass import FighterClass, RocketFrigateClass, Stationary
+from ShipClass import FighterClass, RocketFrigateClass, Stationary, Background
 
 
 # Initialize Pygame
@@ -25,13 +25,14 @@ team_blue = Team( "blue", (0,0,255), 2 )
 team_green = Team( "green", (0,255,0), 3 )
 team_yellow = Team( "yellow", (255,255,0), 4 )
 
-background = StarObject(game, Stationary('background'), 100, 100)
+background = StarObject(game, Background('background'), 0, 0)
 game.add_object(background)
 
 
-player = Starship(game, team_green, FighterClass(), Pilot(game), 750, 50)
+player = Starship(game, team_green, FighterClass(), Pilot(game), -200, 200)
 game.add_object(player)
 input_handler.set_focus(player)
+game.set_focused(player)
 
 crippled_fighter = FighterClass()
 crippled_fighter.maxV = 1.5  # Maximum speed
@@ -39,9 +40,9 @@ crippled_fighter.rotation_speed = 0.3
 crippled_fighter.max_bullets = 3
 
 enemies = [
-    Starship(game, team_yellow, crippled_fighter, FighterPilot(game), 50, 550 ),
-    Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 50, 250 ),
-    Starship(game, team_blue, crippled_fighter, FighterPilot(game), 50, 50 )
+    Starship(game, team_yellow, crippled_fighter, FighterPilot(game), -350, -350 ),
+    Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
+    Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 )
 ]
 
 for enemy in enemies :
