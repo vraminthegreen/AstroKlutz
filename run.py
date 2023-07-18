@@ -30,8 +30,12 @@ team_yellow = Team( "yellow", (255,255,0), 4 )
 background = StarObject(game, Background('background'), 0, 0)
 game.add_object(background)
 
-
-player = Starship(game, team_green, FighterClass(), Pilot(game), -200, 200)
+player_class = FighterClass()
+player_class.maxV = 5
+player_class.rotation_speed = 3
+player_class.max_bullets = 15
+player_class.maxAcc = 0.5
+player = Starship(game, team_green, player_class, Pilot(game), -200, 200)
 game.add_object(player)
 input_handler.set_focus(player)
 game.set_focused(player)

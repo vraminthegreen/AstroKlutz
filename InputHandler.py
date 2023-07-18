@@ -26,6 +26,8 @@ class InputHandler:
             self.focus.accelerate()
         if keys[pygame.K_DOWN]:
             self.focus.decelerate()
+        if keys[pygame.K_z]:
+            self.game.toggle_zoom()
 
         running = True
 

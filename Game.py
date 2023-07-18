@@ -13,6 +13,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.focused = None
         self.time = 0
+        self.zoom = 1
+        self.target_zoom = 1
         self.animations = {
             'explosion' : AnimatedSprite( "explosion.png", 8, 6, 96, False ),
             'spark' : AnimatedSprite( "spark.png", 4, 4, 16, False ),
@@ -62,27 +64,69 @@ class Game:
         elif self.focused.y > top :
             self.camera[1] = self.focused.y - self.game_window[1]/2 + 100
 
+    def toggle_zoom(self) :
+        if(self.zoom == self.target_zoom) :
+            self.target_zoom = 1.5 - self.target_zoom
 
-    def game_loop(self):
+
+    def get_display_xy( self, x, y, layer ) :
+        if layer == 0 :
+            co = self.pan1
+        elif layer == 1 :
+            co = self.pan2
+        else :
+            co = self.pan3
+        return (x - co[0], y - co[1])
+
+    def get_visible_rectangle( self, layer ) :
+        if layer == 0 :
+            co = self.pan1
+            z = 1
+        elif layer == 1 :
+            co = self.pan2
+            z = 2.5
+        else :
+            co = self.pan3
+            z = 5
+        return pygame.Rect(co[0], co[1], self.game_window[0] * z, self.game_window[1] * z)
+
+    def game_loop( self ):
         running = True
         self.camera = [0,0]
         while running:
             self.time += 1
             self.clock.tick(60)  # Limit the game loop to 60 frames per second
+            zoom_speed = max(0.002,abs(self.zoom - self.target_zoom) / 10)
+
+            if self.zoom < self.target_zoom:
+                self.zoom += min(zoom_speed, self.target_zoom - self.zoom)
+            elif self.zoom > self.target_zoom:
+                self.zoom -= min(zoom_speed, self.zoom - self.target_zoom)
 
             self.pan_camera()
 
             # self.win.fill((0, 0, 0))
             if self.input_handler.handle_input() == False :
                 running = False
-            pan1 = (self.camera[0]-self.game_window[0]/2,self.camera[1]-self.game_window[1]/2)
-            pan2 = (self.camera[0]/2.5-self.game_window[0]/2,self.camera[1]/2.5-self.game_window[1]/2)
-            pan3 = (self.camera[0]/5-self.game_window[0]/2,self.camera[1]/5-self.game_window[1]/2)
+
+            # world_surface = pygame.Surface((self.game_window[0]/self.zoom,self.game_window[1]/self.zoom))  # The surface that represents the game world
+
+            self.pan1 = (self.camera[0]-self.game_window[0]/2,self.camera[1]-self.game_window[1]/2)
+            self.pan2 = (self.camera[0]/2.5-self.game_window[0]/2,self.camera[1]/2.5-self.game_window[1]/2)
+            self.pan3 = (self.camera[0]/5-self.game_window[0]/2,self.camera[1]/5-self.game_window[1]/2)
             for obj in self.objects:
                 obj.ticktack()
-                obj.repaint(self.win, pan1, pan2, pan3)
+                obj.repaint( self.win ) # span1, pan2, pan3)
+                # obj.repaint(world_surface, pan1, pan2, pan3 )
             if self.focused != None :
                 self.draw_select(self.focused, (0,255,0))
+
+
+            # Resize world_surface to achieve a zoom effect
+            # zoomed_surface = pygame.transform.smoothscale(world_surface, self.game_window)
+
+            # Then draw zoomed_surface onto self.win
+            # self.win.blit(zoomed_surface, (0, 0))
 
             pygame.display.flip()
 
