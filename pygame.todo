@@ -1,8 +1,6 @@
 pygame.todo
 
 
-- dust tempo mrugania / zakres kolorów
-- dust exit animation
 - dust entry animation
 - nebula się zoomuje powoli
 - zoom automatyczny żeby zawierały się wszystkie statki
@@ -77,3 +75,6 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
     + zachowanie dust przy panningu (2 poziom)
     + przywrócenie działania zoom - skalowanie ikon
     + zachowanie dust przy zoom
++ dust tempo mrugania / zakres kolorów
++ dust exit animation
+

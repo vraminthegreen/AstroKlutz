@@ -15,7 +15,7 @@ class Game:
         self.focused = None
         self.time = 0
         self.zoom = 0.5
-        self.target_zoom = 0.5
+        self.target_zoom = 1
         self.camera = [ 0, 0 ]
         self.animations = {
             'explosion' : AnimatedSprite( "explosion.png", 8, 6, 96, False ),
@@ -108,6 +108,7 @@ class Game:
 
     def toggle_zoom(self) :
         if(self.zoom == self.target_zoom) :
+            Dust.remove_dust(self)
             self.target_zoom = 1.5 - self.target_zoom
 
 
