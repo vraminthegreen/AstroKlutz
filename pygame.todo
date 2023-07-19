@@ -1,11 +1,21 @@
 pygame.todo
 
-- dust
-- zoom out / zoom in manualny
+
+- dust tempo mrugania / zakres kolorów
+- dust exit animation
+- dust entry animation
 - nebula się zoomuje powoli
 - zoom automatyczny żeby zawierały się wszystkie statki
-- move camery 
-- move camery automatyczny żeby zawierały się wszystkie statki
+- pauzowanie
+- kliknięcie tła dodaje target
+- backspace kasuje ostatni target
+- 1,2,3 - przełącza typ targetu (atak, ruch, patrol)
+- implementacja ruchu
+- implementacja ataku
+- implementacja patrolu
+- dodawanie do grupy przez kliknięcie
+- rozkazy dla grupy
+- wykonanie rozkazów grupy
 - implementacja animacji odrzutu (osobnej)
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
@@ -54,4 +64,16 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + nebula
 + paralaksa nebuli / kilka warstw
 + przejście na współrzędne dookoła zera + camera_offset
-
++ dust
++ move camery 
++ move camery automatyczny żeby zawierały się wszystkie statki
++ zoom out / zoom in manualny
++ przejście na zoom liczony samodzielnie
+    + odwrócenie obliczenia
+    + przywrócenie działania zoom - dla współrzędnych
+    + przywrócenie działania pan
+    + zoom wpływa na zakres (widoczne okno)
+    + pan przy zoomie
+    + zachowanie dust przy panningu (2 poziom)
+    + przywrócenie działania zoom - skalowanie ikon
+    + zachowanie dust przy zoom

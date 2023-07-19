@@ -48,6 +48,37 @@ class StarObject :
 
     def repaint(self, win):
         if self.icon != None and self.animationFrame != None and self.animationOverlay :
+            # Scale the icon
+            scale_x, scale_y = self.icon.get_size()
+            scale_x = int(scale_x * self.game.zoom)
+            scale_y = int(scale_y * self.game.zoom)
+            scaled_icon = pygame.transform.scale(self.icon, (scale_x, scale_y))
+            
+            # Rotate the scaled icon
+            rotated_icon = pygame.transform.rotate(scaled_icon, self.dir)
+            
+            new_rect = rotated_icon.get_rect( center = self.game.get_display_xy(self.x, self.y, self.layer) )
+            win.blit(rotated_icon, new_rect.topleft)
+
+        ico = self.get_icon()
+        if ico == None :
+            return
+
+        # Scale the icon
+        scale_x, scale_y = ico.get_size()
+        scale_x = int(scale_x * self.game.zoom)
+        scale_y = int(scale_y * self.game.zoom)
+        scaled_icon = pygame.transform.scale(ico, (scale_x, scale_y))
+
+        # Rotate the scaled icon
+        rotated_icon = pygame.transform.rotate(scaled_icon, self.dir)
+
+        new_rect = rotated_icon.get_rect( center = self.game.get_display_xy(self.x, self.y, self.layer) )
+        win.blit(rotated_icon, new_rect.topleft)
+
+
+    def repaint_old(self, win):
+        if self.icon != None and self.animationFrame != None and self.animationOverlay :
             rotated_icon = pygame.transform.rotate(self.icon, self.dir)
             # new_rect = rotated_icon.get_rect(center=(self.x - co[0], self.y - co[1]))
             new_rect = rotated_icon.get_rect( center = self.game.get_display_xy(self.x, self.y, self.layer) )

@@ -40,24 +40,22 @@ game.add_object(player)
 input_handler.set_focus(player)
 game.set_focused(player)
 
+Dust.make_dust(game)
+
 crippled_fighter = FighterClass()
 crippled_fighter.maxV = 1.5  # Maximum speed
 crippled_fighter.rotation_speed = 0.3
 crippled_fighter.max_bullets = 3
 
 enemies = [
-    Starship(game, team_yellow, crippled_fighter, FighterPilot(game), -350, -350 ),
-    Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
-    Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 )
+    # Starship(game, team_yellow, crippled_fighter, FighterPilot(game), -350, -350 ),
+    # Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
+    # Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 )
 ]
 
 for enemy in enemies :
     enemy.set_enemy(player)
     game.add_object(enemy)
-
-for i in range(0,50) :
-    game.add_object(Dust(game, random.randint(-1024/2,1024/2), random.randint(-768/2,768/2)))
-
 
 # Missile.fire(game)
 

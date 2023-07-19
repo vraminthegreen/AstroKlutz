@@ -3,6 +3,7 @@ import os
 import math
 
 from AnimatedSprite import AnimatedSprite
+from Dust import Dust
 
 class Game:
     def __init__(self, input_handler):
@@ -13,8 +14,9 @@ class Game:
         self.clock = pygame.time.Clock()
         self.focused = None
         self.time = 0
-        self.zoom = 1
-        self.target_zoom = 1
+        self.zoom = 0.5
+        self.target_zoom = 0.5
+        self.camera = [ 0, 0 ]
         self.animations = {
             'explosion' : AnimatedSprite( "explosion.png", 8, 6, 96, False ),
             'spark' : AnimatedSprite( "spark.png", 4, 4, 16, False ),
@@ -47,22 +49,62 @@ class Game:
     def get_time( self ) :
         return self.time
 
+    def get_visible_rectangle( self, layer ) :
+        if layer == 0 :
+            z = 1
+        elif layer == 1 :
+            z = 2.5
+        else :
+            z = 5
+        width = self.game_window[0] * z / self.zoom
+        height = self.game_window[1] * z / self.zoom
+        rect = pygame.Rect(0, 0, width, height)
+        rect.center = self.camera
+        return rect
+
+    def compute_pans(self) :
+        self.pan1 = (
+            self.camera[0]-self.game_window[0]/2/self.zoom,
+            self.camera[1]-self.game_window[1]/2/self.zoom )
+        self.pan2 = (
+            self.camera[0]/2.5/self.zoom-self.game_window[0]/2/2.5/self.zoom,
+            self.camera[1]/2.5/self.zoom-self.game_window[1]/2/2.5/self.zoom)
+        self.pan3 = (self.camera[0]/5-self.game_window[0]/2/self.zoom,self.camera[1]/5-self.game_window[1]/2/self.zoom)
+
     def pan_camera(self) :
         if self.focused == None :
             return
-        left = self.camera[0] - self.game_window[0]/2 + 100
-        right = self.camera[0] + self.game_window[0]/2 - 100
-        top = self.camera[1] + self.game_window[1]/2 - 100
-        bottom = self.camera[1] - self.game_window[1]/2 + 100
+        rect = self.get_visible_rectangle( 0 )
+        rect.inflate_ip( -200, -200 )
 
-        if self.focused.x < left :
-            self.camera[0] = self.focused.x + self.game_window[0]/2 - 100
-        elif self.focused.x > right :
-            self.camera[0] = self.focused.x - self.game_window[0]/2 + 100
-        if self.focused.y < bottom :
-            self.camera[1] = self.focused.y + self.game_window[1]/2 - 100
-        elif self.focused.y > top :
-            self.camera[1] = self.focused.y - self.game_window[1]/2 + 100
+        # if not rect.collidepoint( self.focused.x, self.focused.y ) :
+        #     print(f'--------------------------')
+        #     print(f'visible_rectangle> left: {rect.left}, right: {rect.right}, top: {rect.top}, bottom: {rect.bottom}')
+        #     print(f'focused: ({self.focused.x},{self.focused.y}) ')
+        #     fd = self.get_display_xy( self.focused.x, self.focused.y, 0 )
+        #     print(f'focused-display: ({fd[0]},{fd[1]}) ')            
+        #     print(f'camera: ({self.camera[0]},{self.camera[1]})')
+        #     print(f'pan1: ({self.pan1[0]},{self.pan1[1]})')
+        #     print(f'zoom: {self.zoom}')
+
+        recompute_pans = False
+        if self.focused.x < rect.left :
+            self.camera[0] = self.focused.x - 100 + self.game_window[0]/2/self.zoom
+            recompute_pans = True
+        elif self.focused.x > rect.right :
+            self.camera[0] = self.focused.x + 100 - self.game_window[0]/2/self.zoom
+            recompute_pans = True
+        if self.focused.y < rect.top :
+            self.camera[1] = self.focused.y - 100 + self.game_window[1]/2/self.zoom
+            recompute_pans = True
+        elif self.focused.y > rect.bottom :
+            self.camera[1] = self.focused.y + 100 - self.game_window[1]/2/self.zoom
+            recompute_pans = True
+        if recompute_pans :
+            # print(f'camera after: ({self.camera[0]},{self.camera[1]})')
+            # print(f'~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+            self.compute_pans()
+
 
     def toggle_zoom(self) :
         if(self.zoom == self.target_zoom) :
@@ -71,28 +113,20 @@ class Game:
 
     def get_display_xy( self, x, y, layer ) :
         if layer == 0 :
-            co = self.pan1
+            xy_rel_camera = ( x - self.camera[0], y - self.camera[1] )
+            xy_from_layer = xy_rel_camera
+            xy_from_zoom = ( self.zoom * xy_from_layer[0], self.zoom * xy_from_layer[1] )
+            return (self.game_window[0] / 2 + xy_from_zoom[0], self.game_window[1] / 2 + xy_from_zoom[1])
         elif layer == 1 :
-            co = self.pan2
+            xy_rel_camera = ( x - self.camera[0], y - self.camera[1] )
+            xy_from_layer = ( xy_rel_camera[0] / 2.5, xy_rel_camera[1] / 2.5 )
+            xy_from_zoom = ( self.zoom * xy_from_layer[0], self.zoom * xy_from_layer[1] )
+            return (self.game_window[0] / 2 + xy_from_zoom[0], self.game_window[1] / 2 + xy_from_zoom[1])
         else :
-            co = self.pan3
-        return (x - co[0], y - co[1])
-
-    def get_visible_rectangle( self, layer ) :
-        if layer == 0 :
-            co = self.pan1
-            z = 1
-        elif layer == 1 :
-            co = self.pan2
-            z = 2.5
-        else :
-            co = self.pan3
-            z = 5
-        return pygame.Rect(co[0], co[1], self.game_window[0] * z, self.game_window[1] * z)
+            return (self.zoom*(x - self.pan3[0]), self.zoom*(y - self.pan3[1]))
 
     def game_loop( self ):
         running = True
-        self.camera = [0,0]
         while running:
             self.time += 1
             self.clock.tick(60)  # Limit the game loop to 60 frames per second
@@ -100,20 +134,26 @@ class Game:
 
             if self.zoom < self.target_zoom:
                 self.zoom += min(zoom_speed, self.target_zoom - self.zoom)
+                if self.zoom == self.target_zoom :
+                    Dust.make_dust(self)
+                    print(f'current zoom: {self.zoom}')
             elif self.zoom > self.target_zoom:
                 self.zoom -= min(zoom_speed, self.zoom - self.target_zoom)
-
-            self.pan_camera()
+                if self.zoom == self.target_zoom :
+                    Dust.make_dust(self)
+                    print(f'current zoom: {self.zoom}')
 
             # self.win.fill((0, 0, 0))
             if self.input_handler.handle_input() == False :
                 running = False
 
+
             # world_surface = pygame.Surface((self.game_window[0]/self.zoom,self.game_window[1]/self.zoom))  # The surface that represents the game world
 
-            self.pan1 = (self.camera[0]-self.game_window[0]/2,self.camera[1]-self.game_window[1]/2)
-            self.pan2 = (self.camera[0]/2.5-self.game_window[0]/2,self.camera[1]/2.5-self.game_window[1]/2)
-            self.pan3 = (self.camera[0]/5-self.game_window[0]/2,self.camera[1]/5-self.game_window[1]/2)
+            self.compute_pans()
+
+            self.pan_camera()
+
             for obj in self.objects:
                 obj.ticktack()
                 obj.repaint( self.win ) # span1, pan2, pan3)
