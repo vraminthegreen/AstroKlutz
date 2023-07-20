@@ -33,6 +33,7 @@ class StarObject :
                 self.size = max(*self.icon.get_size())
         else :
             self.icon = None
+        self.is_important = False
 
     def get_size( self ) :
         return self.size

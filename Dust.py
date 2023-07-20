@@ -11,9 +11,9 @@ class Dust ( StarObject ) :
 
     existing_dust = []
 
-    def __init__(self, game ):
+    def __init__(self, game, zoom ):
         layer = random.randint(0,1)
-        rect = game.get_visible_rectangle( layer )
+        rect = game.get_visible_rectangle( layer, zoom )
         x = random.randint(rect.left, rect.right)
         y = random.randint(rect.top, rect.bottom)
         StarObject.__init__( self, game, DustClass(), x, y )
@@ -26,7 +26,7 @@ class Dust ( StarObject ) :
         self.remove_timer = None
 
     def repaint( self, win ) :
-        rect = self.game.get_visible_rectangle( self.layer )
+        rect = self.game.get_visible_rectangle( self.layer, self.game.target_zoom )
         if self.x < rect.left :
             self.x = rect.right
             self.y = random.randint(rect.top, rect.bottom)
@@ -80,9 +80,9 @@ class Dust ( StarObject ) :
         Dust.existing_dust = []
 
     @staticmethod
-    def make_dust(game) :
+    def make_dust(game, zoom) :
         for i in range(0,50) :
-            Dust.existing_dust.append( Dust(game) )
+            Dust.existing_dust.append( Dust(game, zoom) )
         for dust in Dust.existing_dust :
             game.add_object( dust )
         print(f'object count (after): {len(game.objects)}')

@@ -49,15 +49,19 @@ class Game:
     def get_time( self ) :
         return self.time
 
-    def get_visible_rectangle( self, layer ) :
+    def get_visible_rectangle( self, layer, zoom = None ) :
+        if zoom == None :
+            zz = self.zoom
+        else :
+            zz = zoom
         if layer == 0 :
             z = 1
         elif layer == 1 :
             z = 2.5
         else :
             z = 5
-        width = self.game_window[0] * z / self.zoom
-        height = self.game_window[1] * z / self.zoom
+        width = self.game_window[0] * z / zz
+        height = self.game_window[1] * z / zz
         rect = pygame.Rect(0, 0, width, height)
         rect.center = self.camera
         return rect
@@ -71,11 +75,11 @@ class Game:
             self.camera[1]/2.5/self.zoom-self.game_window[1]/2/2.5/self.zoom)
         self.pan3 = (self.camera[0]/5-self.game_window[0]/2/self.zoom,self.camera[1]/5-self.game_window[1]/2/self.zoom)
 
-    def pan_camera(self) :
+    def pan_camera(self, bounding_rect) :
         if self.focused == None :
             return
-        rect = self.get_visible_rectangle( 0 )
-        rect.inflate_ip( -200, -200 )
+        rect = self.get_visible_rectangle( 0, self.target_zoom )
+        srect = rect.inflate( -200, -200 )
 
         # if not rect.collidepoint( self.focused.x, self.focused.y ) :
         #     print(f'--------------------------')
@@ -88,18 +92,31 @@ class Game:
         #     print(f'zoom: {self.zoom}')
 
         recompute_pans = False
-        if self.focused.x < rect.left :
+        if self.focused.x < srect.left :
             self.camera[0] = self.focused.x - 100 + self.game_window[0]/2/self.zoom
             recompute_pans = True
-        elif self.focused.x > rect.right :
+        elif self.focused.x > srect.right :
             self.camera[0] = self.focused.x + 100 - self.game_window[0]/2/self.zoom
             recompute_pans = True
-        if self.focused.y < rect.top :
+        if self.focused.y < srect.top :
             self.camera[1] = self.focused.y - 100 + self.game_window[1]/2/self.zoom
             recompute_pans = True
-        elif self.focused.y > rect.bottom :
+        elif self.focused.y > srect.bottom :
             self.camera[1] = self.focused.y + 100 - self.game_window[1]/2/self.zoom
             recompute_pans = True
+        if not recompute_pans :
+            if bounding_rect.left < rect.left :
+                self.camera[0] -= max((rect.left-bounding_rect.left)/20,1)
+                recompute_pans = True
+            elif bounding_rect.right > rect.right :
+                self.camera[0] += max((bounding_rect.right-rect.right)/20,1)
+                recompute_pans = True
+            if bounding_rect.top < rect.top :
+                self.camera[1] -= max((rect.top-bounding_rect.top)/20,1)
+                recompute_pans = True
+            elif bounding_rect.bottom > rect.bottom :
+                self.camera[1] += max((rect.bottom-bounding_rect.bottom)/20,1)
+                recompute_pans = True
         if recompute_pans :
             # print(f'camera after: ({self.camera[0]},{self.camera[1]})')
             # print(f'~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
@@ -109,8 +126,8 @@ class Game:
     def toggle_zoom(self) :
         if(self.zoom == self.target_zoom) :
             Dust.remove_dust(self)
-            Dust.make_dust(self)
             self.target_zoom = 1.5 - self.target_zoom
+            Dust.make_dust(self, self.target_zoom)
 
 
     def get_display_xy( self, x, y, layer ) :
@@ -127,12 +144,42 @@ class Game:
         else :
             return (self.zoom*(x - self.pan3[0]), self.zoom*(y - self.pan3[1]))
 
+    def compute_bounding_rect(self) :
+        important_objects = [obj for obj in self.objects if obj.is_important]
+
+        if not important_objects:
+            return None  # Return None if there are no important objects
+
+        # Initialize the bounding rectangle with the first object's rectangle
+        bounding_rect = important_objects[0].get_rect()
+
+        # Expand the bounding rectangle to include all other important objects
+        for obj in important_objects[1:]:
+            bounding_rect.union_ip(obj.get_rect())
+
+        return bounding_rect
+
+
     def game_loop( self ):
         running = True
         while running:
             self.time += 1
             self.clock.tick(60)  # Limit the game loop to 60 frames per second
-            zoom_speed = max(0.002,abs(self.zoom - self.target_zoom) / 10)
+
+            bounding_rect = self.compute_bounding_rect()
+
+            if self.zoom == self.target_zoom :
+
+                if self.zoom == 1 :
+                    br = self.get_visible_rectangle(0)
+                    if bounding_rect.width > br.width or bounding_rect.height > br.height :
+                        self.toggle_zoom()
+                elif self.zoom == 0.5 :
+                    br = self.get_visible_rectangle(0, 1)
+                    if bounding_rect.width < br.width and bounding_rect.height < br.height :
+                        self.toggle_zoom()
+
+            zoom_speed = max(0.002,abs(self.zoom - self.target_zoom) / 15)
 
             if self.zoom < self.target_zoom:
                 self.zoom += min(zoom_speed, self.target_zoom - self.zoom)
@@ -152,7 +199,7 @@ class Game:
 
             self.compute_pans()
 
-            self.pan_camera()
+            self.pan_camera(bounding_rect)
 
             for obj in self.objects:
                 obj.ticktack()
