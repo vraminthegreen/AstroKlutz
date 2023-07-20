@@ -1,10 +1,11 @@
 pygame.todo
 
-
-- dust entry animation
-- nebula się zoomuje powoli
+- dust - generowanie dust dla docelowego rozmiaru pola (zoomu)
 - zoom automatyczny żeby zawierały się wszystkie statki
+- wypuszczenie wersji
 - pauzowanie
+- poprawka odrysowywania faocusa
+- zaznaczanie statków / focus (swój, obcy)
 - kliknięcie tła dodaje target
 - backspace kasuje ostatni target
 - 1,2,3 - przełącza typ targetu (atak, ruch, patrol)
@@ -77,4 +78,6 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
     + zachowanie dust przy zoom
 + dust tempo mrugania / zakres kolorów
 + dust exit animation
++ dust entry animation
++ nebula się zoomuje powoli
 

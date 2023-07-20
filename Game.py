@@ -109,6 +109,7 @@ class Game:
     def toggle_zoom(self) :
         if(self.zoom == self.target_zoom) :
             Dust.remove_dust(self)
+            Dust.make_dust(self)
             self.target_zoom = 1.5 - self.target_zoom
 
 
@@ -136,12 +137,10 @@ class Game:
             if self.zoom < self.target_zoom:
                 self.zoom += min(zoom_speed, self.target_zoom - self.zoom)
                 if self.zoom == self.target_zoom :
-                    Dust.make_dust(self)
                     print(f'current zoom: {self.zoom}')
             elif self.zoom > self.target_zoom:
                 self.zoom -= min(zoom_speed, self.zoom - self.target_zoom)
                 if self.zoom == self.target_zoom :
-                    Dust.make_dust(self)
                     print(f'current zoom: {self.zoom}')
 
             # self.win.fill((0, 0, 0))

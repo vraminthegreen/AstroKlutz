@@ -21,7 +21,9 @@ class Dust ( StarObject ) :
         self.size = random.randint(1,4)
         self.new_color()
         self.color_tempo = random.randint(1,20)
-        self.remove_animation = None
+        self.brightness = 0
+        self.target_brightness = 1
+        self.remove_timer = None
 
     def repaint( self, win ) :
         rect = self.game.get_visible_rectangle( self.layer )
@@ -39,13 +41,10 @@ class Dust ( StarObject ) :
             self.y = rect.bottom
         center = self.game.get_display_xy(self.x, self.y, self.layer)
 
-        if self.remove_animation != None :
-            col = (self.color[0] * self.remove_animation / 100,
-                self.color[1] * self.remove_animation / 100,
-                self.color[2] * self.remove_animation / 100)
-        else :
-            col = self.color
-
+        col = (
+            self.color[0] * self.brightness,
+            self.color[1] * self.brightness,
+            self.color[2] * self.brightness)
 
         pygame.draw.rect(win, col, pygame.Rect(center[0], center[1], self.size, self.size))
 
@@ -53,19 +52,24 @@ class Dust ( StarObject ) :
         self.color = (100, random.randint(150,255), random.randint(200,250))
 
     def ticktack(self) :
-        # pokazać z drugiej strony ekranu
-        if self.remove_animation != None :
-            if self.remove_animation <= 0 :
+        if self.brightness < self.target_brightness :
+            self.brightness = min(self.brightness + 0.03, 1)
+        elif self.brightness > self.target_brightness :
+            self.brightness = max(self.brightness - 0.03, 0)
+        if self.remove_timer != None :
+            if self.remove_timer <= 0 :
                 self.game.remove_object( self )
                 return
             else :
-                self.remove_animation = max(0, self.remove_animation - 3);
+                self.remove_timer -= 1
         if self.game.get_time() % self.color_tempo == 0 :
             self.new_color()
         super().ticktack()
 
     def remove(self) :
-        self.remove_animation = 100;
+        if self.remove_timer == None :
+            self.remove_timer = 30;
+            self.target_brightness = 0
 
     @staticmethod
     def remove_dust(game) :

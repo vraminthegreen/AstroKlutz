@@ -13,6 +13,7 @@ from Dust import Dust
 from Team import Team
 from Pilot import Pilot, FighterPilot, RocketFrigatePilot
 from ShipClass import FighterClass, RocketFrigateClass, Stationary, Background
+from DistantObject import DistantObject
 
 
 # Initialize Pygame
@@ -27,7 +28,7 @@ team_blue = Team( "blue", (0,0,255), 2 )
 team_green = Team( "green", (0,255,0), 3 )
 team_yellow = Team( "yellow", (255,255,0), 4 )
 
-background = StarObject(game, Background('background'), 0, 0)
+background = DistantObject(game, Background('background'), 0, 0)
 game.add_object(background)
 
 player_class = FighterClass()
