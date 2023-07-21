@@ -18,9 +18,6 @@ class InputHandler:
         self.game = game
 
     def handle_input(self):
-        print(f'handle_input {self.counter} {self.last_key + 20} ')
-        if self.counter > self.last_key + 20 :
-            print("carency passed")
         self.counter += 1
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:

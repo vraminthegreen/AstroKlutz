@@ -1,6 +1,5 @@
 pygame.todo
 
-- poprawka odrysowywania focusa
 - zaznaczanie statków / focus (swój, obcy)
 - kliknięcie tła dodaje target
 - backspace kasuje ostatni target
@@ -86,4 +85,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + pan automatyczny
 + wypuszczenie wersji
 + pauzowanie
++ poprawka odrysowywania focusa
 

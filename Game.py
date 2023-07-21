@@ -149,6 +149,18 @@ class Game:
         else :
             return (self.zoom*(x - self.pan3[0]), self.zoom*(y - self.pan3[1]))
 
+    def get_display_rect( self, rect, layer ) :
+        (left, top) = self.get_display_xy( rect.left, rect.top, layer )
+        if layer == 0 :
+            layer_factor = 1
+        elif layer == 1 :
+            layer_factor = 2.5
+        else :
+            layer_factor = 5
+        width = rect.width * self.zoom / layer_factor
+        height = rect.height * self.zoom / layer_factor
+        return pygame.Rect( left, top, width, height )
+
     def compute_bounding_rect(self) :
         important_objects = [obj for obj in self.objects if obj.is_important]
 
@@ -227,7 +239,7 @@ class Game:
 
     def draw_select(self, obj, color):
         # Get the object's rectangle and create a larger rectangle
-        obj_rect = obj.get_rect()
+        obj_rect = self.get_display_rect( obj.get_rect(), 0 )
         select_rect = obj_rect.inflate(10, 10)  # Increase size by 5 pixels in each direction
         # Compute the transparency based on the current time
         transparency = int((math.sin(self.get_time()/15) + 1) / 2 * 255)  # Scale to range 0-255
