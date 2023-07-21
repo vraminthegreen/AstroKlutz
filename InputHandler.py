@@ -42,9 +42,11 @@ class InputHandler:
                 if  event.button == 1 :
                     x, y = pygame.mouse.get_pos()
                     game_coords = self.game.get_xy_display( x, y )
-                    star_object = StarObject(self.game, Stationary('target', 48), game_coords[0], game_coords[1] )
-                    self.game.add_object(star_object)
-                    self.focus.set_order(star_object)
+                    objects_here = self.game.get_collisions(pygame.Rect(*game_coords,1,1))
+                    objects_selectable = [ obj for obj in objects_here if obj.is_selectable ]
+                    print(f'objects_here: {len(objects_here)}, objects_selectable: {len(objects_selectable)}')
+                    if len(objects_selectable) > 0 :
+                        self.game.set_focused( objects_selectable[0] )
                 elif event.button == 3 :
                     x, y = pygame.mouse.get_pos()
                     game_coords = self.game.get_xy_display( x, y )

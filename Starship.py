@@ -27,6 +27,7 @@ class Starship ( StarObject ) :
         self.dead = False
         self.shield_active = False
         self.is_important = True
+        self.is_selectable = True
 
     def command( self, cmd ) :
         if cmd == 'a' :

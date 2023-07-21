@@ -1,12 +1,24 @@
 pygame.todo
 
-- zaznaczanie statków / focus (swój, obcy)
-- kliknięcie tła dodaje target
+- menu: grafiki
+- menu: boilerplate (z callbackami)
+- menu: wyświetlanie dla x, y, zoom, spread
+- menu: animacja początkowa
+- menu: animacja podświetlenia
+- menu: animacja odświetlenia
+- menu: animacja kliknięcia
+- menu dla targetu (tło): atak, ruch, target
+- podpięcie menu dla targetu
+- menu dla statku wrogiego: atak, ucieczka
+- podpięcie menu dla statku wrogiego
+- menu dla statku przyjacielskiego: follow, guard
+- podpięcie menu dla statku przyjacielskiego
 - backspace kasuje ostatni target
 - 1,2,3 - przełącza typ targetu (atak, ruch, patrol)
 - implementacja ruchu
 - implementacja ataku
 - implementacja patrolu
+- implementacja innych funkcji
 - dodawanie do grupy przez kliknięcie
 - rozkazy dla grupy
 - wykonanie rozkazów grupy
@@ -87,4 +99,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + pauzowanie
 + poprawka odrysowywania focusa
 + naprawienie współrzędnych target
++ zaznaczanie statków / focus (swój, obcy)
 

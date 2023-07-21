@@ -135,7 +135,6 @@ class Game:
         print('Toggle pause')
         self.paused = not self.paused
 
-
     def get_display_xy( self, x, y, layer ) :
         "given game coords, give display coords"
         if layer == 0 :

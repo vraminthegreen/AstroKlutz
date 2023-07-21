@@ -35,6 +35,7 @@ class StarObject :
             self.icon = None
         self.is_important = False
         self.may_be_paused = True
+        self.is_selectable = False
 
     def get_size( self ) :
         return self.size
