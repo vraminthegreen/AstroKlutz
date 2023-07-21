@@ -39,10 +39,18 @@ class InputHandler:
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()
-                star_object = StarObject(self.game, Stationary('target', 48), x, y )
-                self.game.add_object(star_object)
-                self.focus.set_order(star_object)
+                if  event.button == 1 :
+                    x, y = pygame.mouse.get_pos()
+                    game_coords = self.game.get_xy_display( x, y )
+                    star_object = StarObject(self.game, Stationary('target', 48), game_coords[0], game_coords[1] )
+                    self.game.add_object(star_object)
+                    self.focus.set_order(star_object)
+                elif event.button == 3 :
+                    x, y = pygame.mouse.get_pos()
+                    game_coords = self.game.get_xy_display( x, y )
+                    star_object = StarObject(self.game, Stationary('target', 48), game_coords[0], game_coords[1] )
+                    self.game.add_object(star_object)
+                    self.focus.set_order(star_object)
             elif event.type == pygame.KEYDOWN:
                 if event.unicode.isalnum() or event.unicode == ' ':
                     self.focus.command(event.unicode)

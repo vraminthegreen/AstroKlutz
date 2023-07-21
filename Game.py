@@ -6,6 +6,7 @@ from AnimatedSprite import AnimatedSprite
 from Dust import Dust
 
 class Game:
+
     def __init__(self, input_handler):
         self.objects = []
         self.input_handler = input_handler
@@ -136,6 +137,7 @@ class Game:
 
 
     def get_display_xy( self, x, y, layer ) :
+        "given game coords, give display coords"
         if layer == 0 :
             xy_rel_camera = ( x - self.camera[0], y - self.camera[1] )
             xy_from_layer = xy_rel_camera
@@ -148,6 +150,13 @@ class Game:
             return (self.game_window[0] / 2 + xy_from_zoom[0], self.game_window[1] / 2 + xy_from_zoom[1])
         else :
             return (self.zoom*(x - self.pan3[0]), self.zoom*(y - self.pan3[1]))
+
+    def get_xy_display( self, x, y ) :
+        "given display coords, give game coords (in layer 0)"
+        return (
+            x - self.game_window[0] / 2 / self.zoom + self.camera[0],
+            y - self.game_window[1] / 2 / self.zoom + self.camera[1] 
+        )
 
     def get_display_rect( self, rect, layer ) :
         (left, top) = self.get_display_xy( rect.left, rect.top, layer )
