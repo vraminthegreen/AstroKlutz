@@ -1,9 +1,5 @@
 pygame.todo
 
-- wybór panu
-- pan automatyczny
-- wypuszczenie wersji
-- pauzowanie
 - poprawka odrysowywania focusa
 - zaznaczanie statków / focus (swój, obcy)
 - kliknięcie tła dodaje target
@@ -86,4 +82,8 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + dust - generowanie dust dla docelowego rozmiaru pola (zoomu)
 + obliczenie bounding rect dla statków
 + zoom automatyczny żeby zawierały się wszystkie statki: wybór zoomu
++ wybór panu
++ pan automatyczny
++ wypuszczenie wersji
++ pauzowanie
 

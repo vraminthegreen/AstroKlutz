@@ -22,6 +22,7 @@ class Game:
             'spark' : AnimatedSprite( "spark.png", 4, 4, 16, False ),
             'shield' : AnimatedSprite( "shield.png", 5, 5, 96, True ),
         }
+        self.paused = False
 
     def add_object(self, obj):
         if self.focused == None :
@@ -129,6 +130,10 @@ class Game:
             self.target_zoom = 1.5 - self.target_zoom
             Dust.make_dust(self, self.target_zoom)
 
+    def toggle_pause(self) :
+        print('Toggle pause')
+        self.paused = not self.paused
+
 
     def get_display_xy( self, x, y, layer ) :
         if layer == 0 :
@@ -202,7 +207,8 @@ class Game:
             self.pan_camera(bounding_rect)
 
             for obj in self.objects:
-                obj.ticktack()
+                if not self.paused and obj.may_be_paused :
+                    obj.ticktack()
                 obj.repaint( self.win ) # span1, pan2, pan3)
                 # obj.repaint(world_surface, pan1, pan2, pan3 )
             if self.focused != None :

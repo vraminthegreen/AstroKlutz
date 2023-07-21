@@ -8,7 +8,8 @@ from ShipClass import Stationary
 class InputHandler:
 
     def __init__(self):
-        pass
+        self.last_key = 0
+        self.counter = 0
 
     def set_focus(self, focus) :
         self.focus = focus
@@ -17,6 +18,10 @@ class InputHandler:
         self.game = game
 
     def handle_input(self):
+        print(f'handle_input {self.counter} {self.last_key + 20} ')
+        if self.counter > self.last_key + 20 :
+            print("carency passed")
+        self.counter += 1
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             self.focus.rotateRight()
@@ -26,8 +31,12 @@ class InputHandler:
             self.focus.accelerate()
         if keys[pygame.K_DOWN]:
             self.focus.decelerate()
-        if keys[pygame.K_z]:
+        if keys[pygame.K_z] and self.counter > self.last_key + 20 :
             self.game.toggle_zoom()
+            self.last_key = self.counter
+        if keys[pygame.K_p] and self.counter > self.last_key + 20 :
+            self.game.toggle_pause()
+            self.last_key = self.counter
 
         running = True
 
