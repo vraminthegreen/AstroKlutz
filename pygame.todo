@@ -1,6 +1,8 @@
 pygame.todo
 
-- menu: animacja kliknięcia
+- kliknięcie powoduje ustawienie fokusu, i kliknięcia są już przekazywane do obiektu w fokusie
+- kliknięcie pod statkiem na tle powoduje otwarcie menu i ustawienie focusa na menu (focus stosowy)
+- esc powoduje usunięcie ostatniego elementu ze stosu focusów
 - podpięcie menu dla targetu
 - menu dla statku wrogiego: atak, ucieczka
 - podpięcie menu dla statku wrogiego
@@ -100,4 +102,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + menu: animacja podświetlenia
 + menu: animacja odświetlenia
 + menu dla targetu (tło): atak, ruch, target
++ menu: animacja kliknięcia
 
