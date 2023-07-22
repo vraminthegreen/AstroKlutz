@@ -1,6 +1,5 @@
 pygame.todo
 
-- menu: animacja początkowa
 - menu: animacja podświetlenia
 - menu: animacja odświetlenia
 - menu: animacja kliknięcia
@@ -100,4 +99,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + menu: grafiki
 + menu: boilerplate (z callbackami)
 + menu: wyświetlanie dla x, y, zoom, spread
++ menu: animacja początkowa
 

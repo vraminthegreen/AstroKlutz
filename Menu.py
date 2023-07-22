@@ -2,8 +2,8 @@
 import pygame
 import math
 
+from Game import Game
 from StarObject import StarObject
-
 from ShipClass import Stationary
 from AnimatedSprite import AnimatedSprite
 
@@ -25,7 +25,6 @@ class MenuItem :
 
     def get_frame( self, focused ) :
         frameno = self.selected if focused else self.not_selected
-        print(f'Item.get_frame: {frameno}')
         return self.icon.get_frame( frameno )
 
 #################################################
@@ -45,8 +44,9 @@ class Menu( StarObject ) :
     def repaint(self, win ):
         if not self.visible : 
             return
-        self.repaint_engine(win, 1.0, 45)
-
+        self.current_zoom = Game.approach_value( self.current_zoom, 1, 4 )
+        self.current_angle = Game.approach_value( self.current_angle, 45, 6 )
+        self.repaint_engine(win, self.current_zoom, self.current_angle )
 
     def repaint_engine(self, win, zoom=1.0, angle_increment=30):
         num_items = len(self.menu_items)
@@ -66,13 +66,17 @@ class Menu( StarObject ) :
             item_y = yy + radius * math.sin(angle)
 
             # Draw the menu item's icon at the calculated position
-            print("calling item.get_frame")
             icon = item.get_frame( item == self.focused )
 
             icon = pygame.transform.scale(icon, (int(icon.get_width() * zoom), int(icon.get_height() * zoom))) # Scale the icon based on the zoom factor
             icon_rect = icon.get_rect(center=(item_x, item_y))
             win.blit(icon, icon_rect.topleft)
 
+    def show_at(self, x, y) :
+        self.set_pos(x, y)
+        self.visible = True
+        self.current_zoom = 0
+        self.current_angle = 0
 
     @staticmethod
     def selected( menu_item ) :
@@ -92,7 +96,6 @@ class Menu( StarObject ) :
                 ]
             )
             Menu.menus['target'] = menu
-        menu.set_pos(x, y)
-        menu.visible = True
+        menu.show_at(x, y)
         return menu
 

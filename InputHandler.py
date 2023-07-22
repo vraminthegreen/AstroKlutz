@@ -47,7 +47,6 @@ class InputHandler:
                     game_coords = self.game.get_xy_display( x, y )
                     objects_here = self.game.get_collisions(pygame.Rect(*game_coords,1,1))
                     objects_selectable = [ obj for obj in objects_here if obj.is_selectable ]
-                    print(f'objects_here: {len(objects_here)}, objects_selectable: {len(objects_selectable)}')
                     if len(objects_selectable) > 0 :
                         self.game.set_focused( objects_selectable[0] )
                 elif event.button == 3 :

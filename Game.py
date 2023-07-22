@@ -184,7 +184,6 @@ class Game:
 
         return bounding_rect
 
-
     def game_loop( self ):
         running = True
         while running:
@@ -204,16 +203,7 @@ class Game:
                     if bounding_rect.width < br.width and bounding_rect.height < br.height :
                         self.toggle_zoom()
 
-            zoom_speed = max(0.002,abs(self.zoom - self.target_zoom) / 15)
-
-            if self.zoom < self.target_zoom:
-                self.zoom += min(zoom_speed, self.target_zoom - self.zoom)
-                if self.zoom == self.target_zoom :
-                    print(f'current zoom: {self.zoom}')
-            elif self.zoom > self.target_zoom:
-                self.zoom -= min(zoom_speed, self.zoom - self.target_zoom)
-                if self.zoom == self.target_zoom :
-                    print(f'current zoom: {self.zoom}')
+            self.zoom = Game.approach_value(self.zoom, self.target_zoom, 15)
 
             # self.win.fill((0, 0, 0))
             if self.input_handler.handle_input() == False :
@@ -276,6 +266,16 @@ class Game:
             diff = 360 - diff
         # Check if the angle is acute
         return diff < 90
+
+    @staticmethod
+    def approach_value(value, target, delay) :
+        speed = max(0.002,abs(value - target) / delay)
+        if value < target :
+            return min( target, value + min(speed, target - value) )
+        elif value > target :
+            return max( target, value - min(speed, value - target) )
+        else :
+            return value
 
 
 
