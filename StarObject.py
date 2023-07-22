@@ -36,6 +36,7 @@ class StarObject :
         self.is_important = False
         self.may_be_paused = True
         self.is_selectable = False
+        self.focus_visible = False
 
     def get_size( self ) :
         return self.size
@@ -230,5 +231,8 @@ class StarObject :
         if self.animationFrame == None :
             self.animationOngoing = None
             self.animationAfter( self )
+
+    def click(self, x, y) :
+        return False
 
 

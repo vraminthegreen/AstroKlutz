@@ -24,6 +24,8 @@ class MenuItem :
         self.action = action
         self.selected = selected
         self.not_selected = not_selected
+        self.x = 0
+        self.y = 0
 
     def get_frame( self, focused ) :
         frameno = self.selected if focused else self.not_selected
@@ -46,19 +48,25 @@ class Menu( StarObject ) :
     DEFAULT_RADIUS = 40
     icons = None
     menus = {}
+    active_menu = None
 
     def __init__( self, game, menu_items ) :
         "menu_items: list of MenuItem"
         StarObject.__init__( self, game, Stationary( None ), 0, 0 )
         self.menu_items = menu_items
+        self.reset()
+
+    def reset(self) :
+        self.current_zoom = 0
+        self.current_angle = 0
+        self.age = 0
         self.focused = None
         self.clicked = None
-        self.visible = False
         self.size = 200
-        self.age = 0
         self.not_clicked_radius = Menu.DEFAULT_RADIUS
         self.not_clicked_zoom = 1
         self.select_age = None
+        self.visible = False
 
     def repaint(self, win ):
         if not self.visible : 
@@ -109,7 +117,10 @@ class Menu( StarObject ) :
             # pygame.draw.rect(win, (255,0,0), item.get_collision_rect())
 
     def select(self, clicked_item) :
+        if clicked_item == None : 
+            return
         self.clicked = clicked_item
+        self.focused = None
         self.select_age = self.age
 
     def ticktack(self) :
@@ -123,10 +134,9 @@ class Menu( StarObject ) :
 
     def show_at(self, x, y) :
         self.set_pos(x, y)
+        self.reset()
         self.visible = True
-        self.current_zoom = 0
-        self.current_angle = 0
-        self.age = 0
+        self.game.add_object(self)
         self.game.set_mouse_tracking(self, True)
 
     def hide(self) :
@@ -135,16 +145,24 @@ class Menu( StarObject ) :
         self.game.set_mouse_tracking(self, False)
         self.game.remove_object(self)
 
-    def mouse_track(self, game_coords, screen_coords) :
-        if self.clicked : 
-            return
+    def get_item_at(self, scr_x, scr_y) :
         for item in self.menu_items:
             rect = item.get_collision_rect()
             # print(f'    check rect {rect}')
-            if item.get_collision_rect().collidepoint(*screen_coords) :
-                self.focused = item
-                return
-        self.focused = None
+            if item.get_collision_rect().collidepoint(scr_x, scr_y) :
+                return item
+        return None
+
+    def mouse_track(self, game_coords, screen_coords) :
+        if self.clicked : 
+            return
+        self.focused = self.get_item_at(*screen_coords)
+
+    def click( self, game_x, game_y ) :
+        if self.clicked :
+            return
+        scr_pos = self.game.get_display_xy( game_x, game_y )
+        self.select( self.get_item_at( *scr_pos ) )
 
     @staticmethod
     def selected( menu_item ) :
@@ -152,6 +170,8 @@ class Menu( StarObject ) :
 
     @staticmethod
     def target_menu(game, x, y) :
+        if Menu.active_menu != None :
+            Menu.active_menu.hide()
         if Menu.icons == None :
             Menu.icons = AnimatedSprite( "iconsheet-menu.png", 11, 2, MenuItem.ICON_SIZE, True )
         menu = Menu.menus.get('target')
@@ -165,5 +185,6 @@ class Menu( StarObject ) :
             )
             Menu.menus['target'] = menu
         menu.show_at(x, y)
+        Menu.active_menu = menu
         return menu
 

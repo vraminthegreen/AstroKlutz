@@ -14,7 +14,7 @@ class Game:
         self.game_window = (1024,768)
         self.win = pygame.display.set_mode(self.game_window)
         self.clock = pygame.time.Clock()
-        self.focused = None
+        self.focused = []
         self.time = 0
         self.zoom = 0.5
         self.target_zoom = 1
@@ -27,20 +27,24 @@ class Game:
         self.paused = False
 
     def add_object(self, obj):
-        if self.focused == None :
-            self.focused = obj
         self.objects.append(obj)
 
     def remove_object(self, obj):
         self.objects.remove(obj)
-        if obj==self.focused :
-            self.focused = None
+        if obj in self.focused :
+            self.focused.remove( obj )
 
     def get_focused( self ) :
-        return self.focused
+        if len(self.focused) > 0 : 
+            return self.focused[0]
+        else :
+            return None
 
     def set_focused(self, focused) :
-        self.focused = focused
+        self.focused = [ focused ]
+
+    def push_focused(self, focused) :
+        self.focused.insert(0,focused)
 
     def get_collisions(self, pygame_rect ):
         collisions = []
@@ -79,7 +83,7 @@ class Game:
         self.pan3 = (self.camera[0]/5-self.game_window[0]/2/self.zoom,self.camera[1]/5-self.game_window[1]/2/self.zoom)
 
     def pan_camera(self, bounding_rect) :
-        if self.focused == None :
+        if len(self.focused) == 0 :
             return
         rect = self.get_visible_rectangle( 0, self.target_zoom )
         srect = rect.inflate( -200, -200 )
@@ -95,17 +99,17 @@ class Game:
         #     print(f'zoom: {self.zoom}')
 
         recompute_pans = False
-        if self.focused.x < srect.left :
-            self.camera[0] = self.focused.x - 100 + self.game_window[0]/2/self.zoom
+        if self.focused[0].x < srect.left :
+            self.camera[0] = self.focused[0].x - 100 + self.game_window[0]/2/self.zoom
             recompute_pans = True
-        elif self.focused.x > srect.right :
-            self.camera[0] = self.focused.x + 100 - self.game_window[0]/2/self.zoom
+        elif self.focused[0].x > srect.right :
+            self.camera[0] = self.focused[0].x + 100 - self.game_window[0]/2/self.zoom
             recompute_pans = True
-        if self.focused.y < srect.top :
-            self.camera[1] = self.focused.y - 100 + self.game_window[1]/2/self.zoom
+        if self.focused[0].y < srect.top :
+            self.camera[1] = self.focused[0].y - 100 + self.game_window[1]/2/self.zoom
             recompute_pans = True
-        elif self.focused.y > srect.bottom :
-            self.camera[1] = self.focused.y + 100 - self.game_window[1]/2/self.zoom
+        elif self.focused[0].y > srect.bottom :
+            self.camera[1] = self.focused[0].y + 100 - self.game_window[1]/2/self.zoom
             recompute_pans = True
         if not recompute_pans :
             if bounding_rect.left < rect.left :
@@ -136,7 +140,7 @@ class Game:
         print('Toggle pause')
         self.paused = not self.paused
 
-    def get_display_xy( self, x, y, layer ) :
+    def get_display_xy( self, x, y, layer = 0 ) :
         "given game coords, give display coords"
         if layer == 0 :
             xy_rel_camera = ( x - self.camera[0], y - self.camera[1] )
@@ -222,9 +226,10 @@ class Game:
                     obj.ticktack()
                 obj.repaint( self.win ) # span1, pan2, pan3)
                 # obj.repaint(world_surface, pan1, pan2, pan3 )
-            if self.focused != None :
-                self.draw_select(self.focused, (0,255,0))
-
+            for obj in self.focused :
+                if obj.focus_visible :
+                    self.draw_select(obj, (0,255,0))
+                    break
 
             # Resize world_surface to achieve a zoom effect
             # zoomed_surface = pygame.transform.smoothscale(world_surface, self.game_window)
@@ -269,6 +274,17 @@ class Game:
         for obj in self.mouse_tracking :
             if obj.get_collision_rect().collidepoint( *dc ) :
                 obj.mouse_track( dc, (x,y) )
+
+    def click( self, x, y ) :
+        if len(self.focused) > 0 :
+            gxy = self.get_xy_display( x, y )
+            if self.focused[0].click( *gxy ) :
+                return
+        game_coords = self.get_xy_display( x, y )
+        objects_here = self.get_collisions(pygame.Rect(*game_coords,1,1))
+        objects_selectable = [ obj for obj in objects_here if obj.is_selectable ]
+        if len(objects_selectable) > 0 :
+            self.set_focused( objects_selectable[0] )
 
     @staticmethod
     def is_acute_angle(dir1, dir2):

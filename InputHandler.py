@@ -46,19 +46,10 @@ class InputHandler:
                 self.game.mouse_track(x, y)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if  event.button == 1 :
-                    x, y = pygame.mouse.get_pos()
-                    game_coords = self.game.get_xy_display( x, y )
-                    objects_here = self.game.get_collisions(pygame.Rect(*game_coords,1,1))
-                    objects_selectable = [ obj for obj in objects_here if obj.is_selectable ]
-                    if len(objects_selectable) > 0 :
-                        self.game.set_focused( objects_selectable[0] )
+                    self.game.click( *pygame.mouse.get_pos() )
                 elif event.button == 3 :
                     x, y = pygame.mouse.get_pos()
                     game_coords = self.game.get_xy_display( x, y )
-                    if self.menu != None :
-                        self.menu.hide()
-                    self.menu = Menu.target_menu(self.game, *game_coords)
-                    self.game.add_object(self.menu)
                     # star_object = StarObject(self.game, Stationary('target', 48), game_coords[0], game_coords[1] )
                     # self.game.add_object(star_object)
                     # self.focus.set_order(star_object)

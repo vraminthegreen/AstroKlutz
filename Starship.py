@@ -10,6 +10,7 @@ from ShipClass import MissileClass
 from Pilot import MissilePilot
 from Game import Game
 from IconRepository import IconRepository
+from Menu import Menu
 
 
 class Starship ( StarObject ) :
@@ -28,6 +29,7 @@ class Starship ( StarObject ) :
         self.shield_active = False
         self.is_important = True
         self.is_selectable = True
+        self.focus_visible = True
 
     def command( self, cmd ) :
         if cmd == 'a' :
@@ -96,6 +98,12 @@ class Starship ( StarObject ) :
 
     def onShieldEnded( self ) :
         self.shield_active = False
+
+    def click( self, x, y ) :
+        print(f'create menu at ({x},{y})')
+        menu = Menu.target_menu(self.game, x, y)
+        self.game.push_focused( menu )
+
 
 
     # def repaint(self, win):

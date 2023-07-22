@@ -22,8 +22,6 @@ class FighterClass :
         self.chaseDecelerate = True
         self.layer = 0
 
-
-
 #################################################
 
 class RocketFrigateClass :

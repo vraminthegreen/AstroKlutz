@@ -1,17 +1,15 @@
 pygame.todo
 
-- kliknięcie powoduje ustawienie fokusu, i kliknięcia są już przekazywane do obiektu w fokusie
-- kliknięcie pod statkiem na tle powoduje otwarcie menu i ustawienie focusa na menu (focus stosowy)
 - esc powoduje usunięcie ostatniego elementu ze stosu focusów
-- podpięcie menu dla targetu
+- implementacja ruchu
+- implementacja ataku
+- implementacja ucieczki (oddalanie się od punktu)
 - menu dla statku wrogiego: atak, ucieczka
 - podpięcie menu dla statku wrogiego
 - menu dla statku przyjacielskiego: follow, guard
 - podpięcie menu dla statku przyjacielskiego
 - backspace kasuje ostatni target
 - 1,2,3 - przełącza typ targetu (atak, ruch, patrol)
-- implementacja ruchu
-- implementacja ataku
 - implementacja patrolu
 - implementacja innych funkcji
 - dodawanie do grupy przez kliknięcie
@@ -103,4 +101,7 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + menu: animacja odświetlenia
 + menu dla targetu (tło): atak, ruch, target
 + menu: animacja kliknięcia
++ kliknięcie powoduje ustawienie fokusu, i kliknięcia są już przekazywane do obiektu w fokusie
++ kliknięcie pod statkiem na tle powoduje otwarcie menu i ustawienie focusa na menu (focus stosowy)
++ podpięcie menu dla targetu
 
