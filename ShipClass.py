@@ -1,13 +1,18 @@
 
-class ShipClass :
+class ObjectClass :
 
-    pass
+    def __init__(self) :
+        self.layer = 0
+        self.detectors_range = 0
+        self.layer = 0
+
 
 #################################################
         
-class FighterClass :
+class FighterClass ( ObjectClass ) :
 
     def __init__(self) :
+        ObjectClass.__init__(self)
         self.icon_name = "fighter"
         self.size = 48
         self.max_bullets = 5
@@ -20,13 +25,14 @@ class FighterClass :
         self.resistance = 0.99 # thrusters power
         self.can_be_hit = True
         self.chaseDecelerate = True
-        self.layer = 0
+        self.detectors_range = 250
 
 #################################################
 
-class RocketFrigateClass :
+class RocketFrigateClass ( ObjectClass ) :
 
     def __init__(self) :
+        ObjectClass.__init__(self)
         self.icon_name = "rocket"
         self.size = 64
         self.max_bullets = 0
@@ -39,14 +45,14 @@ class RocketFrigateClass :
         self.resistance = 0.99 # thrusters power
         self.can_be_hit = True
         self.chaseDecelerate = True
-        self.layer = 0
-
+        self.detectors_range = 500
 
 #################################################
 
-class MissileClass :
+class MissileClass ( ObjectClass ) :
 
     def __init__(self) :
+        ObjectClass.__init__(self)
         self.icon_name = "missile"
         self.size = 32
         self.maxV = 5  # Maximum speed
@@ -61,7 +67,6 @@ class MissileClass :
         self.chaseDecelerate = False
         self.fuel = 300
         self.can_be_hit = True
-        self.layer = 0
 
     def select_phase(self, current_fuel) :
         if current_fuel > self.fuel - 150 : 
@@ -80,9 +85,10 @@ class MissileClass :
 
 #################################################
 
-class BulletClass :
+class BulletClass ( ObjectClass ) :
 
     def __init__(self) :
+        ObjectClass.__init__(self)
         self.icon_name = None
         self.size = 3
         self.fuel = 100
@@ -92,13 +98,13 @@ class BulletClass :
         self.rotation_speed = 0
         self.maxAcc = 0 # thrusters power
         self.chaseDecelerate = False
-        self.layer = 0
 
 #################################################
 
-class DustClass :
+class DustClass( ObjectClass ) :
 
     def __init__(self) :
+        ObjectClass.__init__(self)
         self.icon_name = None
         self.size = 1
         self.resistance = 1
@@ -107,13 +113,13 @@ class DustClass :
         self.rotation_speed = 0
         self.maxAcc = 0 # thrusters power
         self.chaseDecelerate = False
-        self.layer = 0
 
 #################################################
 
-class Stationary :
+class Stationary ( ObjectClass ) :
 
     def __init__(self, icon_name, size = None) :
+        ObjectClass.__init__(self)
         self.icon_name = icon_name
         self.size = size
         self.resistance = 1
@@ -122,11 +128,10 @@ class Stationary :
         self.maxV = 0  # Maximum speed
         self.rotation_speed = 0
         self.maxAcc = 0
-        self.layer = 0
 
 #################################################
 
-class Background( Stationary ) :
+class Background ( Stationary ) :
 
     def __init__(self, icon_name, size = None) :
         Stationary.__init__(self, icon_name, size)

@@ -32,6 +32,10 @@ class Starship ( StarObject ) :
         self.is_important = True
         self.is_selectable = True
         self.focus_visible = True
+        self.ping_animation = None
+
+    def is_hostile(self, other) :
+        return self.team != other.team
 
     def command( self, cmd ) :
         if cmd == 'a' :
@@ -39,6 +43,10 @@ class Starship ( StarObject ) :
                 self.game.remove_object(self.order)
                 self.order = None
             self.auto = not self.auto
+            return True
+        elif cmd == 't' :
+            print("PING")
+            self.ping_animation = 100
             return True
         elif cmd == ' ' :
             self.fire()
@@ -74,7 +82,29 @@ class Starship ( StarObject ) :
         self.enemy = enemy
         self.pilot.set_enemy( enemy )
 
+    def ping_logic(self) :
+        if self.ping_animation == None :
+            return
+        if self.enemy != None :
+            self.ping_animation = None
+            return
+        self.ping_animation -= 2
+        if self.ping_animation < 0 : 
+            self.ping_animation = None
+            objs = self.game.get_objects_in_range(self.x, self.y, self.detectors_range)
+            for obj in objs :
+                if self.is_hostile(obj) :
+                    print("FOUND ENEMY")
+                    self.set_enemy(obj)
+
+    def order_logic(self) :
+        if len(self.orders) == 0 :
+            return
+        self.orders[0].logic(self)
+
     def ticktack(self):
+        self.ping_logic()
+        self.order_logic()
         self.pilot.ticktack()
         super().ticktack()
 
@@ -118,6 +148,25 @@ class Starship ( StarObject ) :
             print(f'menu clicked: {menu_item.label}, NOT HANDLED')
             return False
 
+    def repaint_ping(self, win) :
+        if self.ping_animation == None :
+            return
+        temp_surface = pygame.Surface((200,200), pygame.SRCALPHA)
+        # Compute the transparency
+        transparency = int((0.5*self.ping_animation+50)*2.55)  # Scale from 0-100 to 0-255
+        # Draw the circle on the temporary surface
+        pygame.draw.circle(temp_surface, (0,200,255,transparency), (100,100), 100-self.ping_animation, 1)
+        # Blit the temporary surface onto the main surface
+        gpos = self.game.get_display_xy(self.x, self.y)
+        win.blit(temp_surface, (gpos[0]-100, gpos[1]-100))  # Adjust the position as needed
+
+
+    def repaint(self, win) :
+        self.repaint_ping(win)
+        super().repaint(win)
+
+    # # Update the display
+    # pygame.display.flip()
 
 
 

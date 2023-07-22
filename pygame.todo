@@ -1,7 +1,5 @@
 pygame.todo
 
-- implementacja ataku: ping animation
-- implementacja ataku: implementacja sprawdzenia, przy zakończeniu ping animation
 - implementacja ataku: order wcelowany w statek
 - implementacja ataku: włożenie target - statek na stos ataków
 - implementacja ucieczki (oddalanie się od punktu)
@@ -10,7 +8,6 @@ pygame.todo
 - menu dla statku przyjacielskiego: follow, guard
 - podpięcie menu dla statku przyjacielskiego
 - backspace kasuje ostatni target
-- 1,2,3 - przełącza typ targetu (atak, ruch, patrol)
 - implementacja patrolu
 - implementacja innych funkcji
 - dodawanie do grupy przez kliknięcie
@@ -110,4 +107,6 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + implementacja ruchu
 + icona dla target move
 + implementacja ataku: osobny target, podpięcie
++ implementacja ataku: ping animation
++ implementacja ataku: implementacja sprawdzenia, przy zakończeniu ping animation
 

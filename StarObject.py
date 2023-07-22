@@ -27,6 +27,7 @@ class StarObject :
         self.rotation_speed = self.object_class.rotation_speed
         self.chaseDecelerate = self.object_class.chaseDecelerate
         self.layer = self.object_class.layer
+        self.detectors_range = self.object_class.detectors_range
         #
         if self.object_class.icon_name != None :
             self.icon = IconRepository.get_icon(self.object_class.icon_name, self.get_size())

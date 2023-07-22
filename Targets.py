@@ -19,6 +19,9 @@ class TargetMove ( StarObject ) :
 
     def get_vmax(self, starship) :
     	return starship.maxV
+
+    def logic(self, starship) :
+        pass
  
 #################################################
 
@@ -26,5 +29,9 @@ class TargetAttack ( TargetMove ) :
 
     def get_vmax(self, starship) :
     	return 0.5 * starship.maxV
+
+    def logic(self, starship) :
+        if starship.game.get_time() % 120 == 0 :
+            starship.ping_animation = 100
 
 #################################################

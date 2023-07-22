@@ -65,6 +65,13 @@ class Game:
                 selections.append(obj)
         return selections
 
+    def get_objects_in_range(self, x, y, range) :
+        res = []
+        for obj in self.objects :
+            if obj.can_be_hit and obj.distance_to_xy(x, y) <= range :
+                res.append( obj )
+        return res
+
     def get_time( self ) :
         return self.time
 
@@ -232,7 +239,7 @@ class Game:
 
             self.pan_camera(bounding_rect)
 
-            for obj in self.objects:
+            for obj in self.objects :
                 if not self.paused and obj.may_be_paused :
                     obj.ticktack()
                 obj.repaint( self.win ) # span1, pan2, pan3)
