@@ -4,12 +4,15 @@ import math
 
 from StarObject import StarObject
 from ShipClass import Stationary
+from Menu import Menu
+
 
 class InputHandler:
 
     def __init__(self):
         self.last_key = 0
         self.counter = 0
+        self.menu = None
 
     def set_focus(self, focus) :
         self.focus = focus
@@ -50,9 +53,13 @@ class InputHandler:
                 elif event.button == 3 :
                     x, y = pygame.mouse.get_pos()
                     game_coords = self.game.get_xy_display( x, y )
-                    star_object = StarObject(self.game, Stationary('target', 48), game_coords[0], game_coords[1] )
-                    self.game.add_object(star_object)
-                    self.focus.set_order(star_object)
+                    if self.menu != None :
+                        self.game.remove_object( self.menu )
+                    self.menu = Menu.target_menu(self.game, *game_coords)
+                    self.game.add_object(self.menu)
+                    # star_object = StarObject(self.game, Stationary('target', 48), game_coords[0], game_coords[1] )
+                    # self.game.add_object(star_object)
+                    # self.focus.set_order(star_object)
             elif event.type == pygame.KEYDOWN:
                 if event.unicode.isalnum() or event.unicode == ' ':
                     self.focus.command(event.unicode)

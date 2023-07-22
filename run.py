@@ -49,9 +49,9 @@ crippled_fighter.rotation_speed = 0.3
 crippled_fighter.max_bullets = 3
 
 enemies = [
-    Starship(game, team_yellow, crippled_fighter, FighterPilot(game), -350, -350 ),
-    Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
-    Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 )
+    # Starship(game, team_yellow, crippled_fighter, FighterPilot(game), -350, -350 ),
+    # Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
+    # Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 )
 ]
 
 for enemy in enemies :

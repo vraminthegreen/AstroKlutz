@@ -102,6 +102,10 @@ class StarObject :
         self.y += self.v.y
         self.v *= self.resistance
 
+    def set_pos(self, x, y) :
+        self.x = x
+        self.y = y
+
     def get_pos(self) :
         return (self.x, self.y)
 

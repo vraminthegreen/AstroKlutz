@@ -1,7 +1,5 @@
 pygame.todo
 
-- menu: boilerplate (z callbackami)
-- menu: wyświetlanie dla x, y, zoom, spread
 - menu: animacja początkowa
 - menu: animacja podświetlenia
 - menu: animacja odświetlenia
@@ -100,4 +98,6 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + naprawienie współrzędnych target
 + zaznaczanie statków / focus (swój, obcy)
 + menu: grafiki
++ menu: boilerplate (z callbackami)
++ menu: wyświetlanie dla x, y, zoom, spread
 
