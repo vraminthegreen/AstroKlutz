@@ -20,7 +20,7 @@ class InputHandler:
     def set_game(self, game):
         self.game = game
 
-    def handle_input(self):
+    def handle_input(self, mouse_tracking):
         self.counter += 1
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
@@ -41,7 +41,10 @@ class InputHandler:
         running = True
 
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEMOTION and mouse_tracking:
+                x, y = event.pos
+                self.game.mouse_track(x, y)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if  event.button == 1 :
                     x, y = pygame.mouse.get_pos()
                     game_coords = self.game.get_xy_display( x, y )
@@ -53,7 +56,7 @@ class InputHandler:
                     x, y = pygame.mouse.get_pos()
                     game_coords = self.game.get_xy_display( x, y )
                     if self.menu != None :
-                        self.game.remove_object( self.menu )
+                        self.menu.hide()
                     self.menu = Menu.target_menu(self.game, *game_coords)
                     self.game.add_object(self.menu)
                     # star_object = StarObject(self.game, Stationary('target', 48), game_coords[0], game_coords[1] )

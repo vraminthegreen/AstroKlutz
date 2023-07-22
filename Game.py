@@ -9,6 +9,7 @@ class Game:
 
     def __init__(self, input_handler):
         self.objects = []
+        self.mouse_tracking = []
         self.input_handler = input_handler
         self.game_window = (1024,768)
         self.win = pygame.display.set_mode(self.game_window)
@@ -206,7 +207,7 @@ class Game:
             self.zoom = Game.approach_value(self.zoom, self.target_zoom, 15)
 
             # self.win.fill((0, 0, 0))
-            if self.input_handler.handle_input() == False :
+            if self.input_handler.handle_input(len(self.mouse_tracking)>0) == False :
                 running = False
 
 
@@ -256,6 +257,18 @@ class Game:
 
     def get_animation(self, animation_name) :
         return self.animations[animation_name]
+
+    def set_mouse_tracking(self, obj, tracking_enabled) :
+        if tracking_enabled :
+            self.mouse_tracking.append( obj )
+        else :
+            self.mouse_tracking.remove( obj )
+
+    def mouse_track( self, x, y ) :
+        dc = self.get_xy_display( x, y )
+        for obj in self.mouse_tracking :
+            if obj.get_collision_rect().collidepoint( *dc ) :
+                obj.mouse_track( dc, (x,y) )
 
     @staticmethod
     def is_acute_angle(dir1, dir2):
