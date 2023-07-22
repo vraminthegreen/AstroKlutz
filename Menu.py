@@ -12,16 +12,19 @@ from AnimatedSprite import AnimatedSprite
 class MenuItem :
 
     ICON_SIZE = 32
+    MOVE = 1
+    ATTACK = 2
+    FLEE = 3
 
-    def __init__( self, icon, not_selected, selected, label, action ) :
+    def __init__( self, icon, not_selected, selected, label, command ) :
         """
         icon: AnimatedSprite
         not_selected: number of frame for not selected
         selected: number of frame for selected
         """
+        self.command = command
         self.icon = icon
         self.label = label
-        self.action = action
         self.selected = selected
         self.not_selected = not_selected
         self.x = 0
@@ -35,8 +38,8 @@ class MenuItem :
         self.x = x
         self.y = y
 
-    def get_collision_rect(self) :
-        rect = pygame.Rect(0, 0, MenuItem.ICON_SIZE*0.7, MenuItem.ICON_SIZE*0.7)
+    def get_collision_rect(self, range = 0.7) :
+        rect = pygame.Rect(0, 0, MenuItem.ICON_SIZE*range, MenuItem.ICON_SIZE*range)
         rect.center = (self.x, self.y)
         return rect
 
@@ -68,6 +71,7 @@ class Menu( StarObject ) :
         self.select_age = None
         self.visible = False
         self.hiding = False
+        self.owner = None
 
     def repaint(self, win ):
         if not self.visible : 
@@ -124,13 +128,15 @@ class Menu( StarObject ) :
         if clicked_item == None : 
             return
         self.clicked = clicked_item
+        print(f'select, owner = {self.owner}')
+        if self.owner != None :
+            print(f'calling on_menu')
+            self.owner.on_menu( self.clicked )
         self.focused = None
         self.select_age = self.age
 
     def ticktack(self) :
         self.age += 1
-        if self.age == 250 :
-            self.hiding = True
         if ( self.clicked != None or self.hiding ) and self.current_zoom == 0 :
             print("KONIEC MENU")
             self.hide()
@@ -138,7 +144,6 @@ class Menu( StarObject ) :
 
     def show_at(self, x, y) :
         self.set_pos(x, y)
-        self.reset()
         self.visible = True
         self.game.add_object(self)
         self.game.set_mouse_tracking(self, True)
@@ -168,12 +173,20 @@ class Menu( StarObject ) :
         scr_pos = self.game.get_display_xy( game_x, game_y )
         self.select( self.get_item_at( *scr_pos ) )
 
+    def on_focus_lost( self ) :
+        if self.clicked or self.hiding :
+            return
+        self.hiding = True
+
+    def set_owner( self, owner ) :
+        self.owner = owner
+
     @staticmethod
     def selected( menu_item ) :
         print(f'selected menu_item: {menu_item}')
 
     @staticmethod
-    def target_menu(game, x, y) :
+    def target_menu(game, x, y, owner) :
         if Menu.active_menu != None :
             Menu.active_menu.hide()
         if Menu.icons == None :
@@ -182,13 +195,16 @@ class Menu( StarObject ) :
         if menu == None :
             menu = Menu(game, 
                 [ 
-                    MenuItem( Menu.icons, 5, 16, "move", Menu.selected ),
-                    MenuItem( Menu.icons, 1, 12, "attack", Menu.selected ),
-                    MenuItem( Menu.icons, 4, 15, "flee", Menu.selected ),
+                    MenuItem( Menu.icons, 5, 16, "move",   MenuItem.MOVE ),
+                    MenuItem( Menu.icons, 1, 12, "attack", MenuItem.ATTACK ),
+                    MenuItem( Menu.icons, 4, 15, "flee",   MenuItem.FLEE ),
                 ]
             )
             Menu.menus['target'] = menu
+        print(f'set_owner: {owner}')
+        menu.reset()
         menu.show_at(x, y)
+        menu.set_owner( owner )
         Menu.active_menu = menu
         return menu
 

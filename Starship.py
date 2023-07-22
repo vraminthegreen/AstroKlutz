@@ -6,11 +6,13 @@ import random
 from StarObject import StarObject
 from Bullet import Bullet
 from Missile import Missile
-from ShipClass import MissileClass
+from ShipClass import MissileClass, Stationary
 from Pilot import MissilePilot
 from Game import Game
 from IconRepository import IconRepository
-from Menu import Menu
+from Menu import Menu, MenuItem
+from Targets import TargetMove, TargetAttack
+
 
 
 class Starship ( StarObject ) :
@@ -101,8 +103,21 @@ class Starship ( StarObject ) :
 
     def click( self, x, y ) :
         print(f'create menu at ({x},{y})')
-        menu = Menu.target_menu(self.game, x, y)
+        self.current_menu_pos = (x,y)
+        menu = Menu.target_menu(self.game, x, y, self)
         self.game.push_focused( menu )
+
+    def on_menu(self, menu_item) :
+        if menu_item.command == MenuItem.MOVE :
+            order = TargetMove(self.game, Stationary('move',32), *self.current_menu_pos, menu_item )
+            self.append_order( order )
+        elif menu_item.command == MenuItem.ATTACK :
+            order = TargetAttack(self.game, Stationary('target', 40), *self.current_menu_pos, menu_item )
+            self.append_order( order )
+        else :
+            print(f'menu clicked: {menu_item.label}, NOT HANDLED')
+            return False
+
 
 
 

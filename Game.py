@@ -46,12 +46,24 @@ class Game:
     def push_focused(self, focused) :
         self.focused.insert(0,focused)
 
+    def pop_focused( self ) :
+        if len(self.focused) > 0 :
+            removed = self.focused.pop(0)
+            removed.on_focus_lost()
+
     def get_collisions(self, pygame_rect ):
         collisions = []
         for obj in self.objects:
             if obj.can_be_hit and obj.get_collision_rect().colliderect(pygame_rect):
                 collisions.append(obj)
         return collisions
+
+    def get_selections(self, pygame_rect ):
+        selections = []
+        for obj in self.objects:
+            if obj.can_be_hit and obj.get_collision_rect(1).colliderect(pygame_rect):
+                selections.append(obj)
+        return selections
 
     def get_time( self ) :
         return self.time
@@ -83,8 +95,6 @@ class Game:
         self.pan3 = (self.camera[0]/5-self.game_window[0]/2/self.zoom,self.camera[1]/5-self.game_window[1]/2/self.zoom)
 
     def pan_camera(self, bounding_rect) :
-        if len(self.focused) == 0 :
-            return
         rect = self.get_visible_rectangle( 0, self.target_zoom )
         srect = rect.inflate( -200, -200 )
 
@@ -99,18 +109,19 @@ class Game:
         #     print(f'zoom: {self.zoom}')
 
         recompute_pans = False
-        if self.focused[0].x < srect.left :
-            self.camera[0] = self.focused[0].x - 100 + self.game_window[0]/2/self.zoom
-            recompute_pans = True
-        elif self.focused[0].x > srect.right :
-            self.camera[0] = self.focused[0].x + 100 - self.game_window[0]/2/self.zoom
-            recompute_pans = True
-        if self.focused[0].y < srect.top :
-            self.camera[1] = self.focused[0].y - 100 + self.game_window[1]/2/self.zoom
-            recompute_pans = True
-        elif self.focused[0].y > srect.bottom :
-            self.camera[1] = self.focused[0].y + 100 - self.game_window[1]/2/self.zoom
-            recompute_pans = True
+        if len(self.focused) > 0 :
+            if self.focused[0].x < srect.left :
+                self.camera[0] = self.focused[0].x - 100 + self.game_window[0]/2/self.zoom
+                recompute_pans = True
+            elif self.focused[0].x > srect.right :
+                self.camera[0] = self.focused[0].x + 100 - self.game_window[0]/2/self.zoom
+                recompute_pans = True
+            if self.focused[0].y < srect.top :
+                self.camera[1] = self.focused[0].y - 100 + self.game_window[1]/2/self.zoom
+                recompute_pans = True
+            elif self.focused[0].y > srect.bottom :
+                self.camera[1] = self.focused[0].y + 100 - self.game_window[1]/2/self.zoom
+                recompute_pans = True
         if not recompute_pans :
             if bounding_rect.left < rect.left :
                 self.camera[0] -= max((rect.left-bounding_rect.left)/20,1)
@@ -281,7 +292,7 @@ class Game:
             if self.focused[0].click( *gxy ) :
                 return
         game_coords = self.get_xy_display( x, y )
-        objects_here = self.get_collisions(pygame.Rect(*game_coords,1,1))
+        objects_here = self.get_selections(pygame.Rect(*game_coords,1,1))
         objects_selectable = [ obj for obj in objects_here if obj.is_selectable ]
         if len(objects_selectable) > 0 :
             self.set_focused( objects_selectable[0] )

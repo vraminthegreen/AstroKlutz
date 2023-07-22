@@ -4,6 +4,7 @@ import math
 
 from IconRepository import IconRepository
 
+
 class StarObject :
 
     def __init__(self, game, object_class, x, y):
@@ -14,7 +15,7 @@ class StarObject :
         self.dir = 0  # Direction in degrees
         self.v = pygame.Vector2(0, 0)  # Velocity vector
         self.auto = True
-        self.order = None
+        self.orders = []
         self.animationOngoing = None
         self.animationFrame = None
         # copy the prototype
@@ -95,8 +96,10 @@ class StarObject :
         win.blit(rotated_icon, new_rect.topleft)
 
     def ticktack(self):
-        if self.auto and self.order :
-            self.chase( *self.order.get_pos() )
+        if self.auto and len(self.orders)>0 :
+            self.chase( *self.orders[0].get_pos() )
+            if self.orders[0].is_completed(self) :
+                self.pop_order()
         if self.animationOngoing != None :
             self.animateNextFrame()        
         self.x += self.v.x
@@ -115,8 +118,8 @@ class StarObject :
         height = width
         return pygame.Rect(self.x - width // 2, self.y - height // 2, width, height)
 
-    def get_collision_rect(self) :
-        width = self.get_size() / 2
+    def get_collision_rect(self, range = 0.5) :
+        width = self.get_size() * range
         height = width
         return pygame.Rect(self.x - width // 2, self.y - height // 2, width, height)
 
@@ -146,16 +149,28 @@ class StarObject :
         return distance
 
     def set_order(self, order) :
-        if self.order :
+        for order in self.orders :
             self.game.remove_object( self.order )
-        self.order = order
+        self.orders = [ order ]
         self.auto = True
+
+    def append_order(self, order) :
+        self.game.add_object( order )
+        self.orders.append(order)
+        self.auto = True
+
+    def pop_order(self) :
+        order = self.orders.pop( 0 )
+        self.game.remove_object( order )
+        if len(self.orders) == 0 :
+            self.auto = False
 
     def accelerate(self):
         acceleration_vector = pygame.Vector2(self.maxAcc, 0).rotate(-self.dir)
         self.v += acceleration_vector
-        if self.v.length() > self.maxV:
-            self.v.scale_to_length(self.maxV)
+        current_vmax = self.get_current_vmax();
+        if self.v.length() > current_vmax:
+            self.v.scale_to_length(current_vmax)
 
     def decelerate(self):
         if self.v.length() > 0:
@@ -200,11 +215,12 @@ class StarObject :
 
         # Determine whether to accelerate or decelerate
         distance_to_target = target_vector.length()
-        if distance_to_target > 60 :  # Accelerate if far from the target
+        if distance_to_target > 40 :  # Accelerate if far from the target
             if abs(difference_in_direction) < 90 :
                 self.accelerate()
-        elif self.chaseDecelerate :  # Decelerate if close to the target
+        elif self.chaseDecelerate and self.v.length() > distance_to_target / 40  :  # Decelerate if close to the target
             self.decelerate()
+        return distance_to_target < 20
 
     def is_in_field(self, ox, oy, dir_a, dir_b, dist_min, dist_max):
         target_vector = pygame.Vector2(ox, oy) - pygame.Vector2(self.x, self.y)
@@ -235,4 +251,12 @@ class StarObject :
     def click(self, x, y) :
         return False
 
+    def on_focus_lost(self) :
+        return False
+
+    def get_current_vmax(self) :
+        if len(self.orders) > 0 :
+            return self.orders[0].get_vmax(self)
+        else :
+            return self.maxV
 

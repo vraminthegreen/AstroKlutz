@@ -1,8 +1,9 @@
 pygame.todo
 
-- esc powoduje usunięcie ostatniego elementu ze stosu focusów
-- implementacja ruchu
-- implementacja ataku
+- implementacja ataku: ping animation
+- implementacja ataku: implementacja sprawdzenia, przy zakończeniu ping animation
+- implementacja ataku: order wcelowany w statek
+- implementacja ataku: włożenie target - statek na stos ataków
 - implementacja ucieczki (oddalanie się od punktu)
 - menu dla statku wrogiego: atak, ucieczka
 - podpięcie menu dla statku wrogiego
@@ -105,4 +106,8 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + kliknięcie pod statkiem na tle powoduje otwarcie menu i ustawienie focusa na menu (focus stosowy)
 + podpięcie menu dla targetu
 + hide menu animation
++ esc powoduje usunięcie ostatniego elementu ze stosu focusów
++ implementacja ruchu
++ icona dla target move
++ implementacja ataku: osobny target, podpięcie
 

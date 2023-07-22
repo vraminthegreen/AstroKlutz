@@ -37,6 +37,9 @@ class InputHandler:
         if keys[pygame.K_p] and self.counter > self.last_key + 20 :
             self.game.toggle_pause()
             self.last_key = self.counter
+        if keys[pygame.K_ESCAPE] and self.counter > self.last_key + 20 :
+            self.game.pop_focused()
+            self.last_key = self.counter
 
         running = True
 
