@@ -67,15 +67,19 @@ class Menu( StarObject ) :
         self.not_clicked_zoom = 1
         self.select_age = None
         self.visible = False
+        self.hiding = False
 
     def repaint(self, win ):
         if not self.visible : 
             return
-        if self.clicked != None :
+        if self.hiding :
+            self.current_zoom = Game.approach_value( self.current_zoom, 0, 5 )                
+            self.not_clicked_radius = Game.approach_value( self.not_clicked_radius, 0, 5 )
+        elif self.clicked != None :
             self.not_clicked_radius = Game.approach_value( self.not_clicked_radius, Menu.DEFAULT_RADIUS * 0.5, 6 )
             self.not_clicked_zoom = Game.approach_value( self.not_clicked_zoom, 0.7, 6 )
             if self.age - self.select_age > 20 :
-                self.current_zoom = Game.approach_value( self.current_zoom, 0, 4 )
+                self.current_zoom = Game.approach_value( self.current_zoom, 0, 4 )                
         else :
             self.current_zoom = Game.approach_value( self.current_zoom, 1, 4 )
             self.current_angle = Game.approach_value( self.current_angle, 45, 6 )
@@ -95,7 +99,7 @@ class Menu( StarObject ) :
             angle = -2/3 * math.pi + i * angle_increment
 
             # Calculate the position of the menu item
-            if self.clicked == None or self.clicked == item :
+            if not self.hiding and ( self.clicked == None or self.clicked == item ) :
                 theradius = radius
                 thezoom = zoom
             else :
@@ -126,8 +130,8 @@ class Menu( StarObject ) :
     def ticktack(self) :
         self.age += 1
         if self.age == 250 :
-            self.select( self.menu_items[0] )
-        if self.clicked != None and self.current_zoom == 0 :
+            self.hiding = True
+        if ( self.clicked != None or self.hiding ) and self.current_zoom == 0 :
             print("KONIEC MENU")
             self.hide()
         super().ticktack()
@@ -154,12 +158,12 @@ class Menu( StarObject ) :
         return None
 
     def mouse_track(self, game_coords, screen_coords) :
-        if self.clicked : 
+        if self.clicked or self.hiding : 
             return
         self.focused = self.get_item_at(*screen_coords)
 
     def click( self, game_x, game_y ) :
-        if self.clicked :
+        if self.clicked or self.hiding :
             return
         scr_pos = self.game.get_display_xy( game_x, game_y )
         self.select( self.get_item_at( *scr_pos ) )

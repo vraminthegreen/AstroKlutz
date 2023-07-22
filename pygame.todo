@@ -104,4 +104,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + kliknięcie powoduje ustawienie fokusu, i kliknięcia są już przekazywane do obiektu w fokusie
 + kliknięcie pod statkiem na tle powoduje otwarcie menu i ustawienie focusa na menu (focus stosowy)
 + podpięcie menu dla targetu
++ hide menu animation
 
