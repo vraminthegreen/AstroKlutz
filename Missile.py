@@ -16,6 +16,7 @@ class Missile ( StarObject ) :
         self.pilot.set_starship( self )
         self.fuel = self.object_class.fuel
         self.dead = False
+        self.enemy = None
 
     def ticktack( self ) :
         self.pilot.ticktack()
@@ -26,6 +27,10 @@ class Missile ( StarObject ) :
 
     def set_owner( self, owner ) :
         self.owner = owner
+        self.team = owner.team
+
+    def set_enemy( self, enemy ) :
+        self.enemy = enemy
 
     def onExploded( self ) :
         self.game.remove_object( self )

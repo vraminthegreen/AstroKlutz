@@ -75,14 +75,17 @@ class MissilePilot ( Pilot ) :
     def ticktack(self) :
         if self.starship.fuel > 0 :
             self.starship.fuel -= 1
-            order_hit = self.starship.order != None and self.starship.distance_to(self.starship.order) < self.starship.get_size()
+            if self.starship.enemy == None :
+                self.starship.explode()
+                return
+            order_hit = self.starship.distance_to(self.starship.enemy) < self.starship.get_size()
             if self.starship.fuel == 0 or order_hit :
                 self.starship.fuel = 0
                 if order_hit :
-                    self.starship.order.hit( self.starship )
+                    self.starship.enemy.hit( self.starship )
                 self.starship.explode()
             else :
                 (self.starship.maxV, self.starship.rotation_speed, self.starship.maxAcc) = self.starship.object_class.select_phase(self.starship.fuel)
-                self.starship.chase(self.starship.order.x, self.starship.order.y)                
+                self.starship.chase(self.starship.enemy.x, self.starship.enemy.y)                
 
 

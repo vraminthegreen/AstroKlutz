@@ -11,7 +11,7 @@ from Pilot import MissilePilot
 from Game import Game
 from IconRepository import IconRepository
 from Menu import Menu, MenuItem
-from Targets import TargetMove, TargetAttack, TargetAttackMove, TargetEscape, TargetFollow, TargetEnemyEscape
+from Targets import TargetMove, TargetAttack, TargetAttackMove, TargetEscape, TargetFollow, TargetEnemyEscape, TargetPatrolMove
 
 
 
@@ -67,11 +67,15 @@ class Starship ( StarObject ) :
             missile_dir = ( self.dir + 150 + 60 * ( missiles_cnt % 2 ) ) % 360
             (mx, my) = self.get_displaced_pos(missile_dir,self.size)
             missile = Missile(self.game, MissileClass(), MissilePilot(self.game), mx, my )
-            missile.set_order(self.enemy)
+
+            order = TargetAttack(self.game, missile, Stationary('target', 40), None, self.enemy)
+            missile.set_enemy(self.enemy)
+            missile.set_order(order)
             missile.set_owner(self)
             missile.dir = missile_dir
             self.missiles.append( missile )
             self.game.add_object(missile)
+            self.game.add_object(order)
 
     def on_missile_exploded( self, missile ) :
         self.missiles.remove( missile )
@@ -141,6 +145,8 @@ class Starship ( StarObject ) :
             order = TargetMove(self.game, self, Stationary('move',32), *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.ATTACK :
             order = TargetAttackMove(self.game, self, Stationary('target', 32), *self.current_menu_pos, menu_item )
+        elif menu_item.command == MenuItem.PATROL :
+            order = TargetPatrolMove(self.game, self, Stationary('patrol', 24), *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.FLEE :
             order = TargetEscape(self.game, self, Stationary('escape', 32), *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.FRIEND_FOLLOW :

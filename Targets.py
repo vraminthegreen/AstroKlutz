@@ -97,6 +97,14 @@ class TargetAttackMove ( TargetMove ) :
 
 #################################################
 
+class TargetPatrolMove ( TargetAttackMove ) :
+
+    def on_completed(self) :
+        self.owner.append_order(self)
+
+
+#################################################
+
 class TargetAttack ( TargetMove ) :
 
     def __init__(self, game, owner, object_class, menu_item, enemy):

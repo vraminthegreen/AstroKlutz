@@ -1,10 +1,10 @@
 pygame.todo
 
-- implementacja patrolu
 - dodawanie do grupy przez kliknięcie
 - rozkazy dla grupy
 - wykonanie rozkazów grupy
 - implementacja animacji odrzutu (osobnej)
+- poprawka rozwalania się o wybuch
 - background ma pozycję, poza pozycją tło jest czarne
 - dodanie awaryjnych backgroundów jeśli stateczek poleci dalej (można dolecieć do innych teł)
 - dodanie innych typów statków
@@ -117,4 +117,6 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + implementacja lini łączącej ordery
 + backspace kasuje ostatni target
 + zastrzelenie wrogiego statku nie kasuje orderu
++ implementacja patrolu
++ poprawka missile, w ogóle przestał działać
 

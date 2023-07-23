@@ -32,9 +32,9 @@ background = DistantObject(game, Background('background'), 0, 0)
 game.add_object(background)
 
 player_class = FighterClass()
-player_class.maxV = 5
-player_class.rotation_speed = 3
-player_class.max_bullets = 15
+player_class.maxV = 3
+player_class.rotation_speed = 2
+player_class.max_bullets = 5
 player_class.maxAcc = 0.5
 player = Starship(game, team_green, player_class, FighterPilot(game), -200, 200)
 player.auto = False
@@ -51,7 +51,7 @@ crippled_fighter.max_bullets = 3
 
 enemies = [
     Starship(game, team_yellow, crippled_fighter, FighterPilot(game), -350, -350 ),
-    # Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
+    Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
     Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 ),
     
 ]
