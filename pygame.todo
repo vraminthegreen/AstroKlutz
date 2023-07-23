@@ -1,8 +1,5 @@
 pygame.todo
 
-- implementacja ataku: order wcelowany w statek
-- implementacja ataku: włożenie target - statek na stos ataków
-- implementacja ucieczki (oddalanie się od punktu)
 - menu dla statku wrogiego: atak, ucieczka
 - podpięcie menu dla statku wrogiego
 - menu dla statku przyjacielskiego: follow, guard
@@ -13,10 +10,12 @@ pygame.todo
 - dodawanie do grupy przez kliknięcie
 - rozkazy dla grupy
 - wykonanie rozkazów grupy
-- animacja zciemniania dustu na przeźroczystości
+- animacja ściemniania dustu na przeźroczystości
 - implementacja animacji odrzutu (osobnej)
 - background ma pozycję, poza pozycją tło jest czarne
 - dodanie awaryjnych backgroundów jeśli stateczek poleci dalej (można dolecieć do innych teł)
+- dodanie innych typów statków
+- dodanie teleporterów
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
 + klasa order zakładana przyciskiem myszy
@@ -109,4 +108,7 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + implementacja ataku: osobny target, podpięcie
 + implementacja ataku: ping animation
 + implementacja ataku: implementacja sprawdzenia, przy zakończeniu ping animation
++ implementacja ataku: order wcelowany w statek
++ implementacja ataku: włożenie target - statek na stos ataków
++ implementacja ucieczki (oddalanie się od punktu)
 

@@ -36,7 +36,8 @@ player_class.maxV = 5
 player_class.rotation_speed = 3
 player_class.max_bullets = 15
 player_class.maxAcc = 0.5
-player = Starship(game, team_green, player_class, Pilot(game), -200, 200)
+player = Starship(game, team_green, player_class, FighterPilot(game), -200, 200)
+player.auto = False
 game.add_object(player)
 input_handler.set_focus(player)
 game.set_focused(player)

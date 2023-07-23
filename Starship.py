@@ -11,7 +11,7 @@ from Pilot import MissilePilot
 from Game import Game
 from IconRepository import IconRepository
 from Menu import Menu, MenuItem
-from Targets import TargetMove, TargetAttack
+from Targets import TargetMove, TargetAttackMove, TargetEscape
 
 
 
@@ -82,30 +82,16 @@ class Starship ( StarObject ) :
         self.enemy = enemy
         self.pilot.set_enemy( enemy )
 
-    def ping_logic(self) :
-        if self.ping_animation == None :
-            return
-        if self.enemy != None :
-            self.ping_animation = None
-            return
-        self.ping_animation -= 2
-        if self.ping_animation < 0 : 
-            self.ping_animation = None
-            objs = self.game.get_objects_in_range(self.x, self.y, self.detectors_range)
-            for obj in objs :
-                if self.is_hostile(obj) :
-                    print("FOUND ENEMY")
-                    self.set_enemy(obj)
 
     def order_logic(self) :
         if len(self.orders) == 0 :
             return
-        self.orders[0].logic(self)
+        self.orders[0].logic()
 
     def ticktack(self):
-        self.ping_logic()
         self.order_logic()
-        self.pilot.ticktack()
+        if len(self.orders) == 0 and self.auto :
+            self.pilot.ticktack()
         super().ticktack()
 
     def hit(self, hitter):
@@ -139,10 +125,13 @@ class Starship ( StarObject ) :
 
     def on_menu(self, menu_item) :
         if menu_item.command == MenuItem.MOVE :
-            order = TargetMove(self.game, Stationary('move',32), *self.current_menu_pos, menu_item )
+            order = TargetMove(self.game, self, Stationary('move',32), *self.current_menu_pos, menu_item )
             self.append_order( order )
         elif menu_item.command == MenuItem.ATTACK :
-            order = TargetAttack(self.game, Stationary('target', 40), *self.current_menu_pos, menu_item )
+            order = TargetAttackMove(self.game, self, Stationary('target', 40), *self.current_menu_pos, menu_item )
+            self.append_order( order )
+        elif menu_item.command == MenuItem.FLEE :
+            order = TargetEscape(self.game, self, Stationary('escape', 40), *self.current_menu_pos, menu_item )
             self.append_order( order )
         else :
             print(f'menu clicked: {menu_item.label}, NOT HANDLED')
@@ -160,20 +149,9 @@ class Starship ( StarObject ) :
         gpos = self.game.get_display_xy(self.x, self.y)
         win.blit(temp_surface, (gpos[0]-100, gpos[1]-100))  # Adjust the position as needed
 
-
     def repaint(self, win) :
         self.repaint_ping(win)
         super().repaint(win)
 
-    # # Update the display
-    # pygame.display.flip()
-
-
-
-    # def repaint(self, win):
-    #     if self.enemy != None :
-    #         (xx,yy) = self.enemy.get_pos_in_front(-100)
-    #         pygame.draw.rect(win, (255, 255, 255), pygame.Rect(xx, yy, 5, 5))
-    #     super().repaint(win)
 
 

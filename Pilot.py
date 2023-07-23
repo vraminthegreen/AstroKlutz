@@ -22,19 +22,27 @@ class FighterPilot ( Pilot ) :
     def __init__(self, game) :
         Pilot.__init__(self, game)
         self.enemy_chase_mode = 1
+        self.chase_pos = None
+
+    def set_enemy(self, enemy) :
+        self.enemy = enemy
+        self.chase_pos = None
 
     def ticktack(self) :
-        if self.enemy != None :
+        if self.enemy == None :
+            return
+        if self.game.get_time() % 50 == 0 or self.chase_pos == None :
             if self.enemy_chase_mode == 1 :
-                self.starship.chase( * self.enemy.get_pos_in_front(-200) )
+                self.chase_pos = self.enemy.get_pos_in_front(-300)
             else :
-                self.starship.chase( * self.enemy.get_pos() )
-            if self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+25), self.starship.dir - (180-25), 0, 300) :
+                self.chase_pos = self.enemy.get_pos()
+            if self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+30), self.starship.dir - (180-30), 0, 500) :
                 self.enemy_chase_mode = 2
-            elif not self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+45), self.starship.dir - (180-45), 0, 300) :
+            elif not self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+45), self.starship.dir - (180-45), 0, 500) :
                 self.enemy_chase_mode = 1
-            if self.game.get_time() % 10 == 0 and self.starship.is_in_field( self.enemy.x, self.enemy.y, self.starship.dir - 30, self.starship.dir + 30, 0, 250) :
-                self.starship.fire()
+        self.starship.chase( *self.chase_pos )
+        if self.game.get_time() % 10 == 0 and self.starship.is_in_field( self.enemy.x, self.enemy.y, self.starship.dir - 30, self.starship.dir + 30, 0, 250) :
+            self.starship.fire()
 
 #################################################
 
@@ -44,15 +52,16 @@ class RocketFrigatePilot ( Pilot ) :
         Pilot.__init__(self, game)
 
     def ticktack(self) :
-        if self.enemy != None :
-            (pos1x, pos1y) = self.enemy.get_displaced_pos(self.enemy.dir+90,200)
-            (pos2x, pos2y) = self.enemy.get_displaced_pos(self.enemy.dir-90,200)
-            if self.starship.distance_to_xy(pos1x,pos1y) < self.starship.distance_to_xy(pos2x,pos2y) :
-                self.starship.chase( pos1x, pos1y )
-            else :
-                self.starship.chase( pos2x, pos2y )
-            if self.game.get_time() % 200 <= 1 and self.starship.distance_to( self.enemy ) < 500:
-                self.starship.fire_missile()
+        if self.enemy == None :
+            return
+        (pos1x, pos1y) = self.enemy.get_displaced_pos(self.enemy.dir+90,200)
+        (pos2x, pos2y) = self.enemy.get_displaced_pos(self.enemy.dir-90,200)
+        if self.starship.distance_to_xy(pos1x,pos1y) < self.starship.distance_to_xy(pos2x,pos2y) :
+            self.starship.chase( pos1x, pos1y )
+        else :
+            self.starship.chase( pos2x, pos2y )
+        if self.game.get_time() % 200 <= 1 and self.starship.distance_to( self.enemy ) < 500:
+            self.starship.fire_missile()
 
 
 #################################################

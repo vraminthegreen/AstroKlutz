@@ -82,24 +82,9 @@ class StarObject :
         new_rect = rotated_icon.get_rect( center = self.game.get_display_xy(self.x, self.y, self.layer) )
         win.blit(rotated_icon, new_rect.topleft)
 
-
-    def repaint_old(self, win):
-        if self.icon != None and self.animationFrame != None and self.animationOverlay :
-            rotated_icon = pygame.transform.rotate(self.icon, self.dir)
-            # new_rect = rotated_icon.get_rect(center=(self.x - co[0], self.y - co[1]))
-            new_rect = rotated_icon.get_rect( center = self.game.get_display_xy(self.x, self.y, self.layer) )
-            win.blit(rotated_icon, new_rect.topleft)
-        ico = self.get_icon()
-        if ico == None :
-            return
-        rotated_icon = pygame.transform.rotate(ico, self.dir)
-        new_rect = rotated_icon.get_rect( center = self.game.get_display_xy(self.x, self.y, self.layer) )
-        win.blit(rotated_icon, new_rect.topleft)
-
     def ticktack(self):
         if self.auto and len(self.orders)>0 :
-            self.chase( *self.orders[0].get_pos() )
-            if self.orders[0].is_completed(self) :
+            if self.orders[0].is_completed() :
                 self.pop_order()
         if self.animationOngoing != None :
             self.animateNextFrame()        
@@ -160,8 +145,14 @@ class StarObject :
         self.orders.append(order)
         self.auto = True
 
+    def push_order(self, order) :
+        self.game.add_object( order )
+        self.orders.insert(0, order)
+        self.auto = True
+
     def pop_order(self) :
         order = self.orders.pop( 0 )
+        order.on_terminate()
         self.game.remove_object( order )
         if len(self.orders) == 0 :
             self.auto = False
@@ -247,7 +238,7 @@ class StarObject :
         self.animationFrameNo += 1
         if self.animationFrame == None :
             self.animationOngoing = None
-            self.animationAfter( self )
+            self.animationAfter(self)
 
     def click(self, x, y) :
         return False
@@ -257,7 +248,7 @@ class StarObject :
 
     def get_current_vmax(self) :
         if len(self.orders) > 0 :
-            return self.orders[0].get_vmax(self)
+            return self.orders[0].get_vmax()
         else :
             return self.maxV
 
