@@ -138,7 +138,7 @@ class Menu( StarObject ) :
         print(f'select, owner = {self.owner}')
         if self.owner != None :
             print(f'calling on_menu')
-            self.owner.on_menu( self.clicked )
+            self.owner.on_menu( self.clicked, self.target )
         self.focused = None
         self.select_age = self.age
 

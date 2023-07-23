@@ -191,7 +191,7 @@ class StarObject :
     def rotateLeft(self) :
         self.rotate(-self.rotation_speed)
 
-    def chase(self, tx, ty):
+    def chase(self, tx, ty, decelerate = None):
         target_vector = pygame.Vector2(tx, -ty) - pygame.Vector2(self.x, -self.y)
         direction_to_target = math.degrees(math.atan2(target_vector.y, target_vector.x))
         difference_in_direction = (direction_to_target - self.dir) % 360
@@ -208,10 +208,15 @@ class StarObject :
 
         # Determine whether to accelerate or decelerate
         distance_to_target = target_vector.length()
+
+        if decelerate == None :
+            thedecelerate = self.chaseDecelerate
+        else :
+            thedecelerate = decelerate
         if distance_to_target > 40 :  # Accelerate if far from the target
             if abs(difference_in_direction) < 90 :
                 self.accelerate()
-        elif self.chaseDecelerate and self.v.length() > distance_to_target / 40  :  # Decelerate if close to the target
+        elif thedecelerate and self.v.length() > distance_to_target / 40  :  # Decelerate if close to the target
             self.decelerate()
         return distance_to_target < 20
 

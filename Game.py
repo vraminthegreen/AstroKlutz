@@ -27,7 +27,7 @@ class Game:
         self.paused = True
 
     def add_object(self, obj):
-        self.objects[obj.Z].insert(0,obj)
+        self.objects[obj.Z].append( obj )
 
     def remove_object(self, obj):
         self.objects[obj.Z].remove(obj)

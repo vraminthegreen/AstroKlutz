@@ -1,8 +1,10 @@
 pygame.todo
 
+- podpięcie akcji menu wroga
+- implementacja wyświetlania orderów tylko gdy statek ma focus
+- implementacja lini łączącej ordery
 - backspace kasuje ostatni target
 - implementacja patrolu
-- implementacja innych funkcji
 - dodawanie do grupy przez kliknięcie
 - rozkazy dla grupy
 - wykonanie rozkazów grupy
@@ -112,4 +114,6 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + podpięcie menu dla statku wrogiego
 + menu dla statku przyjacielskiego: follow, guard
 + podpięcie menu dla statku przyjacielskiego
++ implementacja follow friend
++ implementacja guard friend
 

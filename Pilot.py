@@ -36,9 +36,9 @@ class FighterPilot ( Pilot ) :
                 self.chase_pos = self.enemy.get_pos_in_front(-300)
             else :
                 self.chase_pos = self.enemy.get_pos()
-            if self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+30), self.starship.dir - (180-30), 0, 500) :
+            if self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+45), self.starship.dir - (180-45), 0, 500) :
                 self.enemy_chase_mode = 2
-            elif not self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+45), self.starship.dir - (180-45), 0, 500) :
+            elif not self.enemy.is_in_field(self.starship.x, self.starship.y, self.starship.dir - (180+60), self.starship.dir - (180-60), 0, 500) :
                 self.enemy_chase_mode = 1
         self.starship.chase( *self.chase_pos )
         if self.game.get_time() % 10 == 0 and self.starship.is_in_field( self.enemy.x, self.enemy.y, self.starship.dir - 30, self.starship.dir + 30, 0, 250) :

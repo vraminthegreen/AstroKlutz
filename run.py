@@ -53,12 +53,17 @@ enemies = [
     Starship(game, team_yellow, crippled_fighter, FighterPilot(game), -350, -350 ),
     # Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
     Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 ),
-    Starship(game, team_green, crippled_fighter, FighterPilot(game), -130, 230 )
+    
 ]
+
 
 for enemy in enemies :
     enemy.set_enemy(player)
     game.add_object(enemy)
+
+friend = Starship(game, team_green, crippled_fighter, FighterPilot(game), -130, 230 )
+friend.set_enemy(enemies[0])
+game.add_object(friend)
 
 # Missile.fire(game)
 

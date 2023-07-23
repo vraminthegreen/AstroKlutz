@@ -11,7 +11,7 @@ from Pilot import MissilePilot
 from Game import Game
 from IconRepository import IconRepository
 from Menu import Menu, MenuItem
-from Targets import TargetMove, TargetAttackMove, TargetEscape
+from Targets import TargetMove, TargetAttackMove, TargetEscape, TargetFollow
 
 
 
@@ -23,7 +23,7 @@ class Starship ( StarObject ) :
         self.pilot = pilot
         self.pilot.set_starship( self )
         self.icon = IconRepository.get_icon( self.object_class.icon_name, self.get_size(), self.team )
-        self.dir = -150
+        self.dir = 0
         self.bullets = []
         self.missiles = []
         self.enemy = None
@@ -34,6 +34,7 @@ class Starship ( StarObject ) :
         self.focus_visible = True
         self.ping_animation = None
         self.affected_by_pause = True
+        self.formation = None
 
     def is_hostile(self, other) :
         return self.team != other.team
@@ -134,19 +135,23 @@ class Starship ( StarObject ) :
         self.game.push_focused( menu )
         return True
 
-    def on_menu(self, menu_item) :
+    def on_menu(self, menu_item, target) :
+        order = None
         if menu_item.command == MenuItem.MOVE :
             order = TargetMove(self.game, self, Stationary('move',32), *self.current_menu_pos, menu_item )
-            self.append_order( order )
         elif menu_item.command == MenuItem.ATTACK :
             order = TargetAttackMove(self.game, self, Stationary('target', 40), *self.current_menu_pos, menu_item )
-            self.append_order( order )
         elif menu_item.command == MenuItem.FLEE :
             order = TargetEscape(self.game, self, Stationary('escape', 40), *self.current_menu_pos, menu_item )
-            self.append_order( order )
+        elif menu_item.command == MenuItem.FRIEND_FOLLOW :
+            order = TargetFollow(self.game, self, Stationary('move', 32), menu_item, target, False)
+        elif menu_item.command == MenuItem.FRIEND_GUARD :
+            order = TargetFollow(self.game, self, Stationary('protect', 24), menu_item, target, True)
         else :
             print(f'menu clicked: {menu_item.label}, NOT HANDLED')
             return False
+        if order != None :
+            self.append_order( order )
 
     def repaint_ping(self, win) :
         if self.ping_animation == None :

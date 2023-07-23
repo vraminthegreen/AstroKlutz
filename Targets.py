@@ -4,6 +4,7 @@ import pygame
 from StarObject import StarObject
 from ShipClass import Stationary
 from Pilot import FighterPilot
+from Formation import Formation
 
 #################################################
 
@@ -61,12 +62,14 @@ class TargetAttackMove ( TargetMove ) :
 
     def __init__(self, game, owner, object_class, x, y, menu_item):
         super().__init__(game, owner, object_class, x, y, menu_item)
+        self.chase_pos = self.get_pos()
 
     def get_vmax(self) :
         return 0.5 * self.owner.maxV
 
     def logic(self) :
-        self.owner.chase( *self.get_pos() )
+        if self.chase_pos != None :
+            self.owner.chase( *self.chase_pos, False )
         if self.owner.ping_animation == None :
             if self.game.get_time() % 120 == 0 :
                 self.owner.ping_animation = 100
@@ -110,4 +113,46 @@ class TargetAttack ( TargetMove ) :
         self.owner.pilot.set_enemy(None)
 
 #################################################
+
+class TargetFollow ( TargetAttackMove ) :
+
+    def __init__(self, game, owner, object_class, menu_item, target, guard):
+        super().__init__(game, owner, object_class, target.x, target.y, menu_item)
+        self.target = target
+        self.guard = guard
+        if self.target.formation == None :
+            self.target.formation = Formation(self.target)
+        if self.guard :
+            self.target.formation.add_guard(self.owner)
+        else :
+            self.target.formation.add_follower(self.owner)
+        self.chase_pos = None
+        # self.owner.set_enemy(enemy)
+        # self.owner.pilot.set_enemy(enemy)
+
+    def get_vmax(self) :
+        if self.guard :
+            return 0.5 * self.owner.maxV
+        else :
+            return self.owner.maxV
+
+    def is_completed(self) :
+        return self.target.dead
+
+    def logic(self) :
+        self.x = self.target.x
+        self.y = self.target.y
+        if self.chase_pos == None or self.game.get_time() % 200 == 0 :
+            self.chase_pos = self.target.formation.get_optimal_pos( self.owner )
+            if self.chase_pos == None :
+                print("TargetFollow: formation position not found")
+                self.owner.pop_order()
+        if self.guard :
+            super().logic()
+        elif self.chase_pos != None :
+            self.owner.chase( *self.chase_pos, False )
+
+    def on_terminate(self) :
+        print(f"TargetFollow.on_terminate")
+        self.target.formation.remove(self.owner)
 
