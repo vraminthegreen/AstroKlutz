@@ -39,6 +39,7 @@ class StarObject :
         self.affected_by_pause = False
         self.is_selectable = False
         self.focus_visible = False
+        self.visible = True
         self.Z = 0
 
     def get_size( self ) :
@@ -82,6 +83,24 @@ class StarObject :
 
         new_rect = rotated_icon.get_rect( center = self.game.get_display_xy(self.x, self.y, self.layer) )
         win.blit(rotated_icon, new_rect.topleft)
+
+    def repaint_focused(self, win) :
+        o1dxy = self.game.get_display_xy(self.x, self.y)
+        for order in self.orders :            
+            # Create vectors for the orders
+            o2dxy = self.game.get_display_xy(order.x, order.y)
+            vec1 = pygame.Vector2(*o1dxy)
+            vec2 = pygame.Vector2(*o2dxy)
+            # Calculate the direction vector from order1 to order2
+            dir_vec = (vec2 - vec1).normalize()
+            # Calculate the start and end points of the line
+            start_pos = vec1 + dir_vec * 30
+            end_pos = vec2 - dir_vec * 30
+            pygame.draw.line(win, (35, 209, 155), start_pos, end_pos)
+            o1dxy = o2dxy
+
+        for order in self.orders :
+            order.repaint( win )
 
     def ticktack(self):
         if self.auto and len(self.orders)>0 :
@@ -153,7 +172,7 @@ class StarObject :
 
     def pop_order(self) :
         order = self.orders.pop( 0 )
-        order.on_terminate()
+        order.on_completed()
         self.game.remove_object( order )
         if len(self.orders) == 0 :
             self.auto = False
@@ -248,6 +267,12 @@ class StarObject :
 
     def click(self, x, y) :
         return False
+
+    def command_delete(self) :
+        order = self.orders.pop( -1 )
+        self.game.remove_object( order )
+        if len(self.orders) == 0 :
+            self.auto = False
 
     def on_focus_lost(self) :
         return False

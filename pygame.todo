@@ -1,8 +1,6 @@
 pygame.todo
 
-- implementacja wyświetlania orderów tylko gdy statek ma focus
-- implementacja lini łączącej ordery
-- backspace kasuje ostatni target
+- zastrzelenie wrogiego statku nie kasuje orderu
 - implementacja patrolu
 - dodawanie do grupy przez kliknięcie
 - rozkazy dla grupy
@@ -116,4 +114,7 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + implementacja follow friend
 + implementacja guard friend
 + podpięcie akcji menu wroga
++ implementacja wyświetlania orderów tylko gdy statek ma focus
++ implementacja lini łączącej ordery
++ backspace kasuje ostatni target
 

@@ -15,6 +15,7 @@ class TargetMove ( StarObject ) :
         super().__init__(game, object_class, x, y)
         self.owner = owner
         self.menu_item = menu_item
+        self.visible = False
 
     def is_completed(self) :
         target_vector =  pygame.Vector2(self.x, self.y) - pygame.Vector2(self.owner.x, self.owner.y)
@@ -28,7 +29,7 @@ class TargetMove ( StarObject ) :
     def logic(self) :
         self.owner.chase( *self.get_pos() )
 
-    def on_terminate(self) :
+    def on_completed(self) :
         pass
 
 #################################################
@@ -109,7 +110,7 @@ class TargetAttack ( TargetMove ) :
         self.y = self.enemy.y
         self.owner.pilot.ticktack()
 
-    def on_terminate(self) :
+    def on_completed(self) :
         self.owner.set_enemy(None)
         self.owner.pilot.set_enemy(None)
 
@@ -153,8 +154,7 @@ class TargetFollow ( TargetAttackMove ) :
         elif self.chase_pos != None :
             self.owner.chase( *self.chase_pos, False )
 
-    def on_terminate(self) :
-        print(f"TargetFollow.on_terminate")
+    def on_completed(self) :
         self.target.formation.remove(self.owner)
 
 #################################################

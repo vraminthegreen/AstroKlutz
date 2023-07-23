@@ -244,12 +244,19 @@ class Game:
                 for obj in z_list :
                     if not self.paused or not obj.affected_by_pause :
                         obj.ticktack()
-                    obj.repaint( self.win ) # span1, pan2, pan3)
+
+            for z_list in reversed(self.objects) :
+                for obj in z_list :
+                    if obj.visible :
+                        obj.repaint( self.win ) # span1, pan2, pan3)
                     # obj.repaint(world_surface, pan1, pan2, pan3 )
+            focus_painted = False
             for obj in self.focused :
-                if obj.focus_visible :
+                if obj.focus_visible and not focus_painted :
                     self.draw_select(obj, (0,255,0))
-                    break
+                    focus_painted = True
+                if obj.visible :
+                    obj.repaint_focused( self.win )
 
             # Resize world_surface to achieve a zoom effect
             # zoomed_surface = pygame.transform.smoothscale(world_surface, self.game_window)
