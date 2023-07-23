@@ -1,5 +1,6 @@
 
 import pygame
+import random
 
 from StarObject import StarObject
 from ShipClass import Stationary
@@ -155,4 +156,34 @@ class TargetFollow ( TargetAttackMove ) :
     def on_terminate(self) :
         print(f"TargetFollow.on_terminate")
         self.target.formation.remove(self.owner)
+
+#################################################
+
+class TargetEnemyEscape ( TargetMove ) :
+
+    def __init__(self, game, owner, object_class, menu_item, enemy):
+        super().__init__(game, owner, object_class, enemy.x, enemy.y, menu_item)
+        self.enemy = enemy
+        self.chase_pos = None
+        self.next_zigzag = -1
+
+    def is_completed(self) :
+        return self.owner.distance_to(self.enemy) > 5000 or self.enemy.dead
+
+    def logic(self) :
+        self.x = self.enemy.x
+        self.y = self.enemy.y
+        if self.game.get_time() > self.next_zigzag :
+            segment_len = random.randint(20,200)
+            self.next_zigzag = self.game.get_time() + segment_len
+            vector = pygame.Vector2(self.owner.x - self.enemy.x, self.owner.y - self.enemy.y)
+            # Normalize the vector (make its length 1)
+            vector.normalize_ip()
+            vector = vector.rotate(random.randint(-60,60))
+            # Scale it to the desired length (1000)
+            vector.scale_to_length(5000)
+            # Adding it to the original position to get the extended position
+            self.chase_pos = (self.owner.x + vector.x, self.owner.y + vector.y)
+        self.owner.chase( *self.chase_pos, False )
+
 

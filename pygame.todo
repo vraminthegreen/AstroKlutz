@@ -1,6 +1,5 @@
 pygame.todo
 
-- podpięcie akcji menu wroga
 - implementacja wyświetlania orderów tylko gdy statek ma focus
 - implementacja lini łączącej ordery
 - backspace kasuje ostatni target
@@ -8,12 +7,12 @@ pygame.todo
 - dodawanie do grupy przez kliknięcie
 - rozkazy dla grupy
 - wykonanie rozkazów grupy
-- animacja ściemniania dustu na przeźroczystości
 - implementacja animacji odrzutu (osobnej)
 - background ma pozycję, poza pozycją tło jest czarne
 - dodanie awaryjnych backgroundów jeśli stateczek poleci dalej (można dolecieć do innych teł)
 - dodanie innych typów statków
 - dodanie teleporterów
+- animacja ściemniania dustu na przeźroczystości
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
 + klasa order zakładana przyciskiem myszy
@@ -116,4 +115,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + podpięcie menu dla statku przyjacielskiego
 + implementacja follow friend
 + implementacja guard friend
++ podpięcie akcji menu wroga
 

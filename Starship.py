@@ -11,7 +11,7 @@ from Pilot import MissilePilot
 from Game import Game
 from IconRepository import IconRepository
 from Menu import Menu, MenuItem
-from Targets import TargetMove, TargetAttackMove, TargetEscape, TargetFollow
+from Targets import TargetMove, TargetAttack, TargetAttackMove, TargetEscape, TargetFollow, TargetEnemyEscape
 
 
 
@@ -140,13 +140,17 @@ class Starship ( StarObject ) :
         if menu_item.command == MenuItem.MOVE :
             order = TargetMove(self.game, self, Stationary('move',32), *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.ATTACK :
-            order = TargetAttackMove(self.game, self, Stationary('target', 40), *self.current_menu_pos, menu_item )
+            order = TargetAttackMove(self.game, self, Stationary('target', 32), *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.FLEE :
-            order = TargetEscape(self.game, self, Stationary('escape', 40), *self.current_menu_pos, menu_item )
+            order = TargetEscape(self.game, self, Stationary('escape', 32), *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.FRIEND_FOLLOW :
             order = TargetFollow(self.game, self, Stationary('move', 32), menu_item, target, False)
         elif menu_item.command == MenuItem.FRIEND_GUARD :
             order = TargetFollow(self.game, self, Stationary('protect', 24), menu_item, target, True)
+        elif menu_item.command == MenuItem.ENEMY_ATTACK :
+            order = TargetAttack(self.game, self, Stationary('target', 32), menu_item, target )
+        elif menu_item.command == MenuItem.ENEMY_FLEE :
+            order = TargetEnemyEscape(self.game, self, Stationary('escape', 24), menu_item, target)
         else :
             print(f'menu clicked: {menu_item.label}, NOT HANDLED')
             return False
