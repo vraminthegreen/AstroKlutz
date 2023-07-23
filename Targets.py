@@ -17,6 +17,12 @@ class TargetMove ( StarObject ) :
         self.menu_item = menu_item
         self.visible = False
 
+    def on_activate(self) :
+        pass
+
+    def on_deactivate(self) :
+        pass
+
     def is_completed(self) :
         target_vector =  pygame.Vector2(self.x, self.y) - pygame.Vector2(self.owner.x, self.owner.y)
         distance_to_target = target_vector.length()
@@ -96,8 +102,14 @@ class TargetAttack ( TargetMove ) :
     def __init__(self, game, owner, object_class, menu_item, enemy):
         super().__init__(game, owner, object_class, enemy.x, enemy.y, menu_item)
         self.enemy = enemy
-        self.owner.set_enemy(enemy)
-        self.owner.pilot.set_enemy(enemy)
+
+    def on_activate(self) :
+        self.owner.set_enemy(self.enemy)
+        self.owner.pilot.set_enemy(self.enemy)
+
+    def on_deactivate(self) :
+        self.owner.set_enemy(None)
+        self.owner.pilot.set_enemy(None)
 
     def get_vmax(self) :
         return self.owner.maxV
@@ -122,15 +134,20 @@ class TargetFollow ( TargetAttackMove ) :
         super().__init__(game, owner, object_class, target.x, target.y, menu_item)
         self.target = target
         self.guard = guard
+        self.chase_pos = None
+        # self.owner.set_enemy(enemy)
+        # self.owner.pilot.set_enemy(enemy)
+
+    def on_activate(self) :
         if self.target.formation == None :
             self.target.formation = Formation(self.target)
         if self.guard :
             self.target.formation.add_guard(self.owner)
         else :
-            self.target.formation.add_follower(self.owner)
-        self.chase_pos = None
-        # self.owner.set_enemy(enemy)
-        # self.owner.pilot.set_enemy(enemy)
+            self.target.formation.add_follower(self.owner)        
+
+    def on_deactivate(self) :
+        self.target.formation.remove(self.owner)
 
     def get_vmax(self) :
         if self.guard :

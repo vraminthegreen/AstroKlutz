@@ -158,16 +158,22 @@ class StarObject :
         for order in self.orders :
             self.game.remove_object( self.order )
         self.orders = [ order ]
+        order.on_activate()
         self.auto = True
 
     def append_order(self, order) :
         self.game.add_object( order )
         self.orders.append(order)
+        if len(self.orders) == 1 :
+            order.on_activate()
         self.auto = True
 
     def push_order(self, order) :
         self.game.add_object( order )
+        if len(self.orders) > 0 :
+            self.orders[0].on_deactivate()
         self.orders.insert(0, order)
+        order.on_activate()
         self.auto = True
 
     def pop_order(self) :
@@ -176,6 +182,8 @@ class StarObject :
         self.game.remove_object( order )
         if len(self.orders) == 0 :
             self.auto = False
+        else :
+            self.orders[0].on_activate()
 
     def accelerate(self):
         acceleration_vector = pygame.Vector2(self.maxAcc, 0).rotate(-self.dir)
@@ -272,6 +280,7 @@ class StarObject :
         order = self.orders.pop( -1 )
         self.game.remove_object( order )
         if len(self.orders) == 0 :
+            order.on_deactivate()
             self.auto = False
 
     def on_focus_lost(self) :
