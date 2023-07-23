@@ -5,6 +5,12 @@ from StarObject import StarObject
 
 class DistantObject ( StarObject ) :
 
+
+    def __init__(self, game, object_class, x, y) :
+        super().__init__(game, object_class, x, y)
+        self.Z = 2
+
+
     def repaint(self, win):
 
         ico = self.get_icon()
@@ -19,3 +25,5 @@ class DistantObject ( StarObject ) :
 
         new_rect = scaled_icon.get_rect( center = self.game.get_display_xy(self.x, self.y, self.layer) )
         win.blit(scaled_icon, new_rect.topleft)
+
+

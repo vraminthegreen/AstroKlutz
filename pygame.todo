@@ -1,9 +1,5 @@
 pygame.todo
 
-- menu dla statku wrogiego: atak, ucieczka
-- podpięcie menu dla statku wrogiego
-- menu dla statku przyjacielskiego: follow, guard
-- podpięcie menu dla statku przyjacielskiego
 - backspace kasuje ostatni target
 - implementacja patrolu
 - implementacja innych funkcji
@@ -111,4 +107,9 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + implementacja ataku: order wcelowany w statek
 + implementacja ataku: włożenie target - statek na stos ataków
 + implementacja ucieczki (oddalanie się od punktu)
++ osobne obiekty tła i gry
++ menu dla statku wrogiego: atak, ucieczka
++ podpięcie menu dla statku wrogiego
++ menu dla statku przyjacielskiego: follow, guard
++ podpięcie menu dla statku przyjacielskiego
 

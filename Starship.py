@@ -33,6 +33,7 @@ class Starship ( StarObject ) :
         self.is_selectable = True
         self.focus_visible = True
         self.ping_animation = None
+        self.affected_by_pause = True
 
     def is_hostile(self, other) :
         return self.team != other.team
@@ -82,7 +83,6 @@ class Starship ( StarObject ) :
         self.enemy = enemy
         self.pilot.set_enemy( enemy )
 
-
     def order_logic(self) :
         if len(self.orders) == 0 :
             return
@@ -120,8 +120,19 @@ class Starship ( StarObject ) :
     def click( self, x, y ) :
         print(f'create menu at ({x},{y})')
         self.current_menu_pos = (x,y)
+        objs = self.game.get_objects_in_range(x, y, 20)
+        print(f'click selected {len(objs)} elements: {objs}')
+        for obj in objs :
+            if obj.is_hostile(self) :
+                menu = Menu.enemy_menu(self.game, x, y, self, obj)
+            else :
+                menu = Menu.friend_menu(self.game, x, y, self, obj)
+            self.game.push_focused( menu )
+            return True
+
         menu = Menu.target_menu(self.game, x, y, self)
         self.game.push_focused( menu )
+        return True
 
     def on_menu(self, menu_item) :
         if menu_item.command == MenuItem.MOVE :

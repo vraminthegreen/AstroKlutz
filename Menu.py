@@ -12,9 +12,14 @@ from AnimatedSprite import AnimatedSprite
 class MenuItem :
 
     ICON_SIZE = 32
+
     MOVE = 1
     ATTACK = 2
     FLEE = 3
+    ENEMY_ATTACK = 4
+    ENEMY_FLEE = 5
+    FRIEND_FOLLOW = 6
+    FRIEND_GUARD = 7
 
     def __init__( self, icon, not_selected, selected, label, command ) :
         """
@@ -72,6 +77,7 @@ class Menu( StarObject ) :
         self.visible = False
         self.hiding = False
         self.owner = None
+        self.target = None
 
     def repaint(self, win ):
         if not self.visible : 
@@ -90,6 +96,7 @@ class Menu( StarObject ) :
         self.repaint_engine(win, self.current_zoom, self.current_angle )
 
     def repaint_engine(self, win, zoom=1.0, angle_increment=30):
+        # print(f'repaint_engine, time: {self.game.get_time()}')
         num_items = len(self.menu_items)
         radius = Menu.DEFAULT_RADIUS * zoom  # Adjust the radius based on the zoom factor
 
@@ -169,9 +176,12 @@ class Menu( StarObject ) :
 
     def click( self, game_x, game_y ) :
         if self.clicked or self.hiding :
-            return
+            print(f'Menu.click: ignored')
+            return True
+        print(f'Menu.click: accepted')
         scr_pos = self.game.get_display_xy( game_x, game_y )
         self.select( self.get_item_at( *scr_pos ) )
+        return True
 
     def on_focus_lost( self ) :
         if self.clicked or self.hiding :
@@ -180,6 +190,9 @@ class Menu( StarObject ) :
 
     def set_owner( self, owner ) :
         self.owner = owner
+
+    def set_target( self, target ) :
+        self.target = target
 
     @staticmethod
     def selected( menu_item ) :
@@ -205,6 +218,52 @@ class Menu( StarObject ) :
         menu.reset()
         menu.show_at(x, y)
         menu.set_owner( owner )
+        Menu.active_menu = menu
+        return menu
+
+    @staticmethod
+    def enemy_menu(game, x, y, owner, target) :
+        if Menu.active_menu != None :
+            Menu.active_menu.hide()
+        if Menu.icons == None :
+            Menu.icons = AnimatedSprite( "iconsheet-menu.png", 11, 2, MenuItem.ICON_SIZE, True )
+        menu = Menu.menus.get('enemy')
+        if menu == None :
+            menu = Menu(game, 
+                [ 
+                    MenuItem( Menu.icons, 1, 12, "attack", MenuItem.ENEMY_ATTACK ),
+                    MenuItem( Menu.icons, 4, 15, "flee",   MenuItem.ENEMY_FLEE ),
+                ]
+            )
+            Menu.menus['enemy'] = menu
+        print(f'set_owner: {owner}')
+        menu.reset()
+        menu.show_at(x, y)
+        menu.set_owner( owner )
+        menu.set_target( target )
+        Menu.active_menu = menu
+        return menu
+
+    @staticmethod
+    def friend_menu(game, x, y, owner, target) :
+        if Menu.active_menu != None :
+            Menu.active_menu.hide()
+        if Menu.icons == None :
+            Menu.icons = AnimatedSprite( "iconsheet-menu.png", 11, 2, MenuItem.ICON_SIZE, True )
+        menu = Menu.menus.get('friend')
+        if menu == None :
+            menu = Menu(game, 
+                [ 
+                    MenuItem( Menu.icons, 5, 16, "follow", MenuItem.FRIEND_FOLLOW ),
+                    MenuItem( Menu.icons, 2, 13, "guard",   MenuItem.FRIEND_GUARD ),
+                ]
+            )
+            Menu.menus['friend'] = menu
+        print(f'set_owner: {owner}')
+        menu.reset()
+        menu.show_at(x, y)
+        menu.set_owner( owner )
+        menu.set_target( target )
         Menu.active_menu = menu
         return menu
 

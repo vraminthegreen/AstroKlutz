@@ -8,7 +8,7 @@ from Dust import Dust
 class Game:
 
     def __init__(self, input_handler):
-        self.objects = []
+        self.objects = [[],[],[],[],[]]
         self.mouse_tracking = []
         self.input_handler = input_handler
         self.game_window = (1024,768)
@@ -24,13 +24,13 @@ class Game:
             'spark' : AnimatedSprite( "spark.png", 4, 4, 16, False ),
             'shield' : AnimatedSprite( "shield.png", 5, 5, 96, True ),
         }
-        self.paused = False
+        self.paused = True
 
     def add_object(self, obj):
-        self.objects.append(obj)
+        self.objects[obj.Z].insert(0,obj)
 
     def remove_object(self, obj):
-        self.objects.remove(obj)
+        self.objects[obj.Z].remove(obj)
         if obj in self.focused :
             self.focused.remove( obj )
 
@@ -45,6 +45,7 @@ class Game:
 
     def push_focused(self, focused) :
         self.focused.insert(0,focused)
+        print(f'push focused, focused len: {len(self.focused)}')
 
     def pop_focused( self ) :
         if len(self.focused) > 0 :
@@ -53,21 +54,21 @@ class Game:
 
     def get_collisions(self, pygame_rect ):
         collisions = []
-        for obj in self.objects:
+        for obj in self.objects[0]:
             if obj.can_be_hit and obj.get_collision_rect().colliderect(pygame_rect):
                 collisions.append(obj)
         return collisions
 
     def get_selections(self, pygame_rect ):
         selections = []
-        for obj in self.objects:
+        for obj in self.objects[0]:
             if obj.can_be_hit and obj.get_collision_rect(1).colliderect(pygame_rect):
                 selections.append(obj)
         return selections
 
     def get_objects_in_range(self, x, y, range) :
         res = []
-        for obj in self.objects :
+        for obj in self.objects[0] :
             if obj.can_be_hit and obj.distance_to_xy(x, y) <= range :
                 res.append( obj )
         return res
@@ -193,7 +194,7 @@ class Game:
         return pygame.Rect( left, top, width, height )
 
     def compute_bounding_rect(self) :
-        important_objects = [obj for obj in self.objects if obj.is_important]
+        important_objects = [obj for obj in self.objects[0] if obj.is_important]
 
         if not important_objects:
             return None  # Return None if there are no important objects
@@ -239,11 +240,12 @@ class Game:
 
             self.pan_camera(bounding_rect)
 
-            for obj in self.objects :
-                if not self.paused and obj.may_be_paused :
-                    obj.ticktack()
-                obj.repaint( self.win ) # span1, pan2, pan3)
-                # obj.repaint(world_surface, pan1, pan2, pan3 )
+            for z_list in reversed(self.objects) :
+                for obj in z_list :
+                    if not self.paused or not obj.affected_by_pause :
+                        obj.ticktack()
+                    obj.repaint( self.win ) # span1, pan2, pan3)
+                    # obj.repaint(world_surface, pan1, pan2, pan3 )
             for obj in self.focused :
                 if obj.focus_visible :
                     self.draw_select(obj, (0,255,0))
@@ -295,9 +297,12 @@ class Game:
 
     def click( self, x, y ) :
         if len(self.focused) > 0 :
+            print(f'focused click')
             gxy = self.get_xy_display( x, y )
             if self.focused[0].click( *gxy ) :
                 return
+            print(f'focused click ignored')
+        print(f'unfocused click')
         game_coords = self.get_xy_display( x, y )
         objects_here = self.get_selections(pygame.Rect(*game_coords,1,1))
         objects_selectable = [ obj for obj in objects_here if obj.is_selectable ]
