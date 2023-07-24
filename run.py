@@ -14,6 +14,7 @@ from Team import Team
 from Pilot import Pilot, FighterPilot, RocketFrigatePilot
 from ShipClass import FighterClass, RocketFrigateClass, Stationary, Background
 from DistantObject import DistantObject
+from Group import Group
 
 
 # Initialize Pygame
@@ -61,9 +62,21 @@ for enemy in enemies :
     enemy.set_enemy(player)
     game.add_object(enemy)
 
-friend = Starship(game, team_green, crippled_fighter, FighterPilot(game), -130, 230 )
-friend.set_enemy(enemies[0])
-game.add_object(friend)
+friends = [
+	Starship(game, team_green, crippled_fighter, FighterPilot(game), -130, 230 ),
+	Starship(game, team_green, crippled_fighter, FighterPilot(game), -100, 230 ),
+	Starship(game, team_green, crippled_fighter, FighterPilot(game), -70, 230 ),
+	Starship(game, team_green, crippled_fighter, FighterPilot(game), -40, 230 ),
+]
+
+group = Group(game)
+game.add_object(group)
+
+for friend in friends :
+	game.add_object(friend)
+	group.add_ship(friend)
+
+game.set_focused(group)
 
 # Missile.fire(game)
 

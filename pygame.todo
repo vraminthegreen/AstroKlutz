@@ -1,8 +1,12 @@
 pygame.todo
 
-- dodawanie do grupy przez kliknięcie
-- rozkazy dla grupy
-- wykonanie rozkazów grupy
+- wyświetlanie grupy jako miniaturek należących statków
+- dodanie cyfry - identyfikatora grupy do wyświetlania
+- selekcja grupy przez wciścięcie cyfry
+- podłączenie standardowych menu do grupy
+- menu grupy dla przyjaznego statku poza grupą, dodatkowa opcja + dodaj do grupy
+- menu grupy dla przyjaznego statku w grupie, dodatkowa opcja + dodaj do grupy
+- rozkazy grupowe ... opisać
 - implementacja animacji odrzutu (osobnej)
 - poprawka rozwalania się o wybuch
 - background ma pozycję, poza pozycją tło jest czarne
@@ -119,4 +123,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + zastrzelenie wrogiego statku nie kasuje orderu
 + implementacja patrolu
 + poprawka missile, w ogóle przestał działać
++ tworzenie grupy - programistyczne, wyświetlanie grupy jako obejmującego prostokąta
 

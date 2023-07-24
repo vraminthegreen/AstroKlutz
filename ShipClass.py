@@ -5,6 +5,14 @@ class ObjectClass :
         self.layer = 0
         self.detectors_range = 0
         self.layer = 0
+        self.size = 0
+        self.can_be_hit = False
+        self.resistance = 1
+        self.maxAcc = 1
+        self.maxV = 1
+        self.rotation_speed = 1
+        self.chaseDecelerate = False
+        self.icon_name = None
 
 
 #################################################
