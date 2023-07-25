@@ -6,6 +6,7 @@ class ObjectClass :
         self.detectors_range = 0
         self.layer = 0
         self.size = 0
+        self.minimized_size = 0
         self.can_be_hit = False
         self.resistance = 1
         self.maxAcc = 1
@@ -23,6 +24,7 @@ class FighterClass ( ObjectClass ) :
         ObjectClass.__init__(self)
         self.icon_name = "fighter"
         self.size = 48
+        self.minimized_size = 24
         self.max_bullets = 5
         self.max_missiles = 0
         self.front_shield = 90
@@ -43,6 +45,7 @@ class RocketFrigateClass ( ObjectClass ) :
         ObjectClass.__init__(self)
         self.icon_name = "rocket"
         self.size = 64
+        self.minimized_size = 32
         self.max_bullets = 0
         self.max_missiles = 2
         self.front_shield = 80

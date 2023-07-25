@@ -8,12 +8,16 @@ from ShipClass import ObjectClass
 
 class Group( StarObject ) :
 
-    def __init__(self, game) :
+    def __init__(self, game, number) :
         super().__init__(game, ObjectClass(), 0, 0)
         self.visible = False
         self.focus_visible = True
         self.ships = []
         self.bounding_rect = pygame.Rect(0,0,0,0)
+        self.number = number
+        self.background_color = (0, 128, 128, 64)
+        self.minimized_size = 32
+
 
     def add_ship(self,ship) :
         self.ships.append(ship)
@@ -41,4 +45,29 @@ class Group( StarObject ) :
 
     def get_rect(self) :
         return self.bounding_rect
+
+    def repaint(self, win):
+        # Calculate group's position and size based on its number
+        group_height = self.minimized_size + 10  # 10 for padding
+        group_y = 10 + (self.number - 1) * group_height  # 10 for top margin
+        group_width = len(self.ships) * self.minimized_size + 30  # 30 for padding and number
+
+        # Draw semi-transparent background
+        background_rect = pygame.Surface((group_width, group_height), pygame.SRCALPHA)
+        background_rect.fill(self.background_color)
+        win.blit(background_rect, (10, group_y))  # 10 for left margin
+
+        # Draw group number
+        font = pygame.font.Font(None, self.minimized_size)  # Use default font
+        number_surface = font.render(str(self.number), True, (50, 255, 200))
+        win.blit(number_surface, (15, group_y + 10))  # 15 for left margin, 5 for top padding
+
+        # Draw ship miniatures
+        icon_x = 35
+        for i, ship in enumerate(self.ships):
+            icon = pygame.transform.scale(ship.icon, (ship.minimized_size, ship.minimized_size))
+            rotated_icon = pygame.transform.rotate(icon, 90)  # Rotate icon by -90 degrees
+            win.blit(rotated_icon, (icon_x, group_y + 5 + (self.minimized_size - ship.minimized_size)/2))  # 5 for top padding
+            icon_x += ship.minimized_size + 5  # 30 for left margin and number
+
 

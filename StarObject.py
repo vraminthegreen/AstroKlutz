@@ -20,6 +20,7 @@ class StarObject :
         self.animationFrame = None
         # copy the prototype
         self.size = self.object_class.size
+        self.minimized_size = self.object_class.minimized_size
         self.can_be_hit = self.object_class.can_be_hit
         self.resistance = self.object_class.resistance
         self.maxAcc = self.object_class.maxAcc
