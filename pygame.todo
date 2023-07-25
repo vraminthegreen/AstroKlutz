@@ -1,6 +1,7 @@
 pygame.todo
 
-- menu dla siebie - stwórz grupę
+- implementacja dodaj do grupy
+- implementacja usuń z grupy
 - rozkazy grupowe ... projekt
 - implementacja animacji odrzutu (osobnej)
 - poprawka rozwalania się o wybuch
@@ -124,4 +125,6 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + selekcja grupy przez wciścięcie cyfry
 + podłączenie standardowych menu do grupy
 + menu grupy dla przyjaznego statku poza grupą, dodatkowa opcja + dodaj do grupy
++ menu dla siebie - stwórz grupę
++ stwórz grupę implementacja
 

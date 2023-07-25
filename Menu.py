@@ -268,9 +268,22 @@ class Menu( StarObject ) :
             menu = Menu(game, 
                 [ 
                     MenuItem( Menu.icons, 5, 16, "follow", MenuItem.FRIEND_FOLLOW ),
-                    MenuItem( Menu.icons, 2, 13, "guard",   MenuItem.FRIEND_GUARD ),
-                    MenuItem( Menu.icons, 9, 20, "group",   MenuItem.FRIEND_GROUP ),                   
+                    MenuItem( Menu.icons, 2, 13, "guard", MenuItem.FRIEND_GUARD ),
+                    MenuItem( Menu.icons, 9, 20, "group", MenuItem.FRIEND_GROUP ),                   
                 ]
             )
             Menu.menus['group_friend'] = menu
         return menu.activate(x, y, owner, target)
+
+    @staticmethod
+    def self_menu(game, x, y, owner ) :
+        Menu.reset_menu()
+        menu = Menu.menus.get('self')
+        if menu == None :
+            menu = Menu(game, 
+                [ 
+                    MenuItem( Menu.icons, 9, 20, "group", MenuItem.FRIEND_GROUP ),
+                ]
+            )
+            Menu.menus['self'] = menu
+        return menu.activate(x, y, owner, owner)

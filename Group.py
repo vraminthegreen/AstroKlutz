@@ -8,21 +8,26 @@ from Menu import Menu
 
 class Group( StarObject ) :
 
-    def __init__(self, game, number, team) :
+    groups = [ None, None, None, None, None, None, None, None, None ]
+
+    def __init__(self, game, team) :
         super().__init__(game, ObjectClass(), 0, 0)
         self.visible = False
         self.focus_visible = True
         self.ships = []
         self.bounding_rect = pygame.Rect(0,0,0,0)
-        self.number = number
+        self.number = Group.groups.index(None) + 1
+        Group.groups[self.number-1] = self
         self.background_color = [0, 128, 128, 64]
         self.background_color2 = [0, 128, 128, 120]
         self.minimized_size = 32
-        self.game.register_key_handler( str(number), self )
+        self.game.register_key_handler( str(self.number), self )
         self.select_animation = None
         self.team = team
 
     def add_ship(self,ship) :
+        if ship in self.ships :
+            return
         self.ships.append(ship)
         if len(self.ships) == 1 :
             self.bounding_rect = ship.get_rect()
@@ -108,5 +113,14 @@ class Group( StarObject ) :
         menu = Menu.target_menu(self.game, x, y, self)
         self.game.push_focused( menu )
         return True
+
+    @staticmethod
+    def new(game, ship) :
+        group = Group(game, ship.team)
+        game.add_object(group)
+        group.add_ship(ship)
+        game.set_focused(group)
+        return group
+
 
 

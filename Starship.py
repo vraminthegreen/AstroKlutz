@@ -12,7 +12,7 @@ from Game import Game
 from IconRepository import IconRepository
 from Menu import Menu, MenuItem
 from Targets import TargetMove, TargetAttack, TargetAttackMove, TargetEscape, TargetFollow, TargetEnemyEscape, TargetPatrolMove
-
+from Group import Group
 
 
 class Starship ( StarObject ) :
@@ -128,7 +128,9 @@ class Starship ( StarObject ) :
         objs = self.game.get_objects_in_range(x, y, 20)
         print(f'click selected {len(objs)} elements: {objs}')
         for obj in objs :
-            if obj.is_hostile(self) :
+            if obj == self :
+                menu = Menu.self_menu(self.game, x, y, self)
+            elif obj.is_hostile(self) :
                 menu = Menu.enemy_menu(self.game, x, y, self, obj)
             else :
                 menu = Menu.friend_menu(self.game, x, y, self, obj)
@@ -157,6 +159,8 @@ class Starship ( StarObject ) :
             order = TargetAttack(self.game, self, Stationary('target', 32), menu_item, target )
         elif menu_item.command == MenuItem.ENEMY_FLEE :
             order = TargetEnemyEscape(self.game, self, Stationary('escape', 24), menu_item, target)
+        elif menu_item.command == MenuItem.FRIEND_GROUP :
+            Group.new(self.game, self)
         else :
             print(f'menu clicked: {menu_item.label}, NOT HANDLED')
             return False

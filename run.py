@@ -69,14 +69,12 @@ friends = [
 	Starship(game, team_green, crippled_fighter, FighterPilot(game), -40, 230 ),
 ]
 
-group = Group(game, 1, team_green)
-game.add_object(group)
+
+group = Group.new(game, friends[0])
 
 for friend in friends :
 	game.add_object(friend)
 	group.add_ship(friend)
-
-game.set_focused(group)
 
 # Missile.fire(game)
 
