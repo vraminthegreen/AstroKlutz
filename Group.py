@@ -3,12 +3,12 @@ import pygame
 
 from StarObject import StarObject
 from ShipClass import ObjectClass
-
+from Menu import Menu
 
 
 class Group( StarObject ) :
 
-    def __init__(self, game, number) :
+    def __init__(self, game, number, team) :
         super().__init__(game, ObjectClass(), 0, 0)
         self.visible = False
         self.focus_visible = True
@@ -20,6 +20,7 @@ class Group( StarObject ) :
         self.minimized_size = 32
         self.game.register_key_handler( str(number), self )
         self.select_animation = None
+        self.team = team
 
     def add_ship(self,ship) :
         self.ships.append(ship)
@@ -87,4 +88,25 @@ class Group( StarObject ) :
             return
         self.game.set_focused( self )
         self.select_animation = 20
+
+    def is_hostile(self, other) :
+        return self.team != other.team
+
+    def click( self, x, y ) :
+        print(f'create GROUP MENU at ({x},{y})')
+        self.current_menu_pos = (x,y)
+        objs = self.game.get_objects_in_range(x, y, 20)
+        print(f'click selected {len(objs)} elements: {objs}')
+        for obj in objs :
+            if obj.is_hostile(self) :
+                menu = Menu.enemy_menu(self.game, x, y, self, obj)
+            else :
+                menu = Menu.group_friend_menu(self.game, x, y, self, obj)
+            self.game.push_focused( menu )
+            return True
+
+        menu = Menu.target_menu(self.game, x, y, self)
+        self.game.push_focused( menu )
+        return True
+
 

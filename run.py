@@ -69,7 +69,7 @@ friends = [
 	Starship(game, team_green, crippled_fighter, FighterPilot(game), -40, 230 ),
 ]
 
-group = Group(game, 1)
+group = Group(game, 1, team_green)
 game.add_object(group)
 
 for friend in friends :

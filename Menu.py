@@ -21,6 +21,7 @@ class MenuItem :
     FRIEND_FOLLOW = 6
     FRIEND_GUARD = 7
     PATROL = 8
+    FRIEND_GROUP = 9
 
     def __init__( self, icon, not_selected, selected, label, command ) :
         """
@@ -195,16 +196,28 @@ class Menu( StarObject ) :
     def set_target( self, target ) :
         self.target = target
 
+    def activate( self, x, y, owner, target ) :
+        self.reset()
+        self.show_at(x, y)
+        self.set_owner( owner )
+        self.set_target( target )
+        Menu.active_menu = self
+        return self
+
     @staticmethod
     def selected( menu_item ) :
         print(f'selected menu_item: {menu_item}')
 
     @staticmethod
-    def target_menu(game, x, y, owner) :
+    def reset_menu() :
         if Menu.active_menu != None :
             Menu.active_menu.hide()
         if Menu.icons == None :
             Menu.icons = AnimatedSprite( "iconsheet-menu.png", 11, 2, MenuItem.ICON_SIZE, True )
+
+    @staticmethod
+    def target_menu(game, x, y, owner) :
+        Menu.reset_menu()
         menu = Menu.menus.get('target')
         if menu == None :
             menu = Menu(game, 
@@ -216,19 +229,12 @@ class Menu( StarObject ) :
                 ]
             )
             Menu.menus['target'] = menu
-        print(f'set_owner: {owner}')
-        menu.reset()
-        menu.show_at(x, y)
-        menu.set_owner( owner )
-        Menu.active_menu = menu
-        return menu
+        menu.activate(x, y, owner, None)
+
 
     @staticmethod
     def enemy_menu(game, x, y, owner, target) :
-        if Menu.active_menu != None :
-            Menu.active_menu.hide()
-        if Menu.icons == None :
-            Menu.icons = AnimatedSprite( "iconsheet-menu.png", 11, 2, MenuItem.ICON_SIZE, True )
+        Menu.reset_menu()
         menu = Menu.menus.get('enemy')
         if menu == None :
             menu = Menu(game, 
@@ -238,20 +244,11 @@ class Menu( StarObject ) :
                 ]
             )
             Menu.menus['enemy'] = menu
-        print(f'set_owner: {owner}')
-        menu.reset()
-        menu.show_at(x, y)
-        menu.set_owner( owner )
-        menu.set_target( target )
-        Menu.active_menu = menu
-        return menu
+        return menu.activate(x, y, owner, target)
 
     @staticmethod
     def friend_menu(game, x, y, owner, target) :
-        if Menu.active_menu != None :
-            Menu.active_menu.hide()
-        if Menu.icons == None :
-            Menu.icons = AnimatedSprite( "iconsheet-menu.png", 11, 2, MenuItem.ICON_SIZE, True )
+        Menu.reset_menu()
         menu = Menu.menus.get('friend')
         if menu == None :
             menu = Menu(game, 
@@ -261,11 +258,19 @@ class Menu( StarObject ) :
                 ]
             )
             Menu.menus['friend'] = menu
-        print(f'set_owner: {owner}')
-        menu.reset()
-        menu.show_at(x, y)
-        menu.set_owner( owner )
-        menu.set_target( target )
-        Menu.active_menu = menu
-        return menu
+        return menu.avtivate(x, y, owner, target)
 
+    @staticmethod
+    def group_friend_menu(game, x, y, owner, target) :
+        Menu.reset_menu()
+        menu = Menu.menus.get('group_friend')
+        if menu == None :
+            menu = Menu(game, 
+                [ 
+                    MenuItem( Menu.icons, 5, 16, "follow", MenuItem.FRIEND_FOLLOW ),
+                    MenuItem( Menu.icons, 2, 13, "guard",   MenuItem.FRIEND_GUARD ),
+                    MenuItem( Menu.icons, 9, 20, "group",   MenuItem.FRIEND_GROUP ),                   
+                ]
+            )
+            Menu.menus['group_friend'] = menu
+        return menu.activate(x, y, owner, target)
