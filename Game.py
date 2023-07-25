@@ -25,6 +25,7 @@ class Game:
             'shield' : AnimatedSprite( "shield.png", 5, 5, 96, True ),
         }
         self.paused = True
+        self.key_handlers = {}
 
     def add_object(self, obj):
         self.objects[obj.Z].append( obj )
@@ -315,6 +316,14 @@ class Game:
         objects_selectable = [ obj for obj in objects_here if obj.is_selectable ]
         if len(objects_selectable) > 0 :
             self.set_focused( objects_selectable[0] )
+
+    def on_key_pressed(self, key) :
+        handler = self.key_handlers.get( key )
+        if handler != None :
+            handler.on_key_pressed( key )
+
+    def register_key_handler(self, key, handler) :
+        self.key_handlers[ key ] = handler
 
     @staticmethod
     def is_acute_angle(dir1, dir2):

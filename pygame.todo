@@ -1,6 +1,5 @@
 pygame.todo
 
-- selekcja grupy przez wciścięcie cyfry
 - podłączenie standardowych menu do grupy
 - menu grupy dla przyjaznego statku poza grupą, dodatkowa opcja + dodaj do grupy
 - menu grupy dla przyjaznego statku w grupie, dodatkowa opcja + dodaj do grupy
@@ -124,4 +123,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + tworzenie grupy - programistyczne, wyświetlanie grupy jako obejmującego prostokąta
 + wyświetlanie grupy jako miniaturek należących statków
 + dodanie cyfry - identyfikatora grupy do wyświetlania
++ selekcja grupy przez wciścięcie cyfry
 
