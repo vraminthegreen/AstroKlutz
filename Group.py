@@ -3,7 +3,7 @@ import pygame
 
 from StarObject import StarObject
 from ShipClass import ObjectClass
-from Menu import Menu
+from Menu import Menu, MenuItem
 
 
 class Group( StarObject ) :
@@ -47,7 +47,7 @@ class Group( StarObject ) :
     def update_bounding_rect(self) :
         self.bounding_rect = self.ships[0].get_rect()
         for aship in self.ships[1:] :
-            self.bounding_rect.union_ip(aship)
+            self.bounding_rect.union_ip(aship.get_rect())
         (self.x,self.y) = self.bounding_rect.center
         self.size = max(self.bounding_rect.width, self.bounding_rect.height)
 
@@ -98,7 +98,6 @@ class Group( StarObject ) :
         return self.team != other.team
 
     def click( self, x, y ) :
-        print(f'create GROUP MENU at ({x},{y})')
         self.current_menu_pos = (x,y)
         objs = self.game.get_objects_in_range(x, y, 20)
         print(f'click selected {len(objs)} elements: {objs}')
@@ -113,6 +112,39 @@ class Group( StarObject ) :
         menu = Menu.target_menu(self.game, x, y, self)
         self.game.push_focused( menu )
         return True
+
+    def on_menu(self, menu_item, target) :
+        order = None
+        if menu_item.command == MenuItem.FRIEND_GROUP :
+            if target in self.ships :
+                self.remove_ship( target )
+                if len(self.ships) == 0 :
+                    self.game.remove(self)
+            else :
+                self.add_ship( target )
+        #     order = TargetMove(self.game, self, Stationary('move',32), *self.current_menu_pos, menu_item )
+        # elif menu_item.command == MenuItem.ATTACK :
+        #     order = TargetAttackMove(self.game, self, Stationary('target', 32), *self.current_menu_pos, menu_item )
+        # elif menu_item.command == MenuItem.PATROL :
+        #     order = TargetPatrolMove(self.game, self, Stationary('patrol', 24), *self.current_menu_pos, menu_item )
+        # elif menu_item.command == MenuItem.FLEE :
+        #     order = TargetEscape(self.game, self, Stationary('escape', 32), *self.current_menu_pos, menu_item )
+        # elif menu_item.command == MenuItem.FRIEND_FOLLOW :
+        #     order = TargetFollow(self.game, self, Stationary('move', 32), menu_item, target, False)
+        # elif menu_item.command == MenuItem.FRIEND_GUARD :
+        #     order = TargetFollow(self.game, self, Stationary('protect', 24), menu_item, target, True)
+        # elif menu_item.command == MenuItem.ENEMY_ATTACK :
+        #     order = TargetAttack(self.game, self, Stationary('target', 32), menu_item, target )
+        # elif menu_item.command == MenuItem.ENEMY_FLEE :
+        #     order = TargetEnemyEscape(self.game, self, Stationary('escape', 24), menu_item, target)
+        # elif menu_item.command == MenuItem.FRIEND_GROUP :
+        #     Group.new(self.game, self)
+        else :
+            print(f'menu clicked: {menu_item.label}, NOT HANDLED')
+            return False
+        if order != None :
+            self.append_order( order )
+
 
     @staticmethod
     def new(game, ship) :

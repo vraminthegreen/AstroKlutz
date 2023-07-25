@@ -45,8 +45,9 @@ class Game:
         self.focused = [ focused ]
 
     def push_focused(self, focused) :
-        self.focused.insert(0,focused)
-        print(f'push focused, focused len: {len(self.focused)}')
+        if focused == None :
+            raise ValueError("focused can't be None")
+        self.focused.insert( 0, focused )
 
     def pop_focused( self ) :
         if len(self.focused) > 0 :

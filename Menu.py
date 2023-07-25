@@ -135,6 +135,7 @@ class Menu( StarObject ) :
 
     def select(self, clicked_item) :
         if clicked_item == None : 
+            self.on_focus_lost()
             return
         self.clicked = clicked_item
         print(f'select, owner = {self.owner}')
@@ -229,7 +230,7 @@ class Menu( StarObject ) :
                 ]
             )
             Menu.menus['target'] = menu
-        menu.activate(x, y, owner, None)
+        return menu.activate(x, y, owner, None)
 
 
     @staticmethod
