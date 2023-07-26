@@ -40,7 +40,6 @@ player_class.maxAcc = 0.5
 player = Starship(game, team_green, player_class, FighterPilot(game), -200, 200)
 player.auto = False
 game.add_object(player)
-input_handler.set_focus(player)
 game.set_focused(player)
 
 Dust.make_dust(game, 1)
@@ -63,10 +62,10 @@ for enemy in enemies :
     game.add_object(enemy)
 
 friends = [
-	Starship(game, team_green, crippled_fighter, FighterPilot(game), -130, 230 ),
-	Starship(game, team_green, crippled_fighter, FighterPilot(game), -100, 230 ),
-	Starship(game, team_green, crippled_fighter, FighterPilot(game), -70, 230 ),
-	Starship(game, team_green, crippled_fighter, FighterPilot(game), -40, 230 ),
+	Starship(game, team_green, FighterClass(), FighterPilot(game), -130, 230 ),
+	Starship(game, team_green, FighterClass(), FighterPilot(game), -100, 230 ),
+	Starship(game, team_green, FighterClass(), FighterPilot(game), -70, 230 ),
+	Starship(game, team_green, FighterClass(), FighterPilot(game), -40, 230 ),
 ]
 
 

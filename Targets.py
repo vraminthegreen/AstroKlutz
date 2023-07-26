@@ -9,13 +9,7 @@ from Formation import Formation
 
 #################################################
 
-class TargetMove ( StarObject ) :
-
-    def __init__(self, game, owner, object_class, x, y, menu_item):
-        super().__init__(game, object_class, x, y)
-        self.owner = owner
-        self.menu_item = menu_item
-        self.visible = False
+class Target ( StarObject ) :
 
     def on_activate(self) :
         pass
@@ -24,10 +18,44 @@ class TargetMove ( StarObject ) :
         pass
 
     def is_completed(self) :
+        return False
+
+    def get_vmax(self) :
+        return 0
+
+    def logic(self) :
+        pass
+
+    def on_completed(self) :
+        pass
+
+#################################################
+
+class TargetMove ( Target ) :
+
+    def __init__(self, game, owner, object_class, x, y, menu_item):
+        super().__init__(game, object_class, x, y)
+        self.owner = owner
+        self.menu_item = menu_item
+        self.visible = False
+        self.completed = False        
+
+    def on_activate(self) :
+        pass
+
+    def on_deactivate(self) :
+        pass
+
+    def is_completed(self) :        
+        if self.completed == True :
+            return True
         target_vector =  pygame.Vector2(self.x, self.y) - pygame.Vector2(self.owner.x, self.owner.y)
         distance_to_target = target_vector.length()
         # print(f'distance_to_target: {distance_to_target}')
-        return distance_to_target < 25
+        self.completed = distance_to_target < 25
+        if self.completed :
+            print("TargetMove completed")
+        return self.completed
 
     def get_vmax(self) :
         return self.owner.maxV
@@ -210,5 +238,54 @@ class TargetEnemyEscape ( TargetMove ) :
             # Adding it to the original position to get the extended position
             self.chase_pos = (self.owner.x + vector.x, self.owner.y + vector.y)
         self.owner.chase( *self.chase_pos, False )
+
+#################################################
+
+class TargetGroupMove( Target ) :
+
+    def __init__(self, game, owner, x, y, menu_item):
+        super().__init__(game, Stationary('mmove',32), x, y)
+        self.owner = owner
+        self.menu_item = menu_item
+        self.visible = False
+        self.completed = False
+
+    def on_activate(self) :
+        print("TargetGroupMove.on_activate")
+        self.issue_orders()
+
+    def issue_orders(self) :
+        center = self.owner.get_pos()
+        target = pygame.Vector2(self.x,self.y)
+        self.suborders = {}
+        for ship in self.owner.ships :
+            ship.add_on_dead_listener( self )
+            offset = pygame.Vector2(ship.x - center[0], ship.y - center[1])
+            ship_target = target + offset
+            ship_order = TargetMove(self.game, ship, Stationary('move',32), *ship_target, self.menu_item)
+            ship.append_order( ship_order )
+            self.suborders[ship] = ship_order
+
+    def add_ship(self, ship) :
+        ship.add_on_dead_listener( self )
+        ship_order = TargetMove(self.game, ship, Stationary('move',32), self.x, self.y, self.menu_item)
+        ship.append_order( ship_order )
+        self.suborders[ship] = ship_order
+
+    def remove_ship(self, ship) :
+        ship.remove_on_read_listener( self )
+        del self.suborders[ship]
+
+    def on_dead(self, ship) :
+        del self.suborders[ship]
+
+    def is_completed(self) :
+        if self.completed == True :
+            return True
+        for ship, order in self.suborders.items() :
+            if not order.is_completed() : 
+                return False
+        self.completed = True
+        return True
 
 

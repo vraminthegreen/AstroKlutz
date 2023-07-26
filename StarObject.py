@@ -277,7 +277,13 @@ class StarObject :
     def click(self, x, y) :
         return False
 
+    def command( self, cmd ) :
+        return False
+
     def command_delete(self) :
+        print(f'command_delete in {self}')
+        if len(self.orders) == 0 :
+            return
         order = self.orders.pop( -1 )
         self.game.remove_object( order )
         if len(self.orders) == 0 :

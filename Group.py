@@ -4,6 +4,7 @@ import pygame
 from StarObject import StarObject
 from ShipClass import ObjectClass
 from Menu import Menu, MenuItem
+from Targets import TargetGroupMove
 
 
 class Group( StarObject ) :
@@ -29,6 +30,9 @@ class Group( StarObject ) :
         if ship in self.ships :
             return
         self.ships.append(ship)
+        ship.add_on_dead_listener( self )
+        for order in self.orders :
+            order.add_ship(ship)
         if len(self.ships) == 1 :
             self.bounding_rect = ship.get_rect()
         else :
@@ -38,11 +42,18 @@ class Group( StarObject ) :
         self.size = max(self.bounding_rect.width, self.bounding_rect.height)
 
     def remove_ship(self,ship) :
+        ship.remove_on_read_listener( self )
         self.ships.remove(ship)
+        for order in self.orders :
+            order.remove_ship(ship)
         if len(self.ships) == 0 :
             self.visible = False
+            self.game.remove_object( self )
             return
         self.update_bounding_rect()
+
+    def on_dead(self, ship) :
+        self.remove_ship(ship)
 
     def update_bounding_rect(self) :
         self.bounding_rect = self.ships[0].get_rect()
@@ -59,6 +70,13 @@ class Group( StarObject ) :
             self.select_animation -= 1
             if self.select_animation < 0 :
                 self.select_animation = None
+        if self.game.get_focused() == self :
+            refresh = 1
+        else :
+            refresh = 50
+        if self.game.get_time() % refresh == 0 :
+            self.update_bounding_rect()
+        super().ticktack()
 
     def repaint(self, win):
         # Calculate group's position and size based on its number
@@ -83,6 +101,7 @@ class Group( StarObject ) :
         # Draw ship miniatures
         icon_x = 35
         for i, ship in enumerate(self.ships):
+            if ship.icon == None : continue # for example exploding ship
             icon = pygame.transform.scale(ship.icon, (ship.minimized_size, ship.minimized_size))
             rotated_icon = pygame.transform.rotate(icon, 90)  # Rotate icon by -90 degrees
             win.blit(rotated_icon, (icon_x, group_y + 5 + (self.minimized_size - ship.minimized_size)/2))  # 5 for top padding
@@ -122,7 +141,8 @@ class Group( StarObject ) :
                     self.game.remove(self)
             else :
                 self.add_ship( target )
-        #     order = TargetMove(self.game, self, Stationary('move',32), *self.current_menu_pos, menu_item )
+        elif menu_item.command == MenuItem.MOVE :
+            order = TargetGroupMove(self.game, self, *self.current_menu_pos, menu_item )
         # elif menu_item.command == MenuItem.ATTACK :
         #     order = TargetAttackMove(self.game, self, Stationary('target', 32), *self.current_menu_pos, menu_item )
         # elif menu_item.command == MenuItem.PATROL :

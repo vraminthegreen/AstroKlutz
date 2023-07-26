@@ -14,23 +14,21 @@ class InputHandler:
         self.counter = 0
         self.menu = None
 
-    def set_focus(self, focus) :
-        self.focus = focus
-
     def set_game(self, game):
         self.game = game
 
     def handle_input(self, mouse_tracking):
         self.counter += 1
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.focus.rotateRight()
-        if keys[pygame.K_RIGHT]:
-            self.focus.rotateLeft()
-        if keys[pygame.K_UP]:
-            self.focus.accelerate()
-        if keys[pygame.K_DOWN]:
-            self.focus.decelerate()
+        if self.game.get_focused() != None :
+            if keys[pygame.K_LEFT]:
+                self.game.get_focused().rotateRight()
+            if keys[pygame.K_RIGHT]:
+                self.game.get_focused().rotateLeft()
+            if keys[pygame.K_UP]:
+                self.game.get_focused().accelerate()
+            if keys[pygame.K_DOWN]:
+                self.game.get_focused().decelerate()
         if keys[pygame.K_z] and self.counter > self.last_key + 20 :
             self.game.toggle_zoom()
             self.last_key = self.counter
@@ -41,7 +39,7 @@ class InputHandler:
             self.game.pop_focused()
             self.last_key = self.counter
         if keys[pygame.K_BACKSPACE] and self.counter > self.last_key + 20 :
-            self.focus.command_delete()
+            self.game.get_focused().command_delete()
             self.last_key = self.counter
 
         running = True
@@ -63,7 +61,7 @@ class InputHandler:
                 if event.unicode.isdigit() :
                     self.game.on_key_pressed(event.unicode)
                 elif event.unicode.isalnum() or event.unicode == ' ':
-                    self.focus.command(event.unicode)
+                    self.game.get_focused().command(event.unicode)
             elif event.type == pygame.QUIT:
                 running = False
 

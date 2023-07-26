@@ -259,7 +259,7 @@ class Menu( StarObject ) :
                 ]
             )
             Menu.menus['friend'] = menu
-        return menu.avtivate(x, y, owner, target)
+        return menu.activate(x, y, owner, target)
 
     @staticmethod
     def group_friend_menu(game, x, y, owner, target) :

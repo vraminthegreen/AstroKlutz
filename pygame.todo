@@ -1,6 +1,9 @@
 pygame.todo
 
-- rozkazy grupowe ... projekt
+- Rozkaz grupowy dla ataku analogiczny do move
+- Próba abstrakcji dla rozkazów grupowych
+- Rozkaz grupowy dla ucieczki
+- Rozkaz grupowy pozostały
 - implementacja animacji odrzutu (osobnej)
 - poprawka rozwalania się o wybuch
 - background ma pozycję, poza pozycją tło jest czarne
@@ -128,4 +131,11 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + implementacja dodaj do grupy
 + implementacja usuń z grupy
 + kliknięcie daleko od menu zamyka menu
++ taget TargetGroupMove - utworzenie
++ TargetGroupMove - po utworzeniu dodawane są sub-targety bezpośrednio do posiadanych statków
++ TargetGroupMove - skompletowany gdy skompletowane są wszystkie sub-targety
++ Group po dodaniu statku dodawany jest subtarget dla statku
++ Group po usunięciu statku usuwany jest subtarget dla statku
++ ship.register_on_dead_listener, + w grupie usunięcie shipa
++ co się dzieje gdy zniszczymy ship w grupie - coś się wywala
 

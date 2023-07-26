@@ -35,6 +35,7 @@ class Starship ( StarObject ) :
         self.ping_animation = None
         self.affected_by_pause = True
         self.formation = None
+        self.on_dead_listeners = []
 
     def is_hostile(self, other) :
         return self.team != other.team
@@ -104,10 +105,6 @@ class Starship ( StarObject ) :
         ddiff = ( hitter.dir - self.dir - 180 ) % 360
         if ddiff < 0 : ddiff = -ddiff
         aa = Game.is_acute_angle( hitter.dir, self.dir )
-        if aa :
-            print("belly hit")
-        else :
-            print("shield hit")
         if ( aa and random.randint(0, 99) < (100-self.object_class.rear_shield) ) or ( random.randint(0,99) < (100-self.object_class.front_shield) ) :
             self.icon = None
             self.dead = True
@@ -117,10 +114,20 @@ class Starship ( StarObject ) :
             self.animate( self.game.get_animation('shield'), Starship.onShieldEnded )
 
     def onExploded( self ) :
+        for listener in self.on_dead_listeners :
+            listener.on_dead( self )
+        self.on_dead_listeners = []
         self.game.remove_object( self )
 
     def onShieldEnded( self ) :
         self.shield_active = False
+
+    def add_on_dead_listener(self, listener) :
+        self.on_dead_listeners.append(listener)
+
+    def remove_on_read_listener(self, listener) :
+        if listener in self.on_dead_listeners :
+            self.on_dead_listeners.remove(listener)
 
     def click( self, x, y ) :
         print(f'create menu at ({x},{y})')
