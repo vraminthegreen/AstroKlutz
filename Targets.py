@@ -119,7 +119,7 @@ class TargetAttackMove ( TargetMove ) :
             objs = self.game.get_objects_in_range(self.owner.x, self.owner.y, self.owner.detectors_range)
             for obj in objs :
                 if self.owner.is_hostile(obj) :
-                    print("FOUND ENEMY")
+                    print(f"{self.owner.name} FOUND ENEMY {obj.name}")
                     order = TargetAttack(self.game, self.owner, Stationary('target', 40), self.menu_item, obj )
                     self.owner.push_order( order )
 
@@ -241,18 +241,22 @@ class TargetEnemyEscape ( TargetMove ) :
 
 #################################################
 
-class TargetGroupMove( Target ) :
+class TargetGroup( Target ) :
 
-    def __init__(self, game, owner, x, y, menu_item):
-        super().__init__(game, Stationary('mmove',32), x, y)
+    def __init__(self, game, stationary, owner, x, y, menu_item):
+        super().__init__(game, stationary, x, y)
         self.owner = owner
         self.menu_item = menu_item
         self.visible = False
         self.completed = False
+        self.suborders = {}
 
     def on_activate(self) :
-        print("TargetGroupMove.on_activate")
+        print("TargetGroup.on_activate")
         self.issue_orders()
+
+    def make_order_for_ship( self, ship, x, y ) :
+        return None
 
     def issue_orders(self) :
         center = self.owner.get_pos()
@@ -262,9 +266,10 @@ class TargetGroupMove( Target ) :
             ship.add_on_dead_listener( self )
             offset = pygame.Vector2(ship.x - center[0], ship.y - center[1])
             ship_target = target + offset
-            ship_order = TargetMove(self.game, ship, Stationary('move',32), *ship_target, self.menu_item)
-            ship.append_order( ship_order )
-            self.suborders[ship] = ship_order
+            ship_order = self.make_order_for_ship( ship, *ship_target )
+            if ship_order != None :
+                ship.append_order( ship_order )
+                self.suborders[ship] = ship_order
 
     def add_ship(self, ship) :
         ship.add_on_dead_listener( self )
@@ -288,4 +293,28 @@ class TargetGroupMove( Target ) :
         self.completed = True
         return True
 
+#################################################
+
+class TargetGroupMove( TargetGroup ) :
+
+    def __init__(self, game, owner, x, y, menu_item):
+        super().__init__(game, Stationary('mmove',32), owner, x, y, menu_item )
+
+    def make_order_for_ship( self, ship, x, y ) :
+        ship_order = TargetMove(self.game, ship, Stationary('move',32), x, y, self.menu_item)
+        return ship_order
+
+
+#################################################
+
+class TargetGroupAttackMove( TargetGroup ) :
+
+    def __init__(self, game, owner, x, y, menu_item):
+        super().__init__(game, Stationary('mtarget',32), owner, x, y, menu_item )
+
+    def make_order_for_ship( self, ship, x, y ) :
+        ship_order = TargetAttackMove(self.game, ship, Stationary('target',32), x, y, self.menu_item)
+        return ship_order
+
+#################################################
 

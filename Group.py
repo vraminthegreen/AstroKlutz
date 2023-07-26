@@ -4,7 +4,7 @@ import pygame
 from StarObject import StarObject
 from ShipClass import ObjectClass
 from Menu import Menu, MenuItem
-from Targets import TargetGroupMove
+from Targets import TargetGroupMove, TargetGroupAttackMove
 
 
 class Group( StarObject ) :
@@ -143,7 +143,9 @@ class Group( StarObject ) :
                 self.add_ship( target )
         elif menu_item.command == MenuItem.MOVE :
             order = TargetGroupMove(self.game, self, *self.current_menu_pos, menu_item )
-        # elif menu_item.command == MenuItem.ATTACK :
+        elif menu_item.command == MenuItem.ATTACK :
+            order = TargetGroupAttackMove(self.game, self, *self.current_menu_pos, menu_item )
+
         #     order = TargetAttackMove(self.game, self, Stationary('target', 32), *self.current_menu_pos, menu_item )
         # elif menu_item.command == MenuItem.PATROL :
         #     order = TargetPatrolMove(self.game, self, Stationary('patrol', 24), *self.current_menu_pos, menu_item )

@@ -24,10 +24,10 @@ input_handler = InputHandler()
 game = Game(input_handler)
 input_handler.set_game( game )
 # Create a starship and an input handler
-team_red = Team( "red", (255,0,0), 1 )
-team_blue = Team( "blue", (0,0,255), 2 )
-team_green = Team( "green", (0,255,0), 3 )
-team_yellow = Team( "yellow", (255,255,0), 4 )
+team_red = Team( "Red", (255,0,0), 1 )
+team_blue = Team( "Blue", (0,0,255), 2 )
+team_green = Team( "Green", (0,255,0), 3 )
+team_yellow = Team( "Yellow", (255,255,0), 4 )
 
 background = DistantObject(game, Background('background'), 0, 0)
 game.add_object(background)
@@ -37,10 +37,11 @@ player_class.maxV = 3
 player_class.rotation_speed = 2
 player_class.max_bullets = 5
 player_class.maxAcc = 0.5
-player = Starship(game, team_green, player_class, FighterPilot(game), -200, 200)
-player.auto = False
-game.add_object(player)
-game.set_focused(player)
+player = None
+# player = Starship(game, team_green, player_class, FighterPilot(game), -200, 200)
+# player.auto = False
+# game.add_object(player)
+# game.set_focused(player)
 
 Dust.make_dust(game, 1)
 
@@ -52,28 +53,31 @@ crippled_fighter.max_bullets = 3
 enemies = [
     Starship(game, team_yellow, crippled_fighter, FighterPilot(game), -350, -350 ),
     Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
-    Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 ),
-    
+    Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 ),    
 ]
 
 
-for enemy in enemies :
-    enemy.set_enemy(player)
-    game.add_object(enemy)
 
 friends = [
-	Starship(game, team_green, FighterClass(), FighterPilot(game), -130, 230 ),
-	Starship(game, team_green, FighterClass(), FighterPilot(game), -100, 230 ),
-	Starship(game, team_green, FighterClass(), FighterPilot(game), -70, 230 ),
-	Starship(game, team_green, FighterClass(), FighterPilot(game), -40, 230 ),
+    Starship(game, team_green, FighterClass(), FighterPilot(game), -130, 230 ),
+    Starship(game, team_green, FighterClass(), FighterPilot(game), -100, 230 ),
+    Starship(game, team_green, FighterClass(), FighterPilot(game), -70, 230 ),
+    Starship(game, team_green, FighterClass(), FighterPilot(game), -40, 230 ),
 ]
+
+for enemy in enemies :
+    if player != None :
+        enemy.set_enemy(player)
+    else :
+        enemy.set_enemy(friends[random.randint(0,len(friends)-1)])
+    game.add_object(enemy)
 
 
 group = Group.new(game, friends[0])
 
 for friend in friends :
-	game.add_object(friend)
-	group.add_ship(friend)
+    game.add_object(friend)
+    group.add_ship(friend)
 
 # Missile.fire(game)
 

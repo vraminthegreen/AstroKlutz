@@ -29,18 +29,22 @@ class InputHandler:
                 self.game.get_focused().accelerate()
             if keys[pygame.K_DOWN]:
                 self.game.get_focused().decelerate()
-        if keys[pygame.K_z] and self.counter > self.last_key + 20 :
-            self.game.toggle_zoom()
-            self.last_key = self.counter
-        if keys[pygame.K_p] and self.counter > self.last_key + 20 :
-            self.game.toggle_pause()
-            self.last_key = self.counter
-        if keys[pygame.K_ESCAPE] and self.counter > self.last_key + 20 :
-            self.game.pop_focused()
-            self.last_key = self.counter
-        if keys[pygame.K_BACKSPACE] and self.counter > self.last_key + 20 :
-            self.game.get_focused().command_delete()
-            self.last_key = self.counter
+        if keys[pygame.K_z] :
+            if self.counter > self.last_key + 20 :
+                self.game.toggle_zoom()
+                self.last_key = self.counter
+        # if keys[pygame.K_p] :
+        #     if self.counter > self.last_key + 20 :
+        #         self.game.toggle_pause()
+        #         self.last_key = self.counter
+        if keys[pygame.K_ESCAPE] :
+            if self.counter > self.last_key + 20 :
+                self.game.pop_focused()
+                self.last_key = self.counter
+        if keys[pygame.K_BACKSPACE] :
+            if self.game.get_focused() != None and self.counter > self.last_key + 20 :
+                self.game.get_focused().command_delete()
+                self.last_key = self.counter
 
         running = True
 
@@ -61,7 +65,10 @@ class InputHandler:
                 if event.unicode.isdigit() :
                     self.game.on_key_pressed(event.unicode)
                 elif event.unicode.isalnum() or event.unicode == ' ':
-                    self.game.get_focused().command(event.unicode)
+                    if event.unicode == 'p' :
+                        self.game.toggle_pause()
+                    elif self.game.get_focused() != None :
+                        self.game.get_focused().command(event.unicode)
             elif event.type == pygame.QUIT:
                 running = False
 

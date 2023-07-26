@@ -20,6 +20,7 @@ class Starship ( StarObject ) :
     def __init__(self, game, team, object_class, pilot, x, y ):
         StarObject.__init__( self, game, object_class, x, y )
         self.team = team
+        self.name = team.get_new_name()
         self.pilot = pilot
         self.pilot.set_starship( self )
         self.icon = IconRepository.get_icon( self.object_class.icon_name, self.get_size(), self.team )
@@ -106,14 +107,17 @@ class Starship ( StarObject ) :
         if ddiff < 0 : ddiff = -ddiff
         aa = Game.is_acute_angle( hitter.dir, self.dir )
         if ( aa and random.randint(0, 99) < (100-self.object_class.rear_shield) ) or ( random.randint(0,99) < (100-self.object_class.front_shield) ) :
+            print(f'{self.name} is HIT')
             self.icon = None
             self.dead = True
             self.animate( self.game.get_animation('explosion'), Starship.onExploded )
         else :
+            print(f'{self.name} defended')
             self.shield_active = True
             self.animate( self.game.get_animation('shield'), Starship.onShieldEnded )
 
     def onExploded( self ) :
+        print(f'{self.name} is DEAD')
         for listener in self.on_dead_listeners :
             listener.on_dead( self )
         self.on_dead_listeners = []

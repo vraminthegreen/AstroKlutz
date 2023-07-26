@@ -1,7 +1,8 @@
 pygame.todo
 
-- Rozkaz grupowy dla ataku analogiczny do move
-- Próba abstrakcji dla rozkazów grupowych
+- jak statek z grupy ginie to coś się krzaczy
+- klasa scenariusz dla teamu
+- po wybuchu przeciwnika (on_dead), statek wybiera nowy cel (prosi o nowy cel team i dostaje z klasy scenariusz)
 - Rozkaz grupowy dla ucieczki
 - Rozkaz grupowy pozostały
 - implementacja animacji odrzutu (osobnej)
@@ -138,4 +139,7 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + Group po usunięciu statku usuwany jest subtarget dla statku
 + ship.register_on_dead_listener, + w grupie usunięcie shipa
 + co się dzieje gdy zniszczymy ship w grupie - coś się wywala
++ nazewnictwo statków, FOUND ENEMY + nazwy statków, hit + nazwa statku, dead + nazwa statku
++ Rozkaz grupowy dla ataku analogiczny do move
++ Próba abstrakcji dla rozkazów grupowych
 

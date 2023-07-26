@@ -218,7 +218,7 @@ class Game:
 
             bounding_rect = self.compute_bounding_rect()
 
-            if self.zoom == self.target_zoom :
+            if self.zoom == self.target_zoom and not self.paused :
 
                 if self.zoom == 1 :
                     br = self.get_visible_rectangle(0)
@@ -240,7 +240,8 @@ class Game:
 
             self.compute_pans()
 
-            self.pan_camera(bounding_rect)
+            if not self.paused :
+                self.pan_camera(bounding_rect)
 
             for z_list in reversed(self.objects) :
                 for obj in z_list :
