@@ -12,6 +12,7 @@ class Missile ( StarObject ) :
 
     def __init__(self, game, missile_class, pilot, x, y ):
         StarObject.__init__( self, game, missile_class, x, y )
+        self.name = "Missile"
         self.pilot = pilot
         self.pilot.set_starship( self )
         self.fuel = self.object_class.fuel
@@ -33,6 +34,7 @@ class Missile ( StarObject ) :
         self.enemy = enemy
 
     def onExploded( self ) :
+        self.dead = True
         self.game.remove_object( self )
         if self.owner != None :
             self.owner.on_missile_exploded( self )

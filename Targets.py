@@ -52,7 +52,7 @@ class TargetMove ( Target ) :
         target_vector =  pygame.Vector2(self.x, self.y) - pygame.Vector2(self.owner.x, self.owner.y)
         distance_to_target = target_vector.length()
         # print(f'distance_to_target: {distance_to_target}')
-        self.completed = distance_to_target < 25
+        self.completed = distance_to_target < 30
         if self.completed :
             print("TargetMove completed")
         return self.completed
@@ -116,12 +116,21 @@ class TargetAttackMove ( TargetMove ) :
         self.owner.ping_animation -= 2
         if self.owner.ping_animation < 0 : 
             self.owner.ping_animation = None
+            if random.randint(0,10) > 3 : 
+                return
             objs = self.game.get_objects_in_range(self.owner.x, self.owner.y, self.owner.detectors_range)
             for obj in objs :
                 if self.owner.is_hostile(obj) :
                     print(f"{self.owner.name} FOUND ENEMY {obj.name}")
                     order = TargetAttack(self.game, self.owner, Stationary('target', 40), self.menu_item, obj )
                     self.owner.push_order( order )
+
+    def is_completed(self) :
+        res = super().is_completed()
+        if res :
+            self.owner.ping_animation = None
+        return res
+
 
 #################################################
 
@@ -279,10 +288,12 @@ class TargetGroup( Target ) :
 
     def remove_ship(self, ship) :
         ship.remove_on_read_listener( self )
-        del self.suborders[ship]
+        if ship in self.suborders :
+            del self.suborders[ship]
 
     def on_dead(self, ship) :
-        del self.suborders[ship]
+        if ship in self.suborders :
+            del self.suborders[ship]
 
     def is_completed(self) :
         if self.completed == True :

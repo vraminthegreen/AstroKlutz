@@ -1,6 +1,7 @@
 pygame.todo
 
-- jak statek z grupy ginie to coś się krzaczy
+- rozkaz grupowy patrolowania
+- rozkaz pilnowania miejsca
 - klasa scenariusz dla teamu
 - po wybuchu przeciwnika (on_dead), statek wybiera nowy cel (prosi o nowy cel team i dostaje z klasy scenariusz)
 - Rozkaz grupowy dla ucieczki
@@ -142,4 +143,6 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + nazewnictwo statków, FOUND ENEMY + nazwy statków, hit + nazwa statku, dead + nazwa statku
 + Rozkaz grupowy dla ataku analogiczny do move
 + Próba abstrakcji dla rozkazów grupowych
++ jak statek z grupy ginie to coś się krzaczy
++ problem z animacją ping po osiągnięciu celu
 
