@@ -4,7 +4,7 @@ import pygame
 from StarObject import StarObject
 from ShipClass import ObjectClass
 from Menu import Menu, MenuItem
-from Targets import TargetGroupMove, TargetGroupAttackMove
+from Targets import TargetGroupMove, TargetGroupAttackMove, TargetGroupPatrolMove
 
 
 class Group( StarObject ) :
@@ -25,6 +25,7 @@ class Group( StarObject ) :
         self.game.register_key_handler( str(self.number), self )
         self.select_animation = None
         self.team = team
+        self.name = "Team-" + self.team.get_new_name()
 
     def add_ship(self,ship) :
         if ship in self.ships :
@@ -145,10 +146,8 @@ class Group( StarObject ) :
             order = TargetGroupMove(self.game, self, *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.ATTACK :
             order = TargetGroupAttackMove(self.game, self, *self.current_menu_pos, menu_item )
-
-        #     order = TargetAttackMove(self.game, self, Stationary('target', 32), *self.current_menu_pos, menu_item )
-        # elif menu_item.command == MenuItem.PATROL :
-        #     order = TargetPatrolMove(self.game, self, Stationary('patrol', 24), *self.current_menu_pos, menu_item )
+        elif menu_item.command == MenuItem.PATROL :
+            order = TargetGroupPatrolMove(self.game, self, *self.current_menu_pos, menu_item )
         # elif menu_item.command == MenuItem.FLEE :
         #     order = TargetEscape(self.game, self, Stationary('escape', 32), *self.current_menu_pos, menu_item )
         # elif menu_item.command == MenuItem.FRIEND_FOLLOW :

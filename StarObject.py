@@ -42,6 +42,7 @@ class StarObject :
         self.focus_visible = False
         self.visible = True
         self.Z = 0
+        self.team = None
 
     def get_size( self ) :
         return self.size
@@ -167,6 +168,7 @@ class StarObject :
         self.orders.append(order)
         if len(self.orders) == 1 :
             order.on_activate()
+        print(f"{self.name} append_order {order}, orders count: {len(self.orders)}")
         self.auto = True
 
     def push_order(self, order) :
@@ -179,8 +181,8 @@ class StarObject :
 
     def pop_order(self) :
         order = self.orders.pop( 0 )
-        order.on_completed()
         self.game.remove_object( order )
+        order.on_completed()
         if len(self.orders) == 0 :
             self.auto = False
         else :
@@ -298,4 +300,8 @@ class StarObject :
             return self.orders[0].get_vmax()
         else :
             return self.maxV
+
+    def is_hostile(self, other) :
+        return self.team != other.team
+
 

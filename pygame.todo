@@ -1,6 +1,5 @@
 pygame.todo
 
-- rozkaz grupowy patrolowania
 - rozkaz pilnowania miejsca
 - klasa scenariusz dla teamu
 - po wybuchu przeciwnika (on_dead), statek wybiera nowy cel (prosi o nowy cel team i dostaje z klasy scenariusz)
@@ -145,4 +144,7 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + Próba abstrakcji dla rozkazów grupowych
 + jak statek z grupy ginie to coś się krzaczy
 + problem z animacją ping po osiągnięciu celu
++ rozkaz grupowy patrolowania
++ coś nie działa przy patrolowaniu jak się zapętla
++ swój / obcy dla pocisków (za dużo friendly fire)
 

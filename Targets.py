@@ -52,7 +52,7 @@ class TargetMove ( Target ) :
         target_vector =  pygame.Vector2(self.x, self.y) - pygame.Vector2(self.owner.x, self.owner.y)
         distance_to_target = target_vector.length()
         # print(f'distance_to_target: {distance_to_target}')
-        self.completed = distance_to_target < 30
+        self.completed = distance_to_target < 35
         if self.completed :
             print("TargetMove completed")
         return self.completed
@@ -261,7 +261,6 @@ class TargetGroup( Target ) :
         self.suborders = {}
 
     def on_activate(self) :
-        print("TargetGroup.on_activate")
         self.issue_orders()
 
     def make_order_for_ship( self, ship, x, y ) :
@@ -326,6 +325,21 @@ class TargetGroupAttackMove( TargetGroup ) :
     def make_order_for_ship( self, ship, x, y ) :
         ship_order = TargetAttackMove(self.game, ship, Stationary('target',32), x, y, self.menu_item)
         return ship_order
+
+#################################################
+
+class TargetGroupPatrolMove( TargetGroup ) :
+
+    def __init__(self, game, owner, x, y, menu_item):
+        super().__init__(game, Stationary('mpatrol',32), owner, x, y, menu_item )
+
+    def make_order_for_ship( self, ship, x, y ) :
+        ship_order = TargetAttackMove(self.game, ship, Stationary('patrol',32), x, y, self.menu_item)
+        return ship_order
+
+    def on_completed(self) :
+        self.completed = False
+        self.owner.append_order(self)
 
 #################################################
 

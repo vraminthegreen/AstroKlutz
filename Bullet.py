@@ -29,6 +29,7 @@ class Bullet ( StarObject ) :
         self.x += 10 * self.v.x
         self.y += 10 * self.v.y
         self.owner = owner
+        self.team = self.owner.team
         self.fuel = self.object_class.fuel
 
     def repaint( self, win ) :
@@ -52,8 +53,10 @@ class Bullet ( StarObject ) :
                 return
             elif random.randint(0, 99) <= 30 :
                 collisions = self.game.get_collisions( pygame.Rect(self.x, self.y, 3, 3) )
-                if len(collisions) > 0 :
-                    self.hit( collisions[0] )
+                for obj in collisions :
+                    if obj.is_hostile( self ) :
+                        self.hit( obj )
+                        break
         super().ticktack()
 
     def onExploded( self ) :

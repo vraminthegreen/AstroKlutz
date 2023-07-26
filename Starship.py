@@ -38,9 +38,6 @@ class Starship ( StarObject ) :
         self.formation = None
         self.on_dead_listeners = []
 
-    def is_hostile(self, other) :
-        return self.team != other.team
-
     def command( self, cmd ) :
         if cmd == 'a' :
             if self.auto != None and self.order != None:

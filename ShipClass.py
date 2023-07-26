@@ -30,7 +30,7 @@ class FighterClass ( ObjectClass ) :
         self.front_shield = 90
         self.rear_shield = 50
         self.maxV = 3  # Maximum speed
-        self.rotation_speed = 1.5
+        self.rotation_speed = 1.75
         self.maxAcc = 0.03
         self.resistance = 0.99 # thrusters power
         self.can_be_hit = True
