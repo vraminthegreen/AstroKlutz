@@ -22,6 +22,7 @@ class MenuItem :
     FRIEND_GUARD = 7
     PATROL = 8
     FRIEND_GROUP = 9
+    GUARD = 10
 
     def __init__( self, icon, not_selected, selected, label, command ) :
         """
@@ -226,6 +227,7 @@ class Menu( StarObject ) :
                     MenuItem( Menu.icons, 5, 16, "move",   MenuItem.MOVE ),
                     MenuItem( Menu.icons, 1, 12, "attack", MenuItem.ATTACK ),
                     MenuItem( Menu.icons, 7, 18, "patrol", MenuItem.PATROL ),
+                    MenuItem( Menu.icons, 2, 13, "guard", MenuItem.GUARD ),
                     MenuItem( Menu.icons, 4, 15, "flee",   MenuItem.FLEE ),
                 ]
             )

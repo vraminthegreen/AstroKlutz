@@ -96,9 +96,10 @@ class TargetEscape ( TargetMove ) :
 
 class TargetAttackMove ( TargetMove ) :
 
-    def __init__(self, game, owner, object_class, x, y, menu_item):
+    def __init__(self, game, owner, object_class, x, y, menu_item, guarding_time = 0 ):
         super().__init__(game, owner, object_class, x, y, menu_item)
         self.chase_pos = self.get_pos()
+        self.guarding_time = guarding_time
 
     def get_vmax(self) :
         return 0.5 * self.owner.maxV
@@ -124,9 +125,15 @@ class TargetAttackMove ( TargetMove ) :
                     print(f"{self.owner.name} FOUND ENEMY {obj.name}")
                     order = TargetAttack(self.game, self.owner, Stationary('target', 40), self.menu_item, obj )
                     self.owner.push_order( order )
+        if self.completed and self.guarding_time > 0 :
+            self.guarding_time -= 1
 
     def is_completed(self) :
         res = super().is_completed()
+        if res and self.guarding_time > 0 : 
+            if self.guarding_time % 100 == 0 :
+                print(f'{self.owner.name} GUARDING ({self.guarding_time}) ...')
+            return
         if res :
             self.owner.ping_animation = None
         return res

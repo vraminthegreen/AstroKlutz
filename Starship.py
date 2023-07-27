@@ -159,6 +159,8 @@ class Starship ( StarObject ) :
             order = TargetPatrolMove(self.game, self, Stationary('patrol', 24), *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.FLEE :
             order = TargetEscape(self.game, self, Stationary('escape', 32), *self.current_menu_pos, menu_item )
+        elif menu_item.command == MenuItem.GUARD :
+            order = TargetAttackMove(self.game, self, Stationary('protect', 32), *self.current_menu_pos, menu_item, 1000 )
         elif menu_item.command == MenuItem.FRIEND_FOLLOW :
             order = TargetFollow(self.game, self, Stationary('move', 32), menu_item, target, False)
         elif menu_item.command == MenuItem.FRIEND_GUARD :
