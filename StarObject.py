@@ -1,6 +1,7 @@
 import pygame
 import os
 import math
+import random
 
 from IconRepository import IconRepository
 
@@ -140,9 +141,18 @@ class StarObject :
         return (new_x, new_y)
 
     def get_displaced_pos(self, dir, distance) :
-        displacement = pygame.Vector2(self.size, 0).rotate(-dir)
+        displacement = pygame.Vector2(distance, 0).rotate(-dir)
         pos = pygame.Vector2(self.x, self.y) + displacement
         return (pos.x, pos.y)
+
+    def get_dogfight_chase_pos(self, enemy) :
+        dist = self.distance_to(self.enemy)
+        chase_pos = self.enemy.get_pos_in_front(random.randint(0,self.enemy.v.length() * dist // 3))
+        chase_vector = pygame.Vector2(chase_pos[0]-self.x, chase_pos[1]-self.y)
+        chase_vector.normalize_ip()
+        chase_vector.scale_to_length(0.9 * dist)
+        return ( self.x + chase_vector.x, self.y + chase_vector.y )
+
 
     def distance_to(self, other) :
         point1 = pygame.math.Vector2(self.x, self.y)
