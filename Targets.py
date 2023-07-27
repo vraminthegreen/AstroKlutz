@@ -326,11 +326,16 @@ class TargetGroupMove( TargetGroup ) :
 
 class TargetGroupAttackMove( TargetGroup ) :
 
-    def __init__(self, game, owner, x, y, menu_item):
-        super().__init__(game, Stationary('mtarget',32), owner, x, y, menu_item )
+    def __init__(self, game, owner, x, y, menu_item, guarding_time = 0 ):
+        super().__init__(game, 
+            Stationary('mtarget',32) if guarding_time == 0 else Stationary('mprotect',32), 
+            owner, x, y, menu_item )
+        self.guarding_time = guarding_time
 
     def make_order_for_ship( self, ship, x, y ) :
-        ship_order = TargetAttackMove(self.game, ship, Stationary('target',32), x, y, self.menu_item)
+        ship_order = TargetAttackMove(self.game, ship, 
+            Stationary('target',32) if self.guarding_time == 0 else Stationary('protect',32), 
+            x, y, self.menu_item, self.guarding_time)
         return ship_order
 
 #################################################

@@ -143,11 +143,14 @@ class Group( StarObject ) :
             else :
                 self.add_ship( target )
         elif menu_item.command == MenuItem.MOVE :
-            order = TargetGroupMove(self.game, self, *self.current_menu_pos, menu_item )
+            order = TargetGroupMove( self.game, self, *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.ATTACK :
-            order = TargetGroupAttackMove(self.game, self, *self.current_menu_pos, menu_item )
+            order = TargetGroupAttackMove( self.game, self, *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.PATROL :
-            order = TargetGroupPatrolMove(self.game, self, *self.current_menu_pos, menu_item )
+            order = TargetGroupPatrolMove( self.game, self, *self.current_menu_pos, menu_item )
+        elif menu_item.command == MenuItem.GUARD :
+            order = TargetGroupAttackMove( self.game, self, *self.current_menu_pos, menu_item, 1000 )
+
         # elif menu_item.command == MenuItem.FLEE :
         #     order = TargetEscape(self.game, self, Stationary('escape', 32), *self.current_menu_pos, menu_item )
         # elif menu_item.command == MenuItem.FRIEND_FOLLOW :

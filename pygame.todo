@@ -1,6 +1,5 @@
 pygame.todo
 
-- rozkaz pilnowania miejsca grupowy (opcja dla ataku)
 - lepsza logika ataku: w fazie 2 atakujemy losowy punkt przed statkiem, ale nie wyprzedzamy
 - podobna logika dla rakiety (odległość punktu przed zależna od odległości od celu)
 - klasa scenariusz dla teamu
@@ -150,4 +149,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + coś nie działa przy patrolowaniu jak się zapętla
 + swój / obcy dla pocisków (za dużo friendly fire)
 + rozkaz pilnowania miejsca (opcja dla ataku)
++ rozkaz pilnowania miejsca grupowy (opcja dla ataku)
 
