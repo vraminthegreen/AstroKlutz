@@ -38,7 +38,8 @@ class TargetMove ( Target ) :
         self.owner = owner
         self.menu_item = menu_item
         self.visible = False
-        self.completed = False        
+        self.completed = False  
+        self.weak = False      
 
     def on_activate(self) :
         pass
@@ -100,6 +101,7 @@ class TargetAttackMove ( TargetMove ) :
         super().__init__(game, owner, object_class, x, y, menu_item)
         self.chase_pos = self.get_pos()
         self.guarding_time = guarding_time
+        print(f'New TargetAttackMove: {self}')
 
     def get_vmax(self) :
         return 0.5 * self.owner.maxV
@@ -107,35 +109,41 @@ class TargetAttackMove ( TargetMove ) :
     def logic(self) :
         if self.chase_pos != None :
             self.owner.chase( *self.chase_pos, False )
-        if self.owner.ping_animation == None :
-            if self.game.get_time() % 120 == 0 :
-                self.owner.ping_animation = 100
-            return
         if self.owner.enemy != None :
             self.owner.ping_animation = None
-            return
-        self.owner.ping_animation -= 2
-        if self.owner.ping_animation < 0 : 
-            self.owner.ping_animation = None
-            if random.randint(0,10) > 3 : 
-                return
-            objs = self.game.get_objects_in_range(self.owner.x, self.owner.y, self.owner.detectors_range)
-            for obj in objs :
-                if self.owner.is_hostile(obj) :
-                    print(f"{self.owner.name} FOUND ENEMY {obj.name}")
-                    order = TargetAttack(self.game, self.owner, Stationary('target', 40), self.menu_item, obj )
-                    self.owner.push_order( order )
+        if self.owner.ping_animation == None and self.owner.enemy == None:
+            if self.game.get_time() % 120 == 0 :
+                if self.owner.debug :
+                    print(f'{self.owner.name} TargetAttackMove.logic - start ping')
+                self.owner.ping_animation = 100
+        if self.owner.ping_animation != None :
+            self.owner.ping_animation -= 2
+            if self.owner.ping_animation < 0 : 
+                self.owner.ping_animation = None
+                if random.randint(0,10) <= 3 : 
+                    if self.owner.debug :
+                        print(f'{self.owner.name} TargetAttackMove.logic - execute ping')                    
+                    objs = self.game.get_objects_in_range(self.owner.x, self.owner.y, self.owner.detectors_range)
+                    for obj in objs :
+                        if self.owner.is_hostile(obj) :
+                            print(f"{self.owner.name} FOUND ENEMY {obj.name}")
+                            order = TargetAttack(self.game, self.owner, Stationary('target', 40), self.menu_item, obj )
+                            self.owner.push_order( order )
+                            self.completed = False
         if self.completed and self.guarding_time > 0 :
+            if self.owner.debug and self.guarding_time % 100 == 0:
+                print(f'{self.owner.name} TargetAttackMove.logic - guarding {self.guarding_time}')
             self.guarding_time -= 1
 
     def is_completed(self) :
         res = super().is_completed()
         if res and self.guarding_time > 0 : 
             if self.guarding_time % 100 == 0 :
-                print(f'{self.owner.name} GUARDING ({self.guarding_time}) ...')
+                print(f'{self.owner.name} GUARDING ({self.guarding_time})  ({self}) ...')
             return
         if res :
             self.owner.ping_animation = None
+            print(f'{self.owner.name} GUARDING completed')
         return res
 
 
@@ -266,6 +274,7 @@ class TargetGroup( Target ) :
         self.visible = False
         self.completed = False
         self.suborders = {}
+        self.weak = False
 
     def on_activate(self) :
         self.issue_orders()
@@ -344,14 +353,17 @@ class TargetGroupPatrolMove( TargetGroup ) :
 
     def __init__(self, game, owner, x, y, menu_item):
         super().__init__(game, Stationary('mpatrol',32), owner, x, y, menu_item )
+        self.guarding_time = 0
 
     def make_order_for_ship( self, ship, x, y ) :
-        ship_order = TargetAttackMove(self.game, ship, Stationary('patrol',32), x, y, self.menu_item)
+        ship_order = TargetAttackMove(self.game, ship, Stationary('patrol',32), x, y, self.menu_item, self.guarding_time)
         return ship_order
 
     def on_completed(self) :
         self.completed = False
         self.owner.append_order(self)
+        if self.owner.get_order() == self : # single order
+            self.owner.guarding_time = 500
 
 #################################################
 

@@ -17,6 +17,7 @@ class StarObject :
         self.v = pygame.Vector2(0, 0)  # Velocity vector
         self.auto = True
         self.orders = []
+        self.weak_orders = []
         self.animationOngoing = None
         self.animationFrame = None
         # copy the prototype
@@ -44,6 +45,7 @@ class StarObject :
         self.visible = True
         self.Z = 0
         self.team = None
+        self.debug = False
 
     def get_size( self ) :
         return self.size
@@ -94,6 +96,8 @@ class StarObject :
             o2dxy = self.game.get_display_xy(order.x, order.y)
             vec1 = pygame.Vector2(*o1dxy)
             vec2 = pygame.Vector2(*o2dxy)
+            if vec2 == vec1 :
+                continue
             # Calculate the direction vector from order1 to order2
             dir_vec = (vec2 - vec1).normalize()
             # Calculate the start and end points of the line
@@ -105,9 +109,24 @@ class StarObject :
         for order in self.orders :
             order.repaint( win )
 
+        for order in self.weak_orders :
+            order.repaint( win )
+
+    def get_order(self) :
+        if len(self.orders) > 0 :
+            return self.orders[0]
+        elif len(self.weak_orders) > 0 :
+            return self.weak_orders[0]
+        return None
+
+
+    def order_is_completed(self) :
+        order = self.get_order()
+        return order != None and order.is_completed()
+
     def ticktack(self):
-        if self.auto and len(self.orders)>0 :
-            if self.orders[0].is_completed() :
+        if self.auto :
+            while self.order_is_completed() :
                 self.pop_order()
         if self.animationOngoing != None :
             self.animateNextFrame()        
@@ -150,7 +169,7 @@ class StarObject :
         chase_pos = self.enemy.get_pos_in_front(random.randint(0,self.enemy.v.length() * dist // 3))
         chase_vector = pygame.Vector2(chase_pos[0]-self.x, chase_pos[1]-self.y)
         chase_vector.normalize_ip()
-        chase_vector.scale_to_length(0.9 * dist)
+        chase_vector.scale_to_length(max(0,dist-100))
         return ( self.x + chase_vector.x, self.y + chase_vector.y )
 
 
@@ -168,35 +187,51 @@ class StarObject :
 
     def set_order(self, order) :
         for order in self.orders :
-            self.game.remove_object( self.order )
+            self.game.remove_object( order )
+        for order in self.weak_orders :
+            self.game.remove_object( order )
         self.orders = [ order ]
+        self.weak_orders = []
         order.on_activate()
         self.auto = True
 
     def append_order(self, order) :
         self.game.add_object( order )
-        self.orders.append(order)
-        if len(self.orders) == 1 :
-            order.on_activate()
-        print(f"{self.name} append_order {order}, orders count: {len(self.orders)}")
+        if order.weak :
+            self.weak_orders.append(order)
+            if len(self.orders)==0 and len(self.weak_orders)==1 :
+                order.on_activate()
+        else :
+            self.orders.append(order)
+            if len(self.orders) == 1 :
+                order.on_activate()
         self.auto = True
 
     def push_order(self, order) :
         self.game.add_object( order )
-        if len(self.orders) > 0 :
-            self.orders[0].on_deactivate()
-        self.orders.insert(0, order)
-        order.on_activate()
+        if order.weak :
+            if len(self.orders) == 0 and len(self.weak_orders)>0 :
+                self.weak_orders[0].on_deactivate()
+            self.weak_orders.insert(0)
+            if len(self.orders) == 0 :
+                self.weak_orders[0].on_activate()
+        else :
+            if len(self.orders) > 0 :
+                self.orders[0].on_deactivate()
+            self.orders.insert(0, order)
+            order.on_activate()
         self.auto = True
 
     def pop_order(self) :
-        order = self.orders.pop( 0 )
+        if len(self.orders) > 0 :
+            order = self.orders.pop( 0 )
+        elif len(self.weak_orders) > 0 :
+            order = self.weak_orders.pop( 0 )
         self.game.remove_object( order )
         order.on_completed()
-        if len(self.orders) == 0 :
-            self.auto = False
-        else :
-            self.orders[0].on_activate()
+        order = self.get_order()
+        if order != None :
+            order.on_activate()
 
     def accelerate(self):
         acceleration_vector = pygame.Vector2(self.maxAcc, 0).rotate(-self.dir)
@@ -232,6 +267,8 @@ class StarObject :
         self.rotate(-self.rotation_speed)
 
     def chase(self, tx, ty, decelerate = None):
+        if self.debug and ( self.x != tx or self.y != ty ):
+            print(f'{self.name} ({self.x},{self.y}) chases ({tx},{ty})')
         target_vector = pygame.Vector2(tx, -ty) - pygame.Vector2(self.x, -self.y)
         direction_to_target = math.degrees(math.atan2(target_vector.y, target_vector.x))
         difference_in_direction = (direction_to_target - self.dir) % 360
@@ -242,8 +279,12 @@ class StarObject :
 
         # Determine whether to rotate left or right
         if difference_in_direction > 0:
+            if self.debug :
+                print(f'{self.name} rotateRight')
             self.rotateRight()
         elif difference_in_direction < 0:
+            if self.debug :
+                print(f'{self.name} rotateLeft')
             self.rotateLeft()
 
         # Determine whether to accelerate or decelerate
@@ -255,8 +296,13 @@ class StarObject :
             thedecelerate = decelerate
         if distance_to_target > 40 :  # Accelerate if far from the target
             if abs(difference_in_direction) < 90 :
+                if self.debug :
+                    print(f'{self.name} accelerate')
+
                 self.accelerate()
         elif thedecelerate and self.v.length() > distance_to_target / 40  :  # Decelerate if close to the target
+            if self.debug :
+                print(f'{self.name} decelerate')
             self.decelerate()
         return distance_to_target < 20
 
@@ -292,26 +338,18 @@ class StarObject :
     def command( self, cmd ) :
         return False
 
-    def command_delete(self) :
-        print(f'command_delete in {self}')
-        if len(self.orders) == 0 :
-            return
-        order = self.orders.pop( -1 )
-        self.game.remove_object( order )
-        if len(self.orders) == 0 :
-            order.on_deactivate()
-            self.auto = False
-
     def on_focus_lost(self) :
         return False
 
     def get_current_vmax(self) :
         if len(self.orders) > 0 :
             return self.orders[0].get_vmax()
+        elif len(self.weak_orders) > 0 :
+            return self.weak_orders[0].get_vmax()
         else :
             return self.maxV
 
     def is_hostile(self, other) :
-        return self.team != other.team
+        return self.team.is_hostile(other.team)
 
 

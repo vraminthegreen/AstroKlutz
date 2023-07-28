@@ -31,12 +31,14 @@ class Team :
     "Zulu"
     ]
 
-    def __init__(self, name, color, number) :
+    def __init__(self, name, color, number, aliance, scenario = None) :
         self.name = name
         self.color = color
         self.number = number
+        self.aliance = aliance
         self.names = [ "Alfa", "Bravo", "Delta"]
         self.counter = 0
+        self.scenario = scenario
 
     def get_filename_sufix(self) :
         return '_' + str(self.number)
@@ -48,3 +50,11 @@ class Team :
             res = str(self.counter) + "-" + self.name
         self.counter += 1
         return res
+
+    def get_order(self, ship) :
+        if self.scenario == None :
+            return None
+        return self.scenario.get_order(ship)
+
+    def is_hostile(self, team) :
+        return self.aliance != team.aliance

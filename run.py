@@ -15,6 +15,7 @@ from Pilot import Pilot, FighterPilot, RocketFrigatePilot
 from ShipClass import FighterClass, RocketFrigateClass, Stationary, Background
 from DistantObject import DistantObject
 from Group import Group
+from Scenarios import BasicScenario
 
 
 # Initialize Pygame
@@ -24,10 +25,14 @@ input_handler = InputHandler()
 game = Game(input_handler)
 input_handler.set_game( game )
 # Create a starship and an input handler
-team_red = Team( "Red", (255,0,0), 1 )
-team_blue = Team( "Blue", (0,0,255), 2 )
-team_green = Team( "Green", (0,255,0), 3 )
-team_yellow = Team( "Yellow", (255,255,0), 4 )
+
+scenario = BasicScenario(game)
+
+
+team_red = Team( "Red", (255,0,0), 1, 1, scenario )
+team_blue = Team( "Blue", (0,0,255), 2, 1, scenario )
+team_green = Team( "Green", (0,255,0), 3, 0, scenario )
+team_yellow = Team( "Yellow", (255,255,0), 4, 1, scenario )
 
 background = DistantObject(game, Background('background'), 0, 0)
 game.add_object(background)
@@ -46,15 +51,17 @@ player = None
 Dust.make_dust(game, 1)
 
 crippled_fighter = FighterClass()
-crippled_fighter.maxV = 1.5  # Maximum speed
-crippled_fighter.rotation_speed = 0.3
-crippled_fighter.max_bullets = 3
+#crippled_fighter.maxV = 1.5  # Maximum speed
+#crippled_fighter.rotation_speed = 0.3
+#crippled_fighter.max_bullets = 3
 
 enemies = [
     Starship(game, team_yellow, crippled_fighter, FighterPilot(game), -350, -350 ),
     Starship(game, team_red, RocketFrigateClass(), RocketFrigatePilot(game), 350, -350 ),
-    Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 ),    
+    Starship(game, team_blue, crippled_fighter, FighterPilot(game), 350, 350 ),
 ]
+
+# enemies[2].debug = True
 
 
 
@@ -66,10 +73,10 @@ friends = [
 ]
 
 for enemy in enemies :
-    if player != None :
-        enemy.set_enemy(player)
-    else :
-        enemy.set_enemy(friends[random.randint(0,len(friends)-1)])
+    # if player != None :
+    #     enemy.set_enemy(player)
+    # else :
+    #     enemy.set_enemy(friends[random.randint(0,len(friends)-1)])
     game.add_object(enemy)
 
 

@@ -1,15 +1,12 @@
 pygame.todo
 
-- klasa scenariusz dla teamu
-- po wybuchu przeciwnika (on_dead), statek wybiera nowy cel (prosi o nowy cel team i dostaje z klasy scenariusz)
 - Rozkaz grupowy dla ucieczki
 - Rozkaz grupowy pozostały
-- implementacja animacji odrzutu (osobnej)
-- poprawka rozwalania się o wybuch
 - background ma pozycję, poza pozycją tło jest czarne
 - dodanie awaryjnych backgroundów jeśli stateczek poleci dalej (można dolecieć do innych teł)
 - dodanie innych typów statków
 - dodanie teleporterów
+- implementacja animacji odrzutu (osobnej)
 - animacja ściemniania dustu na przeźroczystości
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
@@ -151,4 +148,8 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 + lepsza logika ataku: w fazie 2 atakujemy losowy punkt przed statkiem, ale nie wyprzedzamy
 + podobna logika dla rakiety (odległość punktu przed zależna od odległości od celu)
 + missile wybucha przy innych wrogach
++ weak orders (usuwane gdy jest cokolwiek, i nie liczą się przy oczekiwaniu na spełnienie grupowego)
+x poprawka rozwalania się o wybuch (to mi się jednak podoba)
++ klasa scenariusz dla teamu
++ po wybuchu przeciwnika (on_dead), statek wybiera nowy cel (prosi o nowy cel team i dostaje z klasy scenariusz)
 

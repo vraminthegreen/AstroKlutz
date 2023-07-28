@@ -56,7 +56,7 @@ class RocketFrigateClass ( ObjectClass ) :
         self.resistance = 0.99 # thrusters power
         self.can_be_hit = True
         self.chaseDecelerate = True
-        self.detectors_range = 500
+        self.detectors_range = 700
 
 #################################################
 

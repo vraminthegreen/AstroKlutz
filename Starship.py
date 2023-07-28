@@ -87,15 +87,18 @@ class Starship ( StarObject ) :
         self.enemy = enemy
         self.pilot.set_enemy( enemy )
 
-    def order_logic(self) :
-        if len(self.orders) == 0 :
-            return
-        self.orders[0].logic()
-
     def ticktack(self):
-        self.order_logic()
-        if len(self.orders) == 0 and self.auto :
-            self.pilot.ticktack()
+        if self.auto :
+            order = self.get_order()
+            if order == None :
+                if self.game.get_time() % 10 == 0 :
+                    order = self.team.get_order(self)
+                    if order != None :
+                        self.append_order(order)
+            if order == None :
+                self.pilot.ticktack()
+            else :
+                order.logic()
         super().ticktack()
 
     def hit(self, hitter):
