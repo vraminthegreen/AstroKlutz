@@ -86,8 +86,6 @@ class MissilePilot ( Pilot ) :
             return
         distance_to_enemy = self.starship.distance_to(self.starship.enemy)
         order_hit = distance_to_enemy < 1.5 * self.starship.get_size()
-        if distance_to_enemy < 2 * self.starship.get_size() :
-            print(f'MISSILE distance_to_enemy: {distance_to_enemy}, order_hit: {order_hit}')
         if self.starship.fuel == 0 or order_hit :
             self.starship.fuel = 0
             if order_hit :

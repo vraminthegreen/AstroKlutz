@@ -1,12 +1,15 @@
 pygame.todo
 
-- Rozkaz grupowy dla ucieczki
-- Rozkaz grupowy pozostały
 - background ma pozycję, poza pozycją tło jest czarne
 - dodanie awaryjnych backgroundów jeśli stateczek poleci dalej (można dolecieć do innych teł)
-- dodanie innych typów statków
+- analiza zachowania zoom out
+- rozrysowanie jakiejś interesującej walki
+- Rozkaz grupowy pozostały
+- dodanie skauta
 - dodanie teleporterów
 - implementacja animacji odrzutu (osobnej)
+- dodanie innych typów statków
+- rozkazy grupowe uwzględniają formację2
 - animacja ściemniania dustu na przeźroczystości
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
@@ -152,4 +155,5 @@ x przejść na multidziedziczenie z funkcjonalnością hit/dead
 x poprawka rozwalania się o wybuch (to mi się jednak podoba)
 + klasa scenariusz dla teamu
 + po wybuchu przeciwnika (on_dead), statek wybiera nowy cel (prosi o nowy cel team i dostaje z klasy scenariusz)
++ Rozkaz grupowy dla ucieczki
 

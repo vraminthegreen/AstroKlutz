@@ -251,6 +251,7 @@ class TargetEnemyEscape ( TargetMove ) :
         self.x = self.enemy.x
         self.y = self.enemy.y
         if self.game.get_time() > self.next_zigzag :
+            print(f'{self.owner.name} TargetEnemyEscape zigzag')
             segment_len = random.randint(20,200)
             self.next_zigzag = self.game.get_time() + segment_len
             vector = pygame.Vector2(self.owner.x - self.enemy.x, self.owner.y - self.enemy.y)
@@ -261,6 +262,8 @@ class TargetEnemyEscape ( TargetMove ) :
             vector.scale_to_length(5000)
             # Adding it to the original position to get the extended position
             self.chase_pos = (self.owner.x + vector.x, self.owner.y + vector.y)
+        if self.game.get_time() % 50 == 0 :
+            print(f'{self.owner.name} TargetEnemyEscape chase ({self.owner.x},{self.owner.y}) -> {self.chase_pos}')
         self.owner.chase( *self.chase_pos, False )
 
 #################################################
@@ -366,4 +369,14 @@ class TargetGroupPatrolMove( TargetGroup ) :
             self.owner.guarding_time = 500
 
 #################################################
+
+class TargetGroupEnemyEscape( TargetGroup ) :
+
+    def __init__(self, game, owner, menu_item, target ) :
+        super().__init__(game, Stationary('mescape',32), owner, target.x, target.y, menu_item )
+        self.target = target
+
+    def make_order_for_ship( self, ship, x, y ) :
+        ship_order = TargetEnemyEscape(self.game, ship, Stationary('escape', 24), self.menu_item, self.target)
+        return ship_order
 
