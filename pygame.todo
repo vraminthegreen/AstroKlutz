@@ -1,7 +1,9 @@
 pygame.todo
 
-- background ma pozycję, poza pozycją tło jest czarne
-- dodanie awaryjnych backgroundów jeśli stateczek poleci dalej (można dolecieć do innych teł)
+- zdarzenie - opuszczenie strefy wpływu
+- wygenerowanie nowego backgroundu
+- leniwe ładowanie ikony w backgroundzie
+- usuwanie ikony w backgroundzie
 - analiza zachowania zoom out
 - rozrysowanie jakiejś interesującej walki
 - Rozkaz grupowy pozostały
@@ -156,4 +158,9 @@ x poprawka rozwalania się o wybuch (to mi się jednak podoba)
 + klasa scenariusz dla teamu
 + po wybuchu przeciwnika (on_dead), statek wybiera nowy cel (prosi o nowy cel team i dostaje z klasy scenariusz)
 + Rozkaz grupowy dla ucieczki
++ background ma pozycję, poza pozycją tło jest czarne
++ porawka na kamerzystę
++ przyciemnienie backgroundu
++ projekt: dodanie awaryjnych backgroundów jeśli stateczek poleci dalej (można dolecieć do innych teł)
++ ze 4 alternatywne backgroundy - grafa
 

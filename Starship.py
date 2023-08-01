@@ -30,7 +30,6 @@ class Starship ( StarObject ) :
         self.enemy = None
         self.dead = False
         self.shield_active = False
-        self.is_important = True
         self.is_selectable = True
         self.focus_visible = True
         self.ping_animation = None

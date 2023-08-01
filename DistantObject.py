@@ -19,6 +19,8 @@ class DistantObject ( StarObject ) :
 
         # Scale the icon
         scale_x, scale_y = ico.get_size()
+        scale_x *= 2
+        scale_y *= 2
         scale_x = int(scale_x * pow(self.game.zoom,0.2))
         scale_y = int(scale_y * pow(self.game.zoom,0.2))
         scaled_icon = pygame.transform.scale(ico, (scale_x, scale_y))

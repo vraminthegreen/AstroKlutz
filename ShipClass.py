@@ -14,6 +14,7 @@ class ObjectClass :
         self.rotation_speed = 1
         self.chaseDecelerate = False
         self.icon_name = None
+        self.is_important = False
 
 
 #################################################
@@ -36,6 +37,7 @@ class FighterClass ( ObjectClass ) :
         self.can_be_hit = True
         self.chaseDecelerate = True
         self.detectors_range = 250
+        self.is_important = True
 
 #################################################
 
@@ -57,6 +59,7 @@ class RocketFrigateClass ( ObjectClass ) :
         self.can_be_hit = True
         self.chaseDecelerate = True
         self.detectors_range = 700
+        self.is_important = True
 
 #################################################
 

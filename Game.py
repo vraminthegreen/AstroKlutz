@@ -17,7 +17,6 @@ class Game:
         self.focused = []
         self.time = 0
         self.zoom = 0.5
-        self.target_zoom = 1
         self.camera = [ 0, 0 ]
         self.animations = {
             'explosion' : AnimatedSprite( "explosion.png", 8, 6, 96, False ),
@@ -26,6 +25,13 @@ class Game:
         }
         self.paused = True
         self.key_handlers = {}
+        self.reset_fieldview()
+
+    def reset_fieldview( self ) :
+        max_width = self.game_window[0]
+        max_height = self.game_window[1]
+        self.optimal_fieldview = pygame.Rect(-max_width//2,-max_height//2,max_width,max_height)
+        self.target_zoom = 1
 
     def add_object(self, obj):
         self.objects[obj.Z].append( obj )
@@ -95,6 +101,70 @@ class Game:
         rect.center = self.camera
         return rect
 
+    def move_to_contain( self, rect1, rect2 ) :
+        "move rect1 so that it contains rect2"
+        if rect1.right < rect2.right :
+            rect1.move_ip(rect2.right - rect1.right, 0)
+        elif rect2.left < rect1.left :
+            rect1.move_ip(rect2.left - rect1.left, 0)
+        if rect2.top < rect1.top :
+            rect1.move_ip(0, rect2.top - rect1.top) 
+        elif rect1.bottom < rect2.bottom :
+            rect1.move_ip(0, rect2.bottom - rect1.bottom)
+        return rect1
+
+    def compute_optimal_fieldview( self ) :
+        max_width = self.game_window[0]
+        max_height = self.game_window[1]
+        important_objects = [obj for obj in self.objects[0] if obj.is_important]
+        if len(important_objects)==0 :
+            self.reset_fieldview()
+            return
+        all_ships_fieldview = important_objects[0].get_rect()
+        for obj in important_objects[1:] :
+            all_ships_fieldview = all_ships_fieldview.union(obj.get_rect())
+        all_fit = True
+        if all_ships_fieldview.width <= max_width and all_ships_fieldview.height <= max_height :
+            if self.target_zoom != 1 :
+                self.toggle_zoom(True)
+                self.optimal_fieldview = all_ships_fieldview
+        elif all_ships_fieldview.width > 2 * max_width or all_ships_fieldview.height >= 2 * max_height :
+            all_fit = False
+            if self.target_zoom != 1 :
+                self.toggle_zoom(True)
+                self.optimal_fieldview.inflate_ip(-max_width, -max_height)
+        elif self.target_zoom == 1 :
+            self.optimal_fieldview.inflate_ip(max_width,max_height)
+            max_widht = 2 * self.game_window[0]
+            max_height = 2 * self.game_window[1]
+            self.toggle_zoom(True)
+        else :
+            max_width = 2 * self.game_window[0]
+            max_height = 2 * self.game_window[1]
+        focused_rect = all_ships_fieldview # guard
+        if len(self.focused) > 0 :
+            focused_rect = self.focused[0].get_rect().inflate(200,200)
+            fv = all_ships_fieldview.union(focused_rect)
+            if all_fit :
+                if fv.width <= max_width and fv.height <= max_height :
+                    all_ships_fieldview = fv
+            else :
+                if fv.width <= max_width and fv.height <= max_height :
+                    all_ships_fieldview = fv
+                else :
+                    all_ships_fieldview = focused_rect
+        if not self.optimal_fieldview.contains(all_ships_fieldview) :
+            print(f'fieldview adjusting')
+            self.optimal_fieldview = self.move_to_contain(self.optimal_fieldview, all_ships_fieldview)
+            print(f'    optimal_fieldview: {self.optimal_fieldview}')
+            print(f'    all_ships: {all_ships_fieldview}')
+            print(f'    contains: {self.optimal_fieldview.contains(all_ships_fieldview)}')
+        assert self.optimal_fieldview.width == self.game_window[0] / self.target_zoom
+        assert self.optimal_fieldview.height == self.game_window[1] / self.target_zoom
+
+    def get_optimal_camera( self ) :
+        return self.optimal_fieldview.center
+
     def compute_pans(self) :
         self.pan1 = (
             self.camera[0]-self.game_window[0]/2/self.zoom,
@@ -104,7 +174,25 @@ class Game:
             self.camera[1]/2.5/self.zoom-self.game_window[1]/2/2.5/self.zoom)
         self.pan3 = (self.camera[0]/5-self.game_window[0]/2/self.zoom,self.camera[1]/5-self.game_window[1]/2/self.zoom)
 
-    def pan_camera(self, bounding_rect) :
+    def pan_camera(self) :
+        optimal_camera = self.get_optimal_camera()
+        d = (optimal_camera[0]-self.camera[0], optimal_camera[1]-self.camera[1])
+        recompute_pans = d != (0,0)
+        if not recompute_pans :
+            return
+        if abs(d[0]>10) or abs(d[1]>10) :
+            self.camera[0] = self.approach_value(self.camera[0],optimal_camera[0],15)
+            self.camera[1] = self.approach_value(self.camera[1],optimal_camera[1],15)
+        else :
+            d = ( max(1,d[0]/10) if d[0]>=0 else min(-1,d[0]/10),
+                  max(1,d[1]/10) if d[1]>=0 else min(-1,d[1]/10) )
+            self.camera[0] += d[0]
+            self.camera[1] += d[1]
+        if recompute_pans :
+            self.compute_pans()
+
+
+    def pan_camera_old(self, bounding_rect) :
         rect = self.get_visible_rectangle( 0, self.target_zoom )
         srect = rect.inflate( -200, -200 )
 
@@ -119,7 +207,21 @@ class Game:
         #     print(f'zoom: {self.zoom}')
 
         recompute_pans = False
-        if len(self.focused) > 0 :
+        if bounding_rect.left < rect.left :
+            self.camera[0] -= max((rect.left-bounding_rect.left)/20,1)
+            recompute_pans = True
+        elif bounding_rect.right > rect.right :
+            self.camera[0] += max((bounding_rect.right-rect.right)/20,1)
+            recompute_pans = True
+        if bounding_rect.top < rect.top :
+            self.camera[1] -= max((rect.top-bounding_rect.top)/20,1)
+            recompute_pans = True
+        elif bounding_rect.bottom > rect.bottom :
+            self.camera[1] += max((rect.bottom-bounding_rect.bottom)/20,1)
+            recompute_pans = True
+        if len(self.focused) > 0 and False :
+            if recompute_pans :
+                rect = self.get_visible_rectangle( 0, self.target_zoom )
             if self.focused[0].x < srect.left :
                 self.camera[0] = self.focused[0].x - 100 + self.game_window[0]/2/self.zoom
                 recompute_pans = True
@@ -132,27 +234,16 @@ class Game:
             elif self.focused[0].y > srect.bottom :
                 self.camera[1] = self.focused[0].y + 100 - self.game_window[1]/2/self.zoom
                 recompute_pans = True
-        if not recompute_pans :
-            if bounding_rect.left < rect.left :
-                self.camera[0] -= max((rect.left-bounding_rect.left)/20,1)
-                recompute_pans = True
-            elif bounding_rect.right > rect.right :
-                self.camera[0] += max((bounding_rect.right-rect.right)/20,1)
-                recompute_pans = True
-            if bounding_rect.top < rect.top :
-                self.camera[1] -= max((rect.top-bounding_rect.top)/20,1)
-                recompute_pans = True
-            elif bounding_rect.bottom > rect.bottom :
-                self.camera[1] += max((rect.bottom-bounding_rect.bottom)/20,1)
-                recompute_pans = True
+        # if not recompute_pans :
         if recompute_pans :
             # print(f'camera after: ({self.camera[0]},{self.camera[1]})')
             # print(f'~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
             self.compute_pans()
+        print(f'pan1: {self.pan1}')
 
 
-    def toggle_zoom(self) :
-        if(self.zoom == self.target_zoom) :
+    def toggle_zoom(self, force = False) :
+        if force or self.zoom == self.target_zoom :
             Dust.remove_dust(self)
             self.target_zoom = 1.5 - self.target_zoom
             Dust.make_dust(self, self.target_zoom)
@@ -195,7 +286,7 @@ class Game:
         height = rect.height * self.zoom / layer_factor
         return pygame.Rect( left, top, width, height )
 
-    def compute_bounding_rect(self) :
+    def compute_bounding_rect_old(self) :
         important_objects = [obj for obj in self.objects[0] if obj.is_important]
 
         if not important_objects:
@@ -208,6 +299,7 @@ class Game:
         for obj in important_objects[1:]:
             bounding_rect.union_ip(obj.get_rect())
 
+        print(f'important_objects: {len(important_objects)}, bounding_rect: {bounding_rect}')
         return bounding_rect
 
     def game_loop( self ):
@@ -216,22 +308,11 @@ class Game:
             self.time += 1
             self.clock.tick(60)  # Limit the game loop to 60 frames per second
 
-            bounding_rect = self.compute_bounding_rect()
-
-            if self.zoom == self.target_zoom and not self.paused :
-
-                if self.zoom == 1 :
-                    br = self.get_visible_rectangle(0)
-                    if bounding_rect.width > br.width or bounding_rect.height > br.height :
-                        self.toggle_zoom()
-                elif self.zoom == 0.5 :
-                    br = self.get_visible_rectangle(0, 1)
-                    if bounding_rect.width < br.width and bounding_rect.height < br.height :
-                        self.toggle_zoom()
+            self.compute_optimal_fieldview()
 
             self.zoom = Game.approach_value(self.zoom, self.target_zoom, 15)
 
-            # self.win.fill((0, 0, 0))
+            self.win.fill((0, 0, 0))
             if self.input_handler.handle_input(len(self.mouse_tracking)>0) == False :
                 running = False
 
@@ -241,7 +322,8 @@ class Game:
             self.compute_pans()
 
             if not self.paused :
-                self.pan_camera(bounding_rect)
+                # self.pan_camera(bounding_rect)
+                self.pan_camera()
 
             for z_list in reversed(self.objects) :
                 for obj in z_list :

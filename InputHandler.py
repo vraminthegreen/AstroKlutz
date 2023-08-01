@@ -20,30 +20,31 @@ class InputHandler:
     def handle_input(self, mouse_tracking):
         self.counter += 1
         keys = pygame.key.get_pressed()
-        if self.game.get_focused() != None :
+        focused = self.game.get_focused()
+        if focused != None and not self.game.paused :
             if keys[pygame.K_LEFT]:
-                self.game.get_focused().rotateRight()
+                focused.set_auto( False )
+                focused.rotateRight()
             if keys[pygame.K_RIGHT]:
-                self.game.get_focused().rotateLeft()
+                focused.set_auto( False )
+                focused.rotateLeft()
             if keys[pygame.K_UP]:
-                self.game.get_focused().accelerate()
+                focused.set_auto( False )
+                focused.accelerate()
             if keys[pygame.K_DOWN]:
-                self.game.get_focused().decelerate()
+                focused.set_auto( False )
+                focused.decelerate()
         if keys[pygame.K_z] :
             if self.counter > self.last_key + 20 :
                 self.game.toggle_zoom()
                 self.last_key = self.counter
-        # if keys[pygame.K_p] :
-        #     if self.counter > self.last_key + 20 :
-        #         self.game.toggle_pause()
-        #         self.last_key = self.counter
         if keys[pygame.K_ESCAPE] :
             if self.counter > self.last_key + 20 :
                 self.game.pop_focused()
                 self.last_key = self.counter
         if keys[pygame.K_BACKSPACE] :
             if self.game.get_focused() != None and self.counter > self.last_key + 20 :
-                self.game.get_focused().command_delete()
+                self.game.get_focused().pop_order()
                 self.last_key = self.counter
 
         running = True

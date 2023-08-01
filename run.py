@@ -34,7 +34,7 @@ team_blue = Team( "Blue", (0,0,255), 2, 1, scenario )
 team_green = Team( "Green", (0,255,0), 3, 0, scenario )
 team_yellow = Team( "Yellow", (255,255,0), 4, 1, scenario )
 
-background = DistantObject(game, Background('background'), 0, 0)
+background = DistantObject(game, Background('background4'), 0, 0)
 game.add_object(background)
 
 player_class = FighterClass()
@@ -71,6 +71,8 @@ friends = [
     Starship(game, team_green, FighterClass(), FighterPilot(game), -70, 230 ),
     Starship(game, team_green, FighterClass(), FighterPilot(game), -40, 230 ),
 ]
+
+# friends[0].debug = True
 
 for enemy in enemies :
     # if player != None :

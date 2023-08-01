@@ -31,6 +31,7 @@ class StarObject :
         self.chaseDecelerate = self.object_class.chaseDecelerate
         self.layer = self.object_class.layer
         self.detectors_range = self.object_class.detectors_range
+        self.is_important = self.object_class.is_important
         #
         if self.object_class.icon_name != None :
             self.icon = IconRepository.get_icon(self.object_class.icon_name, self.get_size())
@@ -38,7 +39,6 @@ class StarObject :
                 self.size = max(*self.icon.get_size())
         else :
             self.icon = None
-        self.is_important = False
         self.affected_by_pause = False
         self.is_selectable = False
         self.focus_visible = False
@@ -132,6 +132,9 @@ class StarObject :
             self.animateNextFrame()        
         self.x += self.v.x
         self.y += self.v.y
+        if self.debug and self.game.get_time() % 100 == 0 :
+            print(f'{self.name} pos: {self.get_pos()}')
+
         self.v *= self.resistance
 
     def set_pos(self, x, y) :
@@ -232,6 +235,13 @@ class StarObject :
         order = self.get_order()
         if order != None :
             order.on_activate()
+
+    def set_auto(self, auto) :
+        self.auto = auto
+        if not self.auto :
+            self.orders = []
+            self.weak_orders = []
+            self.ping_animation = None
 
     def accelerate(self):
         acceleration_vector = pygame.Vector2(self.maxAcc, 0).rotate(-self.dir)
