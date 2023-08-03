@@ -1,8 +1,7 @@
 pygame.todo
 
-- klasa scenariusz - iterator
-- wykonanie scenariusza przez grę
-- rozrysowanie jakiejś interesującej walki jako scenariusz eksperymentalny
+- skasowanie orderu grupowego usuwa order jednostkowy
+- ordery przy zoom
 - scenariusz nr 1 - wprowadzenie
     - dodanie skauta
     - dodanie teleporterów
@@ -169,4 +168,5 @@ x leniwe ładowanie ikony w backgroundzie
 x usuwanie ikony w backgroundzie
 + analiza zachowania zoom out
 + lock zoom
++ rozrysowanie jakiejś interesującej walki jako scenariusz eksperymentalny
 

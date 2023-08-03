@@ -133,6 +133,10 @@ class Group( StarObject ) :
         self.game.push_focused( menu )
         return True
 
+    def order_guard(self, x, y, menu_item = None) :
+        order = TargetGroupAttackMove( self.game, self, x, y, menu_item, 1000 )
+        self.append_order( order )
+
     def on_menu(self, menu_item, target) :
         order = None
         if menu_item.command == MenuItem.FRIEND_GROUP :
@@ -149,7 +153,7 @@ class Group( StarObject ) :
         elif menu_item.command == MenuItem.PATROL :
             order = TargetGroupPatrolMove( self.game, self, *self.current_menu_pos, menu_item )
         elif menu_item.command == MenuItem.GUARD :
-            order = TargetGroupAttackMove( self.game, self, *self.current_menu_pos, menu_item, 1000 )
+            self.order_guard( *self.current_menu_pos )
 
         # elif menu_item.command == MenuItem.FLEE :
         #     order = TargetEscape(self.game, self, Stationary('escape', 32), *self.current_menu_pos, menu_item )

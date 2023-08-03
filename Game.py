@@ -117,7 +117,6 @@ class Game:
     def compute_optimal_fieldview( self ) :
         if self.zoom_locked != None and self.zoom_locked > self.get_time() :
             return
-        print(f'compute_optimal_fieldview - START')
         max_width = self.game_window[0]
         max_height = self.game_window[1]
         important_objects = [obj for obj in self.objects[0] if obj.is_important]
@@ -129,24 +128,20 @@ class Game:
             all_ships_fieldview = all_ships_fieldview.union(obj.get_rect())
         all_fit = True
         if all_ships_fieldview.width <= max_width and all_ships_fieldview.height <= max_height :
-            print(f'compute_optimal_fieldview - branch1')
             if self.target_zoom != 1 :
                 self.toggle_zoom({'force':True})
                 self.optimal_fieldview = all_ships_fieldview
         elif all_ships_fieldview.width > 2 * max_width or all_ships_fieldview.height >= 2 * max_height :
-            print(f'compute_optimal_fieldview - branch2')
             all_fit = False
             if self.target_zoom != 1 :
                 self.toggle_zoom({'force':True})
                 self.optimal_fieldview.inflate_ip(-max_width, -max_height)
         elif self.target_zoom == 1 :
-            print(f'compute_optimal_fieldview - branch3')
             self.optimal_fieldview.inflate_ip(max_width,max_height)
             max_widht = 2 * self.game_window[0]
             max_height = 2 * self.game_window[1]
             self.toggle_zoom({'force':True})
         else :
-            print(f'compute_optimal_fieldview - branch4')
             max_width = 2 * self.game_window[0]
             max_height = 2 * self.game_window[1]
         focused_rect = all_ships_fieldview # guard
@@ -167,8 +162,6 @@ class Game:
             print(f'    optimal_fieldview: {self.optimal_fieldview}')
             print(f'    all_ships: {all_ships_fieldview}')
             print(f'    contains: {self.optimal_fieldview.contains(all_ships_fieldview)}')
-        print(f'optimal_fieldview: {self.optimal_fieldview}')
-        print(f'target_zoom: {self.target_zoom}')
         self.optimal_fieldview.inflate_ip(
             self.game_window[0] / self.target_zoom - self.optimal_fieldview.width,
             self.game_window[1] / self.target_zoom - self.optimal_fieldview.height )
@@ -260,7 +253,7 @@ class Game:
             self.target_zoom = 1.5 - self.target_zoom
             Dust.make_dust(self, self.target_zoom)
         if args.get('lock',False) :
-            self.zoom_locked = self.get_time() + 500
+            self.zoom_locked = self.get_time() + 5000
 
     def toggle_pause(self) :
         print('Toggle pause')

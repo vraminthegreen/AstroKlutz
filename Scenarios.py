@@ -2,7 +2,11 @@
 
 from Targets import TargetAttackMove
 from ShipClass import Stationary
-
+from Team import Team
+from Starship import Starship
+from Pilot import Pilot, FighterPilot, RocketFrigatePilot
+from ShipClass import FighterClass, RocketFrigateClass
+from Group import Group
 
 
 #################################################
@@ -24,5 +28,56 @@ class BasicScenario ( Scenario ) :
         order.weak = True
         print(f'New weak order for {ship.name} -> guard ({ship.x},{ship.y})')
         return order
+
+    def start( self ) :
+        self.friends = []
+        self.enemies = []
+        self.team_red = Team( "Red", (255,0,0), 1, 1, self )
+        self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
+        self.team_green = Team( "Green", (0,255,0), 3, 0, self )
+        self.team_yellow = Team( "Yellow", (255,255,0), 4, 1, self )
+
+        top = -320
+        spac = 72
+
+        self.friend_group_fighters = Group(self.game, self.team_blue)
+        self.game.add_object(self.friend_group_fighters)
+        self.friend_group_frigates = Group(self.game, self.team_blue)
+        self.game.add_object(self.friend_group_frigates)
+        self.enemy_group = Group(self.game, self.team_red)
+        self.game.add_object(self.enemy_group)
+
+        for i in range(0,10) :
+            sb = Starship(self.game, self.team_blue, FighterClass(), FighterPilot(self.game), -400, top + spac*i )
+            sr = Starship(self.game, self.team_red, FighterClass(), FighterPilot(self.game), 400, top + spac*i )
+            self.game.add_object(sb)
+            self.friend_group_fighters.add_ship( sb )
+            self.game.add_object(sr)
+            self.enemy_group.add_ship( sr )
+            sr.dir = 180
+            sb = Starship(self.game, self.team_blue, FighterClass(), FighterPilot(self.game), -350, top + spac*i )
+            sr = Starship(self.game, self.team_red, FighterClass(), FighterPilot(self.game), 350, top + spac*i )
+            self.game.add_object(sb)
+            self.friend_group_fighters.add_ship( sb )
+            self.game.add_object(sr)
+            self.enemy_group.add_ship( sr )
+            sr.dir = 180
+            sb = Starship(self.game, self.team_blue, RocketFrigateClass(), RocketFrigatePilot(self.game), -470, top + spac*i )
+            sr = Starship(self.game, self.team_red, RocketFrigateClass(), RocketFrigatePilot(self.game), 470, top + spac*i )
+            self.game.add_object(sb)
+            self.friend_group_frigates.add_ship( sb )
+            self.game.add_object(sr)
+            self.enemy_group.add_ship( sr )
+            sr.dir = 180
+
+        self.enemy_group.order_guard( -350, 0 )
+        self.friend_group_fighters.order_guard( 350, 0 )
+        self.friend_group_frigates.order_guard( 350, 0 )
+        self.enemy_group.order_guard( 350, 0 )
+        self.friend_group_fighters.order_guard( -350, 0 )
+        self.friend_group_frigates.order_guard( -350, 0 )
+
+
+
 
 #################################################
