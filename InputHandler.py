@@ -36,7 +36,7 @@ class InputHandler:
                 focused.decelerate()
         if keys[pygame.K_z] :
             if self.counter > self.last_key + 20 :
-                self.game.toggle_zoom()
+                self.game.toggle_zoom({'lock':True})
                 self.last_key = self.counter
         if keys[pygame.K_ESCAPE] :
             if self.counter > self.last_key + 20 :

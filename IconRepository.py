@@ -45,3 +45,9 @@ class IconRepository:
             IconRepository.repo[ key ] = ico
         return ico
 
+    @staticmethod
+    def load_icon(name):
+        filename = f'./assets/{name}.png'
+        icon = pygame.image.load(filename)
+        return icon
+

@@ -1,14 +1,14 @@
 pygame.todo
 
-- zdarzenie - opuszczenie strefy wpływu
-- wygenerowanie nowego backgroundu
-- leniwe ładowanie ikony w backgroundzie
-- usuwanie ikony w backgroundzie
-- analiza zachowania zoom out
-- rozrysowanie jakiejś interesującej walki
+- klasa scenariusz - iterator
+- wykonanie scenariusza przez grę
+- rozrysowanie jakiejś interesującej walki jako scenariusz eksperymentalny
+- scenariusz nr 1 - wprowadzenie
+    - dodanie skauta
+    - dodanie teleporterów
+    - scenariusz
+    - warunek zwycięstwa
 - Rozkaz grupowy pozostały
-- dodanie skauta
-- dodanie teleporterów
 - implementacja animacji odrzutu (osobnej)
 - dodanie innych typów statków
 - rozkazy grupowe uwzględniają formację2
@@ -163,4 +163,10 @@ x poprawka rozwalania się o wybuch (to mi się jednak podoba)
 + przyciemnienie backgroundu
 + projekt: dodanie awaryjnych backgroundów jeśli stateczek poleci dalej (można dolecieć do innych teł)
 + ze 4 alternatywne backgroundy - grafa
+x zdarzenie - opuszczenie strefy wpływu
+x wygenerowanie nowego backgroundu
+x leniwe ładowanie ikony w backgroundzie
+x usuwanie ikony w backgroundzie
++ analiza zachowania zoom out
++ lock zoom
 

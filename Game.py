@@ -17,6 +17,7 @@ class Game:
         self.focused = []
         self.time = 0
         self.zoom = 0.5
+        self.zoom_locked = None
         self.camera = [ 0, 0 ]
         self.animations = {
             'explosion' : AnimatedSprite( "explosion.png", 8, 6, 96, False ),
@@ -114,6 +115,9 @@ class Game:
         return rect1
 
     def compute_optimal_fieldview( self ) :
+        if self.zoom_locked != None and self.zoom_locked > self.get_time() :
+            return
+        print(f'compute_optimal_fieldview - START')
         max_width = self.game_window[0]
         max_height = self.game_window[1]
         important_objects = [obj for obj in self.objects[0] if obj.is_important]
@@ -125,20 +129,24 @@ class Game:
             all_ships_fieldview = all_ships_fieldview.union(obj.get_rect())
         all_fit = True
         if all_ships_fieldview.width <= max_width and all_ships_fieldview.height <= max_height :
+            print(f'compute_optimal_fieldview - branch1')
             if self.target_zoom != 1 :
-                self.toggle_zoom(True)
+                self.toggle_zoom({'force':True})
                 self.optimal_fieldview = all_ships_fieldview
         elif all_ships_fieldview.width > 2 * max_width or all_ships_fieldview.height >= 2 * max_height :
+            print(f'compute_optimal_fieldview - branch2')
             all_fit = False
             if self.target_zoom != 1 :
-                self.toggle_zoom(True)
+                self.toggle_zoom({'force':True})
                 self.optimal_fieldview.inflate_ip(-max_width, -max_height)
         elif self.target_zoom == 1 :
+            print(f'compute_optimal_fieldview - branch3')
             self.optimal_fieldview.inflate_ip(max_width,max_height)
             max_widht = 2 * self.game_window[0]
             max_height = 2 * self.game_window[1]
-            self.toggle_zoom(True)
+            self.toggle_zoom({'force':True})
         else :
+            print(f'compute_optimal_fieldview - branch4')
             max_width = 2 * self.game_window[0]
             max_height = 2 * self.game_window[1]
         focused_rect = all_ships_fieldview # guard
@@ -159,6 +167,11 @@ class Game:
             print(f'    optimal_fieldview: {self.optimal_fieldview}')
             print(f'    all_ships: {all_ships_fieldview}')
             print(f'    contains: {self.optimal_fieldview.contains(all_ships_fieldview)}')
+        print(f'optimal_fieldview: {self.optimal_fieldview}')
+        print(f'target_zoom: {self.target_zoom}')
+        self.optimal_fieldview.inflate_ip(
+            self.game_window[0] / self.target_zoom - self.optimal_fieldview.width,
+            self.game_window[1] / self.target_zoom - self.optimal_fieldview.height )
         assert self.optimal_fieldview.width == self.game_window[0] / self.target_zoom
         assert self.optimal_fieldview.height == self.game_window[1] / self.target_zoom
 
@@ -241,12 +254,13 @@ class Game:
             self.compute_pans()
         print(f'pan1: {self.pan1}')
 
-
-    def toggle_zoom(self, force = False) :
-        if force or self.zoom == self.target_zoom :
+    def toggle_zoom(self, args) :
+        if args.get('force', False) or self.zoom == self.target_zoom :
             Dust.remove_dust(self)
             self.target_zoom = 1.5 - self.target_zoom
             Dust.make_dust(self, self.target_zoom)
+        if args.get('lock',False) :
+            self.zoom_locked = self.get_time() + 500
 
     def toggle_pause(self) :
         print('Toggle pause')
@@ -267,7 +281,7 @@ class Game:
         else :
             return (self.zoom*(x - self.pan3[0]), self.zoom*(y - self.pan3[1]))
 
-    def get_xy_display( self, x, y ) :
+    def get_xy_display( self, x, y, layer = 0 ) :
         "given display coords, give game coords (in layer 0)"
         return (
             x - self.game_window[0] / 2 / self.zoom + self.camera[0],

@@ -34,8 +34,12 @@ team_blue = Team( "Blue", (0,0,255), 2, 1, scenario )
 team_green = Team( "Green", (0,255,0), 3, 0, scenario )
 team_yellow = Team( "Yellow", (255,255,0), 4, 1, scenario )
 
-background = DistantObject(game, Background('background4'), 0, 0)
+background = DistantObject(game, Background(), 0, 0)
 game.add_object(background)
+
+# for i in range(0,10) :
+#     bg = DistantObject(game, Background(), random.randint(-5000, 5000), random.randint(-5000, 5000))
+#     game.add_object(bg)
 
 player_class = FighterClass()
 player_class.maxV = 3
@@ -63,10 +67,12 @@ enemies = [
 
 # enemies[2].debug = True
 
-
+fast_fighter = FighterClass()
+fast_fighter.maxAcc = 0.1
+fast_fighter.maxV = 7.5
 
 friends = [
-    Starship(game, team_green, FighterClass(), FighterPilot(game), -130, 230 ),
+    Starship(game, team_green, fast_fighter, FighterPilot(game), -130, 230 ),
     Starship(game, team_green, FighterClass(), FighterPilot(game), -100, 230 ),
     Starship(game, team_green, FighterClass(), FighterPilot(game), -70, 230 ),
     Starship(game, team_green, FighterClass(), FighterPilot(game), -40, 230 ),

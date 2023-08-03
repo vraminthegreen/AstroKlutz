@@ -147,11 +147,7 @@ class Stationary ( ObjectClass ) :
 
 class Background ( Stationary ) :
 
-    def __init__(self, icon_name, size = None) :
-        Stationary.__init__(self, icon_name, size)
+    def __init__(self) :
+        Stationary.__init__(self, None, None)
         self.layer = 5
 
-        # self.maxV = 1  # Maximum speed
-        # self.rotation_speed = 0.5
-        # self.maxAcc = 0.03 # thrusters power
-        # self.chaseDecelerate = True
