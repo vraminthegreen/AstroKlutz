@@ -1,6 +1,5 @@
 pygame.todo
 
-- scen1: klasa Comic (dziedzicząca z gry), animacja galaktyk
 - scen1: wstępna pogaducha z ChatGPT, pierwszy komiks, pierwszy dialog
 - scen1: pokazanie komiksu (animacja)
 - scen1: pokazanie dialogu
@@ -178,4 +177,5 @@ x usuwanie ikony w backgroundzie
 + rozrysowanie jakiejś interesującej walki jako scenariusz eksperymentalny
 + skasowanie orderu grupowego usuwa order jednostkowy
 + scen1: przeniesienie całej gry do scenariusza
++ scen1: klasa Comic (dziedzicząca z gry), animacja galaktyk
 

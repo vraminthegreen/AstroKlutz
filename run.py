@@ -4,9 +4,11 @@ import os
 import math
 import random
 
-from Scenarios import BasicScenario
+from Scenarios import BasicScenario, Scenario1
 
 pygame.init()
 
-BasicScenario().start()
+# BasicScenario().start()
+
+Scenario1().start()
 

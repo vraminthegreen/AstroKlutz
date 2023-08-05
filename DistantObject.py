@@ -13,6 +13,7 @@ class DistantObject ( StarObject ) :
         super().__init__(game, object_class, x, y)
         self.Z = 2
         self.icon_name = f'background{random.randint(1,4)}'
+        self.zoom = None
         self.initialize_icon()
 
     def reset_icon(self) :
@@ -20,18 +21,23 @@ class DistantObject ( StarObject ) :
 
     def initialize_icon(self) :
         # Scale the icon
-        ico = IconRepository.load_icon(self.icon_name)
-        if ico == None :
+        self.ico = IconRepository.load_icon(self.icon_name)
+        if self.ico == None :
             self.scaled_icon = None
             print(f'DistantObject#{self}: initialize_icon FAILED')
             return
+        self.update_scaled_icon()
 
-        scale_x, scale_y = ico.get_size()
+    def update_scaled_icon(self) :
+        if self.zoom == self.game.zoom or self.ico == None:
+            return
+        scale_x, scale_y = self.ico.get_size()
         scale_x *= 2
         scale_y *= 2
         self.object_width = int(scale_x * pow(self.game.zoom,0.2))
         self.object_height = int(scale_y * pow(self.game.zoom,0.2))
-        self.scaled_icon = pygame.transform.scale(ico, (self.object_width, self.object_height))
+        self.scaled_icon = pygame.transform.scale(self.ico, (self.object_width, self.object_height))
+        self.zoom = self.game.zoom
 
     def any_distant_visible(self) :
         for obj in self.game.objects[self.Z] :
@@ -66,6 +72,7 @@ class DistantObject ( StarObject ) :
         return vec_center.distance_to(vec_midscreen)
 
     def ticktack(self) :
+        self.update_scaled_icon()
         distance = self.distance_to_midscreen()
 
         assert distance != None

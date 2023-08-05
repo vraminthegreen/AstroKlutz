@@ -8,6 +8,7 @@ from Pilot import Pilot, FighterPilot, RocketFrigatePilot
 from ShipClass import FighterClass, RocketFrigateClass
 from Group import Group
 from Game import Game
+from Comic import Comic
 from StarObject import StarObject
 from InputHandler import InputHandler
 from Missile import Missile
@@ -16,12 +17,11 @@ from DistantObject import DistantObject
 from ShipClass import Stationary, Background
 
 
-
 #################################################
 
 class Scenario :
 
-    def __init__( self, game ) :
+    def __init__( self ) :
         self.game = game
 
     def get_order( self, ship ) :
@@ -95,6 +95,19 @@ class BasicScenario ( Scenario ) :
 
         self.game.game_loop()
 
-
-
 #################################################
+
+class Scenario1 ( Scenario ) :
+
+    def __init__( self ) :
+        self.input_handler = InputHandler()
+        self.game = Comic(self.input_handler)
+        self.input_handler.set_game( self.game )
+        self.background = DistantObject(self.game, Background(), 0, 0)
+        self.game.add_object(self.background)
+        Dust.make_dust(self.game, 1)
+
+    def start( self ) :
+        self.game.game_loop()
+
+

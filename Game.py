@@ -12,11 +12,13 @@ class Game:
         self.mouse_tracking = []
         self.input_handler = input_handler
         self.game_window = (1024,768)
+        self.game_window = (1280,720)
         self.win = pygame.display.set_mode(self.game_window)
         self.clock = pygame.time.Clock()
         self.focused = []
         self.time = 0
         self.zoom = 0.5
+        self.zoom_speed = 15
         self.zoom_locked = None
         self.camera = [ 0, 0 ]
         self.animations = {
@@ -197,56 +199,6 @@ class Game:
         if recompute_pans :
             self.compute_pans()
 
-
-    def pan_camera_old(self, bounding_rect) :
-        rect = self.get_visible_rectangle( 0, self.target_zoom )
-        srect = rect.inflate( -200, -200 )
-
-        # if not rect.collidepoint( self.focused.x, self.focused.y ) :
-        #     print(f'--------------------------')
-        #     print(f'visible_rectangle> left: {rect.left}, right: {rect.right}, top: {rect.top}, bottom: {rect.bottom}')
-        #     print(f'focused: ({self.focused.x},{self.focused.y}) ')
-        #     fd = self.get_display_xy( self.focused.x, self.focused.y, 0 )
-        #     print(f'focused-display: ({fd[0]},{fd[1]}) ')            
-        #     print(f'camera: ({self.camera[0]},{self.camera[1]})')
-        #     print(f'pan1: ({self.pan1[0]},{self.pan1[1]})')
-        #     print(f'zoom: {self.zoom}')
-
-        recompute_pans = False
-        if bounding_rect.left < rect.left :
-            self.camera[0] -= max((rect.left-bounding_rect.left)/20,1)
-            recompute_pans = True
-        elif bounding_rect.right > rect.right :
-            self.camera[0] += max((bounding_rect.right-rect.right)/20,1)
-            recompute_pans = True
-        if bounding_rect.top < rect.top :
-            self.camera[1] -= max((rect.top-bounding_rect.top)/20,1)
-            recompute_pans = True
-        elif bounding_rect.bottom > rect.bottom :
-            self.camera[1] += max((rect.bottom-bounding_rect.bottom)/20,1)
-            recompute_pans = True
-        if len(self.focused) > 0 and False :
-            if recompute_pans :
-                rect = self.get_visible_rectangle( 0, self.target_zoom )
-            if self.focused[0].x < srect.left :
-                self.camera[0] = self.focused[0].x - 100 + self.game_window[0]/2/self.zoom
-                recompute_pans = True
-            elif self.focused[0].x > srect.right :
-                self.camera[0] = self.focused[0].x + 100 - self.game_window[0]/2/self.zoom
-                recompute_pans = True
-            if self.focused[0].y < srect.top :
-                self.camera[1] = self.focused[0].y - 100 + self.game_window[1]/2/self.zoom
-                recompute_pans = True
-            elif self.focused[0].y > srect.bottom :
-                self.camera[1] = self.focused[0].y + 100 - self.game_window[1]/2/self.zoom
-                recompute_pans = True
-        # if not recompute_pans :
-        if recompute_pans :
-            # print(f'camera after: ({self.camera[0]},{self.camera[1]})')
-            # print(f'~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-            self.compute_pans()
-        print(f'pan1: {self.pan1}')
-
     def toggle_zoom(self, args) :
         if args.get('force', False) or self.zoom == self.target_zoom :
             Dust.remove_dust(self)
@@ -317,7 +269,7 @@ class Game:
 
             self.compute_optimal_fieldview()
 
-            self.zoom = Game.approach_value(self.zoom, self.target_zoom, 15)
+            self.zoom = Game.approach_value(self.zoom, self.target_zoom, self.zoom_speed)
 
             self.win.fill((0, 0, 0))
             if self.input_handler.handle_input(len(self.mouse_tracking)>0) == False :
@@ -328,9 +280,9 @@ class Game:
 
             self.compute_pans()
 
-            if not self.paused :
+            #if not self.paused :
                 # self.pan_camera(bounding_rect)
-                self.pan_camera()
+            self.pan_camera()
 
             for z_list in reversed(self.objects) :
                 for obj in z_list :
