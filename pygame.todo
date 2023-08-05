@@ -1,12 +1,19 @@
 pygame.todo
 
-- skasowanie orderu grupowego usuwa order jednostkowy
-- ordery przy zoom
+- scen1: klasa Comic (dziedzicząca z gry), animacja galaktyk
+- scen1: wstępna pogaducha z ChatGPT, pierwszy komiks, pierwszy dialog
+- scen1: pokazanie komiksu (animacja)
+- scen1: pokazanie dialogu
+- scen1: przewijanie dialogu
+- scen1: przewijanie komiksów
+- tryb wykonywania rozkazów grupowych natychmiast
 - scenariusz nr 1 - wprowadzenie
     - dodanie skauta
     - dodanie teleporterów
     - scenariusz
     - warunek zwycięstwa
+
+- ordery przy zoom
 - Rozkaz grupowy pozostały
 - implementacja animacji odrzutu (osobnej)
 - dodanie innych typów statków
@@ -169,4 +176,6 @@ x usuwanie ikony w backgroundzie
 + analiza zachowania zoom out
 + lock zoom
 + rozrysowanie jakiejś interesującej walki jako scenariusz eksperymentalny
++ skasowanie orderu grupowego usuwa order jednostkowy
++ scen1: przeniesienie całej gry do scenariusza
 

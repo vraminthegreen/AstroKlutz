@@ -7,6 +7,14 @@ from Starship import Starship
 from Pilot import Pilot, FighterPilot, RocketFrigatePilot
 from ShipClass import FighterClass, RocketFrigateClass
 from Group import Group
+from Game import Game
+from StarObject import StarObject
+from InputHandler import InputHandler
+from Missile import Missile
+from Dust import Dust
+from DistantObject import DistantObject
+from ShipClass import Stationary, Background
+
 
 
 #################################################
@@ -22,6 +30,14 @@ class Scenario :
 #################################################
 
 class BasicScenario ( Scenario ) :
+
+    def __init__( self ) :
+        self.input_handler = InputHandler()
+        self.game = Game(self.input_handler)
+        self.input_handler.set_game( self.game )
+        self.background = DistantObject(self.game, Background(), 0, 0)
+        self.game.add_object(self.background)
+        Dust.make_dust(self.game, 1)
 
     def get_order( self, ship ) :
         order = TargetAttackMove( self.game, ship, Stationary('protect', 32), ship.x, ship.y, None, 500 )
@@ -77,6 +93,7 @@ class BasicScenario ( Scenario ) :
         self.friend_group_fighters.order_guard( -350, 0 )
         self.friend_group_frigates.order_guard( -350, 0 )
 
+        self.game.game_loop()
 
 
 

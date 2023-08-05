@@ -17,6 +17,12 @@ class Target ( StarObject ) :
     def on_deactivate(self) :
         pass
 
+    def on_completed(self) :
+        pass
+
+    def on_deleted(self) :
+        pass
+
     def is_completed(self) :
         return False
 
@@ -26,8 +32,6 @@ class Target ( StarObject ) :
     def logic(self) :
         pass
 
-    def on_completed(self) :
-        pass
 
 #################################################
 
@@ -312,6 +316,10 @@ class TargetGroup( Target ) :
     def on_dead(self, ship) :
         if ship in self.suborders :
             del self.suborders[ship]
+
+    def on_deleted(self) :
+        for ship, order in self.suborders.items() :
+            ship.remove_order(order)
 
     def is_completed(self) :
         if self.completed == True :

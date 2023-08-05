@@ -127,7 +127,7 @@ class StarObject :
     def ticktack(self):
         if self.auto :
             while self.order_is_completed() :
-                self.pop_order()
+                self.pop_order(True)
         if self.animationOngoing != None :
             self.animateNextFrame()        
         self.x += self.v.x
@@ -191,8 +191,10 @@ class StarObject :
     def set_order(self, order) :
         for order in self.orders :
             self.game.remove_object( order )
+            order.on_deleted()
         for order in self.weak_orders :
             self.game.remove_object( order )
+            order.on_deleted()
         self.orders = [ order ]
         self.weak_orders = []
         order.on_activate()
@@ -225,16 +227,27 @@ class StarObject :
             order.on_activate()
         self.auto = True
 
-    def pop_order(self) :
+    def pop_order(self, is_completed = False) :
         if len(self.orders) > 0 :
             order = self.orders.pop( 0 )
         elif len(self.weak_orders) > 0 :
             order = self.weak_orders.pop( 0 )
         self.game.remove_object( order )
-        order.on_completed()
+        if is_completed :
+            order.on_completed()
+        else :
+            order.on_deleted()
         order = self.get_order()
         if order != None :
             order.on_activate()
+
+    def remove_order(self, order) :
+        if order in self.orders :
+            self.orders.remove(order)
+            order.on_deleted()
+        elif order in self.weak_orders :
+            self.weak_orders.remove(order)
+            order.on_deleted()
 
     def set_auto(self, auto) :
         self.auto = auto
