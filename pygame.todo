@@ -1,8 +1,5 @@
 pygame.todo
 
-- scen1: wstępna pogaducha z ChatGPT, pierwszy komiks, pierwszy dialog
-- scen1: pokazanie komiksu (animacja)
-- scen1: pokazanie dialogu
 - scen1: przewijanie dialogu
 - scen1: przewijanie komiksów
 - tryb wykonywania rozkazów grupowych natychmiast
@@ -178,4 +175,7 @@ x usuwanie ikony w backgroundzie
 + skasowanie orderu grupowego usuwa order jednostkowy
 + scen1: przeniesienie całej gry do scenariusza
 + scen1: klasa Comic (dziedzicząca z gry), animacja galaktyk
++ scen1: wstępna pogaducha z ChatGPT, pierwszy komiks, pierwszy dialog
++ scen1: pokazanie komiksu (animacja)
++ scen1: pokazanie dialogu
 

@@ -15,6 +15,7 @@ from Missile import Missile
 from Dust import Dust
 from DistantObject import DistantObject
 from ShipClass import Stationary, Background
+from ComicPage import ComicPage
 
 
 #################################################
@@ -106,8 +107,13 @@ class Scenario1 ( Scenario ) :
         self.background = DistantObject(self.game, Background(), 0, 0)
         self.game.add_object(self.background)
         Dust.make_dust(self.game, 1)
+        self.pages = []
 
     def start( self ) :
+        cp = ComicPage(self.game, 'sc1_1', 450,350, 680)
+        self.game.add_object( cp )
+        self.pages.append( cp )
+
         self.game.game_loop()
 
 
