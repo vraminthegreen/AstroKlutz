@@ -7,14 +7,14 @@ from Dust import Dust
 
 class Game:
 
-    def __init__(self, input_handler):
+    def __init__(self, input_handler, win):
+        self.win = win
         self.objects = [[],[],[],[],[]]
         self.ticktack_receivers = []
         self.mouse_tracking = []
         self.input_handler = input_handler
         self.game_window = (1024,768)
         self.game_window = (1280,720)
-        self.win = pygame.display.set_mode(self.game_window)
         self.clock = pygame.time.Clock()
         self.focused = []
         self.time = 0
@@ -323,7 +323,6 @@ class Game:
 
             pygame.display.flip()
 
-        pygame.quit()
 
     def draw_select(self, obj, color):
         # Get the object's rectangle and create a larger rectangle
@@ -391,7 +390,7 @@ class Game:
         self.stop_time = self.get_time() + 50
         self.zoom = 1
         self.target_zoom = self.initial_zoom
-        self.zoom_speed = 10
+        self.zoom_speed = 15
 
     @staticmethod
     def is_acute_angle(dir1, dir2):

@@ -66,6 +66,28 @@ class RocketFrigateClass ( ObjectClass ) :
 
 #################################################
 
+class ScoutClass ( ObjectClass ) :
+
+    def __init__(self) :
+        ObjectClass.__init__(self)
+        self.icon_name = "scout"
+        self.size = 40
+        self.minimized_size = 20
+        self.max_bullets = 0
+        self.max_missiles = 0
+        self.front_shield = 50
+        self.rear_shield = 30
+        self.maxV = 2  # Maximum speed
+        self.rotation_speed = 2
+        self.maxAcc = 0.04
+        self.resistance = 0.999
+        self.can_be_hit = True
+        self.chaseDecelerate = True
+        self.detectors_range = 700
+        self.is_important = True
+
+#################################################
+
 class MissileClass ( ObjectClass ) :
 
     def __init__(self) :

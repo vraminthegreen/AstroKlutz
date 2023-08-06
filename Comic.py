@@ -7,8 +7,8 @@ from Game import Game
 
 class Comic ( Game ) :
 
-    def __init__(self, owner, input_handler):
-        super().__init__(input_handler)
+    def __init__(self, owner, input_handler, win):
+        super().__init__(input_handler, win)
         self.owner = owner
         self.zoom_locked = sys.maxsize # infinity
         self.zoom = 0.0001

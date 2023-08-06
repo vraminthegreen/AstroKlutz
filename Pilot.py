@@ -67,6 +67,22 @@ class RocketFrigatePilot ( Pilot ) :
         if self.game.get_time() % 200 <= 1 and self.starship.distance_to( self.enemy ) < 600:
             self.starship.fire_missile()
 
+#################################################
+
+class ScoutPilot ( Pilot ) :
+
+    def __init__(self, game) :
+        Pilot.__init__(self, game)
+        self.chase_pos = None
+
+    def ticktack(self) :
+        if self.enemy == None :
+            return
+        if self.chase_pos == None or self.game.get_time() % 20 == 1 :
+            self.chase_pos = self.enemy.get_displaced_pos(self.enemy.dir+180,600)
+            # print(f'MissileFrigate {self.starship.name} chasing {self.chase_pos}, enemy ({self.enemy.x},{self.enemy.y})')
+        self.starship.chase( *self.chase_pos )
+
 
 #################################################
 
@@ -103,6 +119,7 @@ class MissilePilot ( Pilot ) :
         if self.chase_pos == None or self.starship.fuel % 10 == 0 :
             self.chase_pos = self.starship.get_dogfight_chase_pos(self.starship.enemy)
         self.starship.chase( *self.chase_pos )
+
 
 
 

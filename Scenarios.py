@@ -5,8 +5,8 @@ from Targets import TargetAttackMove
 from ShipClass import Stationary
 from Team import Team
 from Starship import Starship
-from Pilot import Pilot, FighterPilot, RocketFrigatePilot
-from ShipClass import FighterClass, RocketFrigateClass
+from Pilot import Pilot, FighterPilot, RocketFrigatePilot, ScoutPilot
+from ShipClass import FighterClass, RocketFrigateClass, ScoutClass
 from Group import Group
 from Game import Game
 from Comic import Comic
@@ -23,7 +23,11 @@ from ComicPage import ComicPage
 
 class Scenario :
 
-    def __init__( self, game ) :
+    def __init__( self, game, win ) :
+        self.win = win
+        self.reset_game( game )
+
+    def reset_game( self, game ) :
         self.game = game
         self.game.add_ticktack_receiver(self)
         self.event_times = []
@@ -53,9 +57,9 @@ class Scenario :
 
 class BasicScenario ( Scenario ) :
 
-    def __init__( self ) :
+    def __init__( self, win ) :
         self.input_handler = InputHandler()
-        super().__init__( Game(self.input_handler) )
+        super().__init__( Game(self.input_handler, win), win )
         self.input_handler.set_game( self.game )
         self.background = DistantObject(self.game, Background(), 0, 0)
         self.game.add_object(self.background)
@@ -121,16 +125,26 @@ class BasicScenario ( Scenario ) :
 
 class Scenario1 ( Scenario ) :
 
-    def __init__( self ) :
+    def __init__( self, win ) :
         self.input_handler = InputHandler()
-        super().__init__( Comic(self, self.input_handler) )
+        super().__init__( Comic(self, self.input_handler, win), win )
         self.input_handler.set_game( self.game )
         self.background = DistantObject(self.game, Background( 1 ), 0, 0)
         self.game.add_object(self.background)
         Dust.make_dust(self.game, 1)
         self.pages = []
 
+
+
     def start( self ) :
+        self.scene1()
+        self.scene2()
+
+    def command( self, command ) :
+        if command == ' ' :
+            self.game.on_stop_request()
+
+    def scene1( self ) :
         cp = ComicPage(self.game, 'sc1_1', 450, 350, 680)
         self.game.add_object( cp )
         self.pages.append( cp )
@@ -162,8 +176,34 @@ class Scenario1 ( Scenario ) :
 
         self.game.game_loop()
 
-    def command( self, command ) :
-        if command == ' ' :
-            self.game.on_stop_request()
+    def scene2( self ) :
+
+        self.reset_game( Game(self.input_handler, self.win) )
+        self.input_handler.set_game( self.game )
+        self.background = DistantObject(self.game, Background( 1 ), 0, 0)
+        self.game.add_object(self.background)
+        Dust.make_dust(self.game, 1)
+
+        self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
+
+        self.explorer_group = Group(self.game, self.team_blue)
+
+        sc = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -400, 240 )
+        sc.dir = 45
+        self.game.add_object( sc )
+        self.explorer_group.add_ship( sc )
+        sc = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -350, 300 )
+        sc.dir = 45
+        self.game.add_object( sc )
+        self.explorer_group.add_ship( sc )
+        sc = Starship(self.game, self.team_blue, FighterClass(), FighterPilot(self.game), -310, 230 )
+        sc.dir = 45
+        self.game.add_object( sc )
+        self.explorer_group.add_ship( sc )
+
+        self.game.add_object( self.explorer_group )
+
+
+        self.game.game_loop()
 
 
