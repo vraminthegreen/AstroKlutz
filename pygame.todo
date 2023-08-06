@@ -1,8 +1,5 @@
 pygame.todo
 
-- scen1: utworzenie science vesel
-- scen1: utworzenie floty
-- scen1: dodanie planety
 - scen1: dodanie riftu
 - scen1: wydanie rozkazów, odpalenie
 - scen1: blokada edycji
@@ -193,4 +190,7 @@ x usuwanie ikony w backgroundzie
 + scen1: zamknięcie komiksu
 + scen1: utworzenie sceny gry
 + scen1: utworzenie skauta
++ scen1: utworzenie science vesel
++ scen1: utworzenie floty
++ scen1: dodanie planety
 

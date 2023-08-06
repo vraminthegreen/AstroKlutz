@@ -69,6 +69,12 @@ class RocketFrigatePilot ( Pilot ) :
 
 #################################################
 
+class SciencePilot ( RocketFrigatePilot ) :
+
+    pass
+
+#################################################
+
 class ScoutPilot ( Pilot ) :
 
     def __init__(self, game) :

@@ -5,8 +5,8 @@ from Targets import TargetAttackMove
 from ShipClass import Stationary
 from Team import Team
 from Starship import Starship
-from Pilot import Pilot, FighterPilot, RocketFrigatePilot, ScoutPilot
-from ShipClass import FighterClass, RocketFrigateClass, ScoutClass
+from Pilot import Pilot, FighterPilot, RocketFrigatePilot, ScoutPilot, SciencePilot
+from ShipClass import FighterClass, RocketFrigateClass, ScoutClass, ScienceClass
 from Group import Group
 from Game import Game
 from Comic import Comic
@@ -15,6 +15,7 @@ from InputHandler import InputHandler
 from Missile import Missile
 from Dust import Dust
 from DistantObject import DistantObject
+from StationaryObject import StationaryObject
 from ShipClass import Stationary, Background
 from ComicPage import ComicPage
 
@@ -188,21 +189,27 @@ class Scenario1 ( Scenario ) :
 
         self.explorer_group = Group(self.game, self.team_blue)
 
-        sc = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -400, 240 )
+        sc = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -400, 190 )
         sc.dir = 45
         self.game.add_object( sc )
         self.explorer_group.add_ship( sc )
-        sc = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -350, 300 )
+        sc = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -300, 290 )
         sc.dir = 45
         self.game.add_object( sc )
         self.explorer_group.add_ship( sc )
-        sc = Starship(self.game, self.team_blue, FighterClass(), FighterPilot(self.game), -310, 230 )
+        sc = Starship(self.game, self.team_blue, FighterClass(), FighterPilot(self.game), -300, 190 )
+        sc.dir = 45
+        self.game.add_object( sc )
+        self.explorer_group.add_ship( sc )
+        sc = Starship(self.game, self.team_blue, ScienceClass(), SciencePilot(self.game), -400, 290 )
         sc.dir = 45
         self.game.add_object( sc )
         self.explorer_group.add_ship( sc )
 
         self.game.add_object( self.explorer_group )
 
+        planet = StationaryObject(self.game, Stationary("planet_1", 64), -420, 240)
+        self.game.add_object( planet )
 
         self.game.game_loop()
 

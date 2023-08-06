@@ -88,6 +88,28 @@ class ScoutClass ( ObjectClass ) :
 
 #################################################
 
+class ScienceClass ( ObjectClass ) :
+
+    def __init__(self) :
+        ObjectClass.__init__(self)
+        self.icon_name = "science"
+        self.size = 80
+        self.minimized_size = 48
+        self.max_bullets = 0
+        self.max_missiles = 0
+        self.front_shield = 40
+        self.rear_shield = 40
+        self.maxV = 0.5  # Maximum speed
+        self.rotation_speed = 0.5
+        self.maxAcc = 0.01
+        self.resistance = 0.99
+        self.can_be_hit = True
+        self.chaseDecelerate = True
+        self.detectors_range = 700
+        self.is_important = True
+
+#################################################
+
 class MissileClass ( ObjectClass ) :
 
     def __init__(self) :
