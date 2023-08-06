@@ -1,4 +1,5 @@
 
+import bisect
 
 from Targets import TargetAttackMove
 from ShipClass import Stationary
@@ -22,11 +23,31 @@ from ComicPage import ComicPage
 
 class Scenario :
 
-    def __init__( self ) :
+    def __init__( self, game ) :
         self.game = game
+        self.game.add_ticktack_receiver(self)
+        self.event_times = []
+        self.events = {}
 
     def get_order( self, ship ) :
         return None
+
+    def at_time( self, time, f ) :
+        if time in self.events :
+            self.events[time].append(f)
+        else :
+            self.events[time] = [ f ]
+        bisect.insort( self.event_times, time )
+
+    def ticktack( self ) :
+        while len(self.event_times) > 0 and self.event_times[0] < self.game.get_time() :
+            for f in self.events[self.event_times[0]] :
+                f()
+            del self.events[self.event_times[0]]
+            del self.event_times[0]
+
+    def on_stop_request(self) :
+        pass
 
 #################################################
 
@@ -34,7 +55,7 @@ class BasicScenario ( Scenario ) :
 
     def __init__( self ) :
         self.input_handler = InputHandler()
-        self.game = Game(self.input_handler)
+        super().__init__( Game(self.input_handler) )
         self.input_handler.set_game( self.game )
         self.background = DistantObject(self.game, Background(), 0, 0)
         self.game.add_object(self.background)
@@ -102,18 +123,47 @@ class Scenario1 ( Scenario ) :
 
     def __init__( self ) :
         self.input_handler = InputHandler()
-        self.game = Comic(self.input_handler)
+        super().__init__( Comic(self, self.input_handler) )
         self.input_handler.set_game( self.game )
-        self.background = DistantObject(self.game, Background(), 0, 0)
+        self.background = DistantObject(self.game, Background( 1 ), 0, 0)
         self.game.add_object(self.background)
         Dust.make_dust(self.game, 1)
         self.pages = []
 
     def start( self ) :
-        cp = ComicPage(self.game, 'sc1_1', 450,350, 680)
+        cp = ComicPage(self.game, 'sc1_1', 450, 350, 680)
         self.game.add_object( cp )
         self.pages.append( cp )
 
+        delay = 400
+
+        self.at_time( 150, lambda : cp.add_text(
+            """IN A KNOWN SOLAR SYSTEM, WHERE PATHS ARE WELL-CHARTED
+            A SCOUTING MISSION EMBARKS TO INVESTIGATE AN ENIGMATIC COSMIC FLASH ...""", 
+            400, 100 
+            ) )
+        self.at_time( 150 + delay, lambda : cp.add_text(
+            """AS A CO-PILOT INTERN ON A SCOUT SHIP, YOU ARE PART OF A SMALL FLEET
+            COMPOSED OF ONE SCIENTIFIC VESSEL, TWO EXPLORATORY SCOUTS, AND AN ESCORT FIGHTER ...""", 
+            320, 160 
+            ) )
+        self.at_time( 150 + 2*delay, lambda : cp.add_text(
+            "YOUR MISSION: TO INVESTIGATE THE OCCURRENCE OF AN ENIGMATIC COSMIC FLASH ...",
+            420, 220 
+            ) )
+        self.at_time( 150 + 3*delay, lambda : cp.add_text(
+            "YOUR JOURNEY INTO THE UNKNOWN IS ABOUT TO BEGIN ...",
+            370, 270 
+            ) )
+        self.at_time( 150 + 4*delay, lambda : cp.add_text(
+            "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
+            650, 480 
+            ) )
+
         self.game.game_loop()
+
+    def command( self, command ) :
+        if command == ' ' :
+            self.game.on_stop_request()
 
 

@@ -1,13 +1,17 @@
 pygame.todo
 
-- scen1: przewijanie dialogu
-- scen1: przewijanie komiksów
+- scen1: utworzenie sceny gry
+- scen1: utworzenie skauta
+- scen1: utworzenie floty
+- scen1: dodanie planety
+- scen1: dodanie riftu
+- scen1: wydanie rozkazów, odpalenie
+- scen1: blokada edycji
+- scen1: warunek dotarcia na miejsce
+- scen1: odpalenie błysku
+- scen1: komiks
+
 - tryb wykonywania rozkazów grupowych natychmiast
-- scenariusz nr 1 - wprowadzenie
-    - dodanie skauta
-    - dodanie teleporterów
-    - scenariusz
-    - warunek zwycięstwa
 
 - ordery przy zoom
 - Rozkaz grupowy pozostały
@@ -15,6 +19,13 @@ pygame.todo
 - dodanie innych typów statków
 - rozkazy grupowe uwzględniają formację2
 - animacja ściemniania dustu na przeźroczystości
+
+
+💡 kolory statków (od czerwonego):
+    niebieski: -120
+    zielony: 80
+    żółty: 40 (jasność 10)
+
 
 + algorytm drugiego statku - tryb 1 - poszukiwanie punktu za
 + klasa order zakładana przyciskiem myszy
@@ -178,4 +189,7 @@ x usuwanie ikony w backgroundzie
 + scen1: wstępna pogaducha z ChatGPT, pierwszy komiks, pierwszy dialog
 + scen1: pokazanie komiksu (animacja)
 + scen1: pokazanie dialogu
++ scen1: przewijanie dialogu
++ scen1: przewijanie komiksów
++ scen1: zamknięcie komiksu
 

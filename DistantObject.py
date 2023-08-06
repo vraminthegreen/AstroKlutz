@@ -10,9 +10,11 @@ from ShipClass import Background
 class DistantObject ( StarObject ) :
 
     def __init__(self, game, object_class, x, y) :
+        self.icon_name = None
         super().__init__(game, object_class, x, y)
         self.Z = 2
-        self.icon_name = f'background{random.randint(1,4)}'
+        if self.icon_name == None :
+            self.icon_name = f'background{random.randint(1,4)}'
         self.zoom = None
         self.initialize_icon()
 

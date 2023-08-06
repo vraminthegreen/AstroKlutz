@@ -1,4 +1,4 @@
-
+    
 class ObjectClass :
 
     def __init__(self) :
@@ -15,6 +15,9 @@ class ObjectClass :
         self.chaseDecelerate = False
         self.icon_name = None
         self.is_important = False
+
+    def initialize(self, star_object) :
+        pass
 
 
 #################################################
@@ -147,7 +150,14 @@ class Stationary ( ObjectClass ) :
 
 class Background ( Stationary ) :
 
-    def __init__(self) :
+    def __init__(self, number = None) :
         Stationary.__init__(self, None, None)
         self.layer = 5
+        self.number = number
+
+    def initialize(self, star_object) :
+        if self.number != None :
+            star_object.icon_name = f'background{self.number}'
+
+
 

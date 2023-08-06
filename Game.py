@@ -9,6 +9,7 @@ class Game:
 
     def __init__(self, input_handler):
         self.objects = [[],[],[],[],[]]
+        self.ticktack_receivers = []
         self.mouse_tracking = []
         self.input_handler = input_handler
         self.game_window = (1024,768)
@@ -17,9 +18,11 @@ class Game:
         self.clock = pygame.time.Clock()
         self.focused = []
         self.time = 0
-        self.zoom = 0.5
+        self.initial_zoom = 0.00001
+        self.zoom = self.initial_zoom
         self.zoom_speed = 15
         self.zoom_locked = None
+        self.stop_time = None
         self.camera = [ 0, 0 ]
         self.animations = {
             'explosion' : AnimatedSprite( "explosion.png", 8, 6, 96, False ),
@@ -38,6 +41,9 @@ class Game:
 
     def add_object(self, obj):
         self.objects[obj.Z].append( obj )
+
+    def add_ticktack_receiver(self, receiver) :
+        self.ticktack_receivers.append(receiver)
 
     def remove_object(self, obj):
         self.objects[obj.Z].remove(obj)
@@ -262,9 +268,13 @@ class Game:
         return bounding_rect
 
     def game_loop( self ):
-        running = True
-        while running:
+        self.running = True
+        while self.running:
             self.time += 1
+
+            if self.stop_time != None and self.stop_time <= self.time :
+                self.running = False
+
             self.clock.tick(60)  # Limit the game loop to 60 frames per second
 
             self.compute_optimal_fieldview()
@@ -273,7 +283,7 @@ class Game:
 
             self.win.fill((0, 0, 0))
             if self.input_handler.handle_input(len(self.mouse_tracking)>0) == False :
-                running = False
+                self.running = False
 
 
             # world_surface = pygame.Surface((self.game_window[0]/self.zoom,self.game_window[1]/self.zoom))  # The surface that represents the game world
@@ -283,6 +293,9 @@ class Game:
             #if not self.paused :
                 # self.pan_camera(bounding_rect)
             self.pan_camera()
+
+            for receiver in self.ticktack_receivers :
+                receiver.ticktack()
 
             for z_list in reversed(self.objects) :
                 for obj in z_list :
@@ -367,6 +380,18 @@ class Game:
 
     def register_key_handler(self, key, handler) :
         self.key_handlers[ key ] = handler
+
+    def on_stop_request(self) :
+        for ol in self.objects :
+            for o in ol :
+                o.on_stop_request()
+        for o in self.ticktack_receivers :
+            o.on_stop_request()
+        Dust.remove_dust(self)
+        self.stop_time = self.get_time() + 50
+        self.zoom = 1
+        self.target_zoom = self.initial_zoom
+        self.zoom_speed = 10
 
     @staticmethod
     def is_acute_angle(dir1, dir2):

@@ -21,9 +21,14 @@ class ComicPage ( StarObject ) :
         self.size = size
         page = pygame.image.load(self.filename)
         self.icon = IconRepository.resize(page, size)
+        self.texts = []
+        self.stop_requested = False
 
     def ticktack(self) :
-        self.zoom = self.game.approach_value(self.zoom, 1, 30)
+        if self.stop_requested :
+            self.zoom = self.game.approach_value(self.zoom, 0, 10)
+        else :
+            self.zoom = self.game.approach_value(self.zoom, 1, 30)
 
     def paint_bubble(self, win, text, x, y) :
 
@@ -79,7 +84,14 @@ class ComicPage ( StarObject ) :
 
         win.blit(bordered_icon, new_rect.topleft)
 
-        self.paint_bubble(win, 'IN A KNOWN SOLAR SYSTEM, WHERE PATHS ARE WELL-CHARTED\nA SCOUTING MISSION EMBARKS TO INVESTIGATE AN ENIGMATIC COSMIC FLASH.', 400, 100 )
+        if not self.stop_requested :
+            for text, x, y in self.texts :
+                self.paint_bubble(win, text, x, y )
 
+    def add_text( self, text, x, y ) :
+        self.texts.append( (text, x, y) )
+
+    def on_stop_request(self) :
+        self.stop_requested = True
 
 

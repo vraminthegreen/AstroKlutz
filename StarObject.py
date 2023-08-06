@@ -11,6 +11,7 @@ class StarObject :
     def __init__(self, game, object_class, x, y):
         self.game = game
         self.object_class = object_class
+        self.object_class.initialize(self)
         self.x = x
         self.y = y
         self.dir = 0  # Direction in degrees
@@ -375,4 +376,6 @@ class StarObject :
     def is_hostile(self, other) :
         return self.team.is_hostile(other.team)
 
+    def on_stop_request(self) :
+        pass
 
