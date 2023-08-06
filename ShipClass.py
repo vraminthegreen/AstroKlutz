@@ -80,7 +80,7 @@ class ScoutClass ( ObjectClass ) :
         self.maxV = 2  # Maximum speed
         self.rotation_speed = 2
         self.maxAcc = 0.04
-        self.resistance = 0.999
+        self.resistance = 0.99
         self.can_be_hit = True
         self.chaseDecelerate = True
         self.detectors_range = 700
@@ -99,7 +99,7 @@ class ScienceClass ( ObjectClass ) :
         self.max_missiles = 0
         self.front_shield = 40
         self.rear_shield = 40
-        self.maxV = 0.5  # Maximum speed
+        self.maxV = 1.2  # Maximum speed
         self.rotation_speed = 0.5
         self.maxAcc = 0.01
         self.resistance = 0.99

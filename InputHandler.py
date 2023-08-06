@@ -13,6 +13,7 @@ class InputHandler:
         self.last_key = 0
         self.counter = 0
         self.menu = None
+        self.control_enabled = True
 
     def set_game(self, game):
         self.game = game
@@ -21,7 +22,7 @@ class InputHandler:
         self.counter += 1
         keys = pygame.key.get_pressed()
         focused = self.game.get_focused()
-        if focused != None and not self.game.paused :
+        if focused != None and not self.game.paused and self.control_enabled:
             if keys[pygame.K_LEFT]:
                 focused.set_auto( False )
                 focused.rotateRight()
@@ -34,15 +35,15 @@ class InputHandler:
             if keys[pygame.K_DOWN]:
                 focused.set_auto( False )
                 focused.decelerate()
-        if keys[pygame.K_z] :
+        if keys[pygame.K_z] and self.control_enabled :
             if self.counter > self.last_key + 20 :
                 self.game.toggle_zoom({'lock':True})
                 self.last_key = self.counter
-        if keys[pygame.K_ESCAPE] :
+        if keys[pygame.K_ESCAPE] and self.control_enabled :
             if self.counter > self.last_key + 20 :
                 self.game.pop_focused()
                 self.last_key = self.counter
-        if keys[pygame.K_BACKSPACE] :
+        if keys[pygame.K_BACKSPACE] and self.control_enabled :
             if self.game.get_focused() != None and self.counter > self.last_key + 20 :
                 self.game.get_focused().pop_order()
                 self.last_key = self.counter
@@ -50,10 +51,10 @@ class InputHandler:
         running = True
 
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEMOTION and mouse_tracking:
+            if event.type == pygame.MOUSEMOTION and mouse_tracking and self.control_enabled:
                 x, y = event.pos
                 self.game.mouse_track(x, y)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN and self.control_enabled :
                 if  event.button == 1 :
                     self.game.click( *pygame.mouse.get_pos() )
                 elif event.button == 3 :
@@ -63,12 +64,12 @@ class InputHandler:
                     # self.game.add_object(star_object)
                     # self.focus.set_order(star_object)
             elif event.type == pygame.KEYDOWN:
-                if event.unicode.isdigit() :
+                if event.unicode.isdigit() and self.control_enabled :
                     self.game.on_key_pressed(event.unicode)
                 elif event.unicode.isalnum() or event.unicode == ' ':
                     if event.unicode == 'p' :
                         self.game.toggle_pause()
-                    elif self.game.get_focused() != None :
+                    elif self.game.get_focused() != None and self.control_enabled :
                         self.game.get_focused().command(event.unicode)
             elif event.type == pygame.QUIT:
                 running = False

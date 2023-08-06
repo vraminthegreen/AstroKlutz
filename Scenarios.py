@@ -1,5 +1,6 @@
 
 import bisect
+import random
 
 from Targets import TargetAttackMove
 from ShipClass import Stationary
@@ -18,6 +19,7 @@ from DistantObject import DistantObject
 from StationaryObject import StationaryObject
 from ShipClass import Stationary, Background
 from ComicPage import ComicPage
+from AnimatedSprite import AnimatedSprite
 
 
 #################################################
@@ -124,6 +126,29 @@ class BasicScenario ( Scenario ) :
 
 #################################################
 
+class Wormhole ( StationaryObject ) :
+
+    def __init__( self, game, x, y ) :
+        super().__init__(game, Stationary(None,96), x, y)
+        # self.sprite = AnimatedSprite( "wormhole.png", 6, 6, 96, False )
+        self.animation = None
+        # self.animate( self.game.get_animation('wormhole'), Wormhole.on_animation_finished )
+
+    def on_animation_finished(self) :
+        self.animation = None
+
+    def start_burst(self) :
+        print(f'Wormohole> start_burst')
+        self.animation = AnimatedSprite( "wormhole.png", 5, 6, random.randint(32,256), False )
+        self.animate( self.animation, Wormhole.on_animation_finished, random.uniform(0.5, 3) )
+
+    def ticktack(self) :
+        if self.animation == None and random.randint(0,2000) < 1 :
+            self.start_burst()
+        super().ticktack()
+
+#################################################
+
 class Scenario1 ( Scenario ) :
 
     def __init__( self, win ) :
@@ -134,8 +159,7 @@ class Scenario1 ( Scenario ) :
         self.game.add_object(self.background)
         Dust.make_dust(self.game, 1)
         self.pages = []
-
-
+        self.science_ship = None
 
     def start( self ) :
         self.scene1()
@@ -183,6 +207,10 @@ class Scenario1 ( Scenario ) :
         self.input_handler.set_game( self.game )
         self.background = DistantObject(self.game, Background( 1 ), 0, 0)
         self.game.add_object(self.background)
+        self.game.add_ticktack_receiver(self)
+        self.game.zoom_enabled = False
+        self.input_handler.control_enabled = False
+
         Dust.make_dust(self.game, 1)
 
         self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
@@ -191,18 +219,23 @@ class Scenario1 ( Scenario ) :
 
         sc = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -400, 190 )
         sc.dir = 45
+        sc.maxV = 1.2
         self.game.add_object( sc )
         self.explorer_group.add_ship( sc )
         sc = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -300, 290 )
         sc.dir = 45
+        sc.maxV = 1.2
         self.game.add_object( sc )
         self.explorer_group.add_ship( sc )
         sc = Starship(self.game, self.team_blue, FighterClass(), FighterPilot(self.game), -300, 190 )
         sc.dir = 45
+        sc.maxV = 1.2
         self.game.add_object( sc )
         self.explorer_group.add_ship( sc )
         sc = Starship(self.game, self.team_blue, ScienceClass(), SciencePilot(self.game), -400, 290 )
         sc.dir = 45
+        sc.maxV = 1.2
+        self.science_ship = sc
         self.game.add_object( sc )
         self.explorer_group.add_ship( sc )
 
@@ -211,6 +244,23 @@ class Scenario1 ( Scenario ) :
         planet = StationaryObject(self.game, Stationary("planet_1", 64), -420, 240)
         self.game.add_object( planet )
 
+        wormhole = Wormhole(self.game, 2000, -2000)
+        self.game.add_object( wormhole )
+
+        self.explorer_group.order_guard( 2000, -2000 )
+
+        self.game.paused = False
+
         self.game.game_loop()
+
+    def ticktack( self ) :
+        if self.science_ship != None :
+            print(f'science_ship pos: {self.science_ship.get_pos()}')
+            self.game.optimal_fieldview.center = self.science_ship.get_pos()
+            self.game.optimal_camera = self.science_ship.get_pos()
+            self.game.camera[0] = self.game.optimal_camera[0]
+            self.game.camera[1] = self.game.optimal_camera[1]
+            self.game.zoom_locked = self.game.get_time() + 1000
+        super().ticktack()
 
 

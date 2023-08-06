@@ -22,6 +22,7 @@ class Game:
         self.zoom = self.initial_zoom
         self.zoom_speed = 15
         self.zoom_locked = None
+        self.zoom_enabled = True
         self.stop_time = None
         self.camera = [ 0, 0 ]
         self.animations = {
@@ -206,6 +207,8 @@ class Game:
             self.compute_pans()
 
     def toggle_zoom(self, args) :
+        if not self.zoom_enabled :
+            return
         if args.get('force', False) or self.zoom == self.target_zoom :
             Dust.remove_dust(self)
             self.target_zoom = 1.5 - self.target_zoom
@@ -293,6 +296,8 @@ class Game:
             #if not self.paused :
                 # self.pan_camera(bounding_rect)
             self.pan_camera()
+
+            print(f'camera: {self.camera}')
 
             for receiver in self.ticktack_receivers :
                 receiver.ticktack()

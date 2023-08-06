@@ -343,15 +343,17 @@ class StarObject :
         distance_in_range = dist_min <= distance_to_target <= dist_max
         return direction_in_range and distance_in_range
 
-    def animate(self, animation, after) :
+    def animate(self, animation, after, animation_speed = 1) :
         self.animationOngoing = animation
         self.animationAfter = after;
         self.animationFrameNo = 0
         self.animationOverlay = animation.get_overlay()
+        self.animationSpeed = animation_speed
+        self.animationStart = self.game.get_time()
 
     def animateNextFrame( self ) :
         self.animationFrame = self.animationOngoing.get_frame(self.animationFrameNo)
-        self.animationFrameNo += 1
+        self.animationFrameNo = int(( self.game.get_time() - self.animationStart ) // self.animationSpeed)
         if self.animationFrame == None :
             self.animationOngoing = None
             self.animationAfter(self)
