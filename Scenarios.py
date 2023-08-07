@@ -135,6 +135,7 @@ class Wormhole ( StationaryObject ) :
         # self.sprite = AnimatedSprite( "wormhole.png", 6, 6, 96, False )
         self.animation = None
         self.active = True
+        self.noises = False
         # self.animate( self.game.get_animation('wormhole'), Wormhole.on_animation_finished )
 
     def on_animation_finished(self) :
@@ -142,17 +143,29 @@ class Wormhole ( StationaryObject ) :
 
     def start_burst(self) :
         print(f'Wormohole> start_burst')
+        
+        if self.noises :
+            zap_sound = pygame.mixer.Sound('assets/audio/electric-zap-made-with-Voicemod-technology.mp3')
+            zap_sound.set_volume(random.uniform(0.2,0.8))
+            zap_sound.play()
+
         self.animation = AnimatedSprite( "wormhole.png", 5, 6, random.randint(32,256), False )
         self.animate( self.animation, Wormhole.on_animation_finished, random.uniform(0.5, 3) )
 
     def mega_burst(self) :
+
+        if self.noises :
+            zap_sound = pygame.mixer.Sound('assets/audio/electric-zap-made-with-Voicemod-technology.mp3')
+            zap_sound.set_volume(1)
+            zap_sound.play()
+
         self.animation = AnimatedSprite( "wormhole.png", 5, 6, 320, False )
         self.animate( self.animation, Wormhole.on_animation_finished, 1.5 )
         self.active = False
 
 
     def ticktack(self) :
-        if self.active and self.animation == None and random.randint(0,500) < 1 :
+        if self.active and self.animation == None and random.randint(0,200) < 1 :
             self.start_burst()
         super().ticktack()
 
@@ -292,6 +305,8 @@ class Scenario1 ( Scenario ) :
                 # Play the sound effect
                 chatter_sound.play()
             if self.game.get_time() % 50 == 0 :
+                if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 500 :
+                    self.wormhole.noises = True
                 if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 50 :
                     if self.wormhole.active :
                         self.wormhole.mega_burst()
@@ -343,6 +358,9 @@ class Scenario1 ( Scenario ) :
 
     def scene5(self):
         self.scene_no = 5
+
+        explosion_sound = pygame.mixer.Sound('assets/audio/big-explosion-sound-effect-made-with-Voicemod-technology.mp3')
+        explosion_sound.play()
 
         cp5 = ComicPage(self.game, 'sc1_4', 440, 360, 700)
         self.game.add_object( cp5 )

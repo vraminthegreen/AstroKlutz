@@ -1,6 +1,5 @@
 pygame.todo
 
-- ekekt dźwiękowy - detonacja
 - przejście do nowej galaktyki
 - dodanie wormhole, ale stabilniejszego z tej strony
 - animacja wyrzuconego statku i detonacji
@@ -205,4 +204,6 @@ x usuwanie ikony w backgroundzie
 + scen1, panel4
 + wprowadzenie dźwięków - muzyka tło
 + efekty dźwiękowe - rozmowy podczas lotu
++ efekt dźwiękowy - buzz
++ ekekt dźwiękowy - detonacja
 
