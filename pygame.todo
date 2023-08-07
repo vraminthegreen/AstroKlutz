@@ -1,10 +1,13 @@
 pygame.todo
 
-- one time animation object
-- animacja kilku detonacji
-- scen1, panel5
-- scen1, panel6
-- scen1, panel7
+- space wymusza następne zdarzenie, ... jeśli nie ma zdarzeń dopiero przeskakuje do następnej sceny
+- scen1: latanie statkiem
+
+! coś się dzieje niedobrego z gwiadkami przy skrolowaniu
+
+- odkrycie planety (komiks)
+- odkrycie wormhola powrotnego (komiks)
+- powrót do macierzystego układu
 
 - ordery przy zoom
 - tryb wykonywania rozkazów grupowych natychmiast
@@ -208,4 +211,9 @@ x usuwanie ikony w backgroundzie
 + przejście do nowej galaktyki
 + animacja wyrzuconego statku 
 + dodanie wormhole, ale stabilniejszego z tej strony
++ one time animation object
++ animacja kilku detonacji
++ scen1, panel5
++ scen1, panel6
++ scen1, panel7
 

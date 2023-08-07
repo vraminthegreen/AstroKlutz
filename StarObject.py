@@ -44,9 +44,19 @@ class StarObject :
         self.is_selectable = False
         self.focus_visible = False
         self.visible = True
-        self.Z = 0
+        self._Z = 0
         self.team = None
         self.debug = False
+
+    @property
+    def Z(self):
+        return self._Z
+
+    @Z.setter
+    def Z(self, value):
+        self.game.remove_object( self._Z )
+        self._Z = value
+        self.game.add_object( self._Z )
 
     def get_size( self ) :
         return self.size
@@ -119,7 +129,6 @@ class StarObject :
         elif len(self.weak_orders) > 0 :
             return self.weak_orders[0]
         return None
-
 
     def order_is_completed(self) :
         order = self.get_order()

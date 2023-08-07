@@ -24,7 +24,7 @@ class Dust ( StarObject ) :
         self.brightness = 0
         self.target_brightness = 1
         self.remove_timer = None
-        self.Z = 1
+        self._Z = 1
 
     def repaint( self, win ) :
         rect = self.game.get_visible_rectangle( self.layer, self.game.target_zoom )

@@ -12,7 +12,7 @@ class DistantObject ( StarObject ) :
     def __init__(self, game, object_class, x, y) :
         self.icon_name = None
         super().__init__(game, object_class, x, y)
-        self.Z = 2
+        self._Z = 2
         if self.icon_name == None :
             self.icon_name = f'background{random.randint(1,4)}'
         self.zoom = None

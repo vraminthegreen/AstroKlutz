@@ -15,7 +15,7 @@ class ComicPage ( StarObject ) :
     def __init__(self, game, page_name, x, y, size) :
         "x, y, size are screen coords"
         super().__init__(game, Stationary( None, size ), x, y )
-        self.Z = 0
+        self._Z = 0
         self.filename = f'./comic/{page_name}.jpg'
         self.zoom = 0.001
         self.size = size
@@ -27,6 +27,8 @@ class ComicPage ( StarObject ) :
     def ticktack(self) :
         if self.stop_requested :
             self.zoom = self.game.approach_value(self.zoom, 0, 10)
+            if self.zoom == 0 :
+                self.game.remove_object(self)
         else :
             self.zoom = self.game.approach_value(self.zoom, 1, 15)
 

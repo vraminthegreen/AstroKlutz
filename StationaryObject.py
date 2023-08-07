@@ -12,7 +12,7 @@ class StationaryObject ( StarObject ) :
     def __init__(self, game, object_class, x, y) :
         self.icon_name = None
         super().__init__(game, object_class, x, y)
-        self.Z = 1
+        self._Z = 1
         self.zoom = None
 
 

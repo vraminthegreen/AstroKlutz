@@ -52,7 +52,8 @@ class Game:
         self.command_receivers.append(receiver)
 
     def remove_object(self, obj):
-        self.objects[obj.Z].remove(obj)
+        if obj in self.objects[obj.Z] :
+            self.objects[obj.Z].remove(obj)
         if obj in self.focused :
             self.focused.remove( obj )
 
