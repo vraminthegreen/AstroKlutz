@@ -28,7 +28,7 @@ class ComicPage ( StarObject ) :
         if self.stop_requested :
             self.zoom = self.game.approach_value(self.zoom, 0, 10)
         else :
-            self.zoom = self.game.approach_value(self.zoom, 1, 30)
+            self.zoom = self.game.approach_value(self.zoom, 1, 15)
 
     def paint_bubble_sq(self, win, text, x, y) :
         (lines,bubble_rect) = self.prepare_lines(text, x, y)

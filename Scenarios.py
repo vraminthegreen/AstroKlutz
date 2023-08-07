@@ -136,6 +136,10 @@ class Wormhole ( StationaryObject ) :
         self.animation = None
         self.active = True
         self.noises = False
+        self.stable = False
+        self.current_frame_idx = None
+        self.target_frame_idx = None
+        self.animationOverlay = True
         # self.animate( self.game.get_animation('wormhole'), Wormhole.on_animation_finished )
 
     def on_animation_finished(self) :
@@ -144,12 +148,14 @@ class Wormhole ( StationaryObject ) :
     def start_burst(self) :
         print(f'Wormohole> start_burst')
         
+        size = random.uniform(0,1)
+
         if self.noises :
             zap_sound = pygame.mixer.Sound('assets/audio/electric-zap-made-with-Voicemod-technology.mp3')
-            zap_sound.set_volume(random.uniform(0.2,0.8))
+            zap_sound.set_volume(0.2 + size*(0.8-0.2))
             zap_sound.play()
 
-        self.animation = AnimatedSprite( "wormhole.png", 5, 6, random.randint(32,256), False )
+        self.animation = AnimatedSprite( "wormhole.png", 5, 6, int(32 + size*(256-32)), False )
         self.animate( self.animation, Wormhole.on_animation_finished, random.uniform(0.5, 3) )
 
     def mega_burst(self) :
@@ -165,8 +171,34 @@ class Wormhole ( StationaryObject ) :
 
 
     def ticktack(self) :
-        if self.active and self.animation == None and random.randint(0,200) < 1 :
+        if self.active and not self.stable and self.animation == None and random.randint(0,200) < 1 :
             self.start_burst()
+        elif self.stable and self.game.get_time() % 3 == 0:
+            if self.animation == None :
+                self.animation = AnimatedSprite( "wormhole.png", 5, 6, 64, False )
+            if self.current_frame_idx == None :
+                self.current_frame_idx = 0
+            if self.target_frame_idx == None or self.target_frame_idx == self.current_frame_idx :
+                self.target_frame_idx = random.randint(0,self.animation.get_frame_count()-1)
+            self.animationFrame = self.animation.get_frame(self.current_frame_idx)
+            if self.current_frame_idx < self.target_frame_idx :
+                self.current_frame_idx += 1
+            else :
+                self.current_frame_idx -= 1
+            if random.randint(0,100) < 10 :
+                vip = self.game.get_screen_centerism( *self.get_pos() )
+                if vip > 0 :
+                    zap_sound = pygame.mixer.Sound('assets/audio/electric-zap-made-with-Voicemod-technology.mp3')
+                    zap_sound.set_volume(vip/2)
+                    zap_sound.play()
+
+    def animateNextFrame( self ) :
+        self.animationFrame = self.animationOngoing.get_frame(self.animationFrameNo)
+        self.animationFrameNo = int(( self.game.get_time() - self.animationStart ) // self.animationSpeed)
+        if self.animationFrame == None :
+            self.animationOngoing = None
+            self.animationAfter(self)
+
         super().ticktack()
 
 #################################################
@@ -185,8 +217,17 @@ class Scenario1 ( Scenario ) :
         self.scene_no = 1
 
     def start( self ) :
-        self.scene1()
-        self.scene2()
+        self.scene6()
+        # self.scene1()
+        # self.scene2()
+        # self.scene6()
+
+    def ticktack( self ) :
+        if self.scene_no == 2 :
+            self.ticktack2()
+        elif self.scene_no == 6 :
+            self.ticktack6()
+        super().ticktack()        
 
     def on_key_pressed( self, key ) :
         if key == ' ' :
@@ -196,6 +237,8 @@ class Scenario1 ( Scenario ) :
                 self.scene4()
             elif self.scene_no == 4 :
                 self.scene5()
+            elif self.scene_no == 5 :
+                self.game.on_stop_request()
             return True
         return False
 
@@ -206,7 +249,7 @@ class Scenario1 ( Scenario ) :
 
         delay = 400
 
-        self.at_time( 150, lambda : cp.add_text(
+        self.at_time( 100, lambda : cp.add_text(
             """IN A KNOWN SOLAR SYSTEM, WHERE PATHS ARE WELL-CHARTED
             A SCOUTING MISSION EMBARKS TO INVESTIGATE AN ENIGMATIC COSMIC FLASH ...""", 
             (700, 100 )
@@ -290,29 +333,20 @@ class Scenario1 ( Scenario ) :
 
         self.game.game_loop()
 
-    def ticktack( self ) :
-        if self.scene_no == 2 :
-            self.game.optimal_fieldview.center = self.science_ship.get_pos()
-            self.game.optimal_camera = self.science_ship.get_pos()
-            self.game.camera[0] = self.game.optimal_camera[0]
-            self.game.camera[1] = self.game.optimal_camera[1]
-            self.game.zoom_locked = self.game.get_time() + 1000
-            if self.game.get_time() == self.start_chatter_time :
-                # Load the sound effect
-                print("START CHATTER")
-                chatter_sound = pygame.mixer.Sound('assets/audio/military-radio-communication-high-quality-sound-effect-made-with-Voicemod-technology.mp3')
-                chatter_sound.set_volume(0.5)
-                # Play the sound effect
-                chatter_sound.play()
-            if self.game.get_time() % 50 == 0 :
-                if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 500 :
-                    self.wormhole.noises = True
-                if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 50 :
-                    if self.wormhole.active :
-                        self.wormhole.mega_burst()
-                    else :
-                        self.scene3()
-        super().ticktack()
+    def ticktack2( self ) :
+        self.game.set_camera(self.science_ship.get_pos())
+        if self.game.get_time() == self.start_chatter_time :
+            chatter_sound = pygame.mixer.Sound('assets/audio/military-radio-communication-high-quality-sound-effect-made-with-Voicemod-technology.mp3')
+            chatter_sound.set_volume(0.3)
+            chatter_sound.play()
+        if self.game.get_time() % 50 == 0 :
+            if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 700 :
+                self.wormhole.noises = True
+            if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 50 :
+                if self.wormhole.active :
+                    self.wormhole.mega_burst()
+                else :
+                    self.scene3()
 
     def scene3(self) :
         self.scene_no = 3
@@ -321,7 +355,7 @@ class Scenario1 ( Scenario ) :
         self.game.add_object( cp3 )
 
 
-        self.at_time( self.game.get_time() + 150, 
+        self.at_time( self.game.get_time() + 100, 
             lambda : 
             cp3.add_speech(
                 "PREPARE FOR ANALYSIS, CREW.\nTHAT FLASH IS UNLIKE ANYTHING WE'VE SEEN.",
@@ -342,7 +376,7 @@ class Scenario1 ( Scenario ) :
         cp4 = ComicPage(self.game, 'sc1_3', 490, 390, 630)
         self.game.add_object( cp4 )
 
-        self.at_time( self.game.get_time() + 150, 
+        self.at_time( self.game.get_time() + 100, 
             lambda : 
             cp4.add_text(
                 "AS THE FLEET NEARS THE PHENOMENON, TENSION MOUNTS.\nSOMETHING DOESN'T FEEL RIGHT.",
@@ -365,21 +399,66 @@ class Scenario1 ( Scenario ) :
         cp5 = ComicPage(self.game, 'sc1_4', 440, 360, 700)
         self.game.add_object( cp5 )
 
-        self.at_time( self.game.get_time() + 150, 
+        self.at_time( self.game.get_time() + 100, 
             lambda : 
             cp5.add_text(
                 "IN AN INSTANT, CHAOS ERUPTS.\nTHE FLASH MATERIALIZES, ANNIHILATING ALL BUT ONE SHIP.",
                 (490,50)
             ) )
 
-        self.at_time( self.game.get_time() + 200,
+        self.at_time( self.game.get_time() + 1000,
             lambda :
             cp5.add_text(
                 "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
                 (550, 690 )
                 ) )
 
+    def scene6(self) :
+        self.scene_no = 6
+        MusicPlayer.skip_song()
 
-        
+        self.reset_game( Game(self.input_handler, self.win) )
+        self.input_handler.set_game( self.game )
+        self.background = DistantObject(self.game, Background( 2 ), 0, 0)
+        self.game.add_object(self.background)
+        self.game.add_ticktack_receiver(self)
+        # self.game.register_key_handler(' ', self)
+        self.game.zoom_enabled = False
+        self.input_handler.control_enabled = False
+        self.wormhole_pos = (-1000,1000)
+        self.target_position = (-500,500)
+        self.game.set_camera(self.wormhole_pos)
+        #self.wormhole_pos = (400,-400)
+
+        Dust.make_dust(self.game, 1)
+
+        self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
+
+        self.player_ship = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -1000, 1000 )
+        self.game.add_object( self.player_ship )
+
+        planet = StationaryObject(self.game, Stationary("planet_7", 48), 1000, -1000)
+        planet.layer = 1
+        self.game.add_object( planet )
+
+        self.wormhole = Wormhole(self.game, *self.wormhole_pos)
+        self.game.add_object( self.wormhole )
+        self.wormhole.stable = True
+
+        self.game.paused = False
+
+        self.start_time = self.game.get_time()
+        self.ps_rotation_speed = 5
+        self.starting_sequence_length = 500
+
+        self.game.game_loop()
+   
+    def ticktack6( self ) :
+        self.player_ship.dir = ( self.player_ship.dir + self.ps_rotation_speed ) % 360
+        self.ps_rotation_speed = self.game.approach_value( self.ps_rotation_speed, 0, self.starting_sequence_length )
+        self.player_ship.x = self.game.approach_value( self.player_ship.x, self.target_position[0], self.starting_sequence_length)
+        self.player_ship.y = self.game.approach_value( self.player_ship.y, self.target_position[1], self.starting_sequence_length)
+        self.game.set_camera( self.player_ship.get_pos() )
+
 
 

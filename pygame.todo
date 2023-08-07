@@ -1,8 +1,7 @@
 pygame.todo
 
-- przejście do nowej galaktyki
-- dodanie wormhole, ale stabilniejszego z tej strony
-- animacja wyrzuconego statku i detonacji
+- one time animation object
+- animacja kilku detonacji
 - scen1, panel5
 - scen1, panel6
 - scen1, panel7
@@ -206,4 +205,7 @@ x usuwanie ikony w backgroundzie
 + efekty dźwiękowe - rozmowy podczas lotu
 + efekt dźwiękowy - buzz
 + ekekt dźwiękowy - detonacja
++ przejście do nowej galaktyki
++ animacja wyrzuconego statku 
++ dodanie wormhole, ale stabilniejszego z tej strony
 

@@ -15,6 +15,7 @@ class Game:
         self.input_handler = input_handler
         self.game_window = (1024,768)
         self.game_window = (1280,720)
+        self.window_center = pygame.math.Vector2(self.game_window[0]//2, self.game_window[1]//2)
         self.clock = pygame.time.Clock()
         self.focused = []
         self.time = 0
@@ -46,6 +47,9 @@ class Game:
 
     def add_ticktack_receiver(self, receiver) :
         self.ticktack_receivers.append(receiver)
+
+    def add_command_receiver(self, receiver) :
+        self.command_receivers.append(receiver)
 
     def remove_object(self, obj):
         self.objects[obj.Z].remove(obj)
@@ -236,6 +240,16 @@ class Game:
         else :
             return (self.zoom*(x - self.pan3[0]), self.zoom*(y - self.pan3[1]))
 
+    def get_screen_distance_from_center( self, x, y ) :
+        p1 = pygame.math.Vector2(*self.get_display_xy( x, y ))
+        return self.window_center.distance_to(p1)
+
+    def get_screen_centerism( self, x, y ) :
+        v = self.get_screen_distance_from_center(x,y)
+        t = min(self.game_window[0]//2, self.game_window[1]//2)
+        if v > t : return 0
+        return (t-v) / t
+
     def get_xy_display( self, x, y, layer = 0 ) :
         "given display coords, give game coords (in layer 0)"
         return (
@@ -385,6 +399,7 @@ class Game:
         self.key_handlers[ key ] = handler
 
     def on_stop_request(self) :
+        self.zoom_locked = self.get_time() + 1000
         for ol in self.objects :
             for o in ol :
                 o.on_stop_request()
@@ -399,6 +414,12 @@ class Game:
     def get_font( self ) :
         return self.font
 
+    def set_camera(self, pos) :
+        self.optimal_fieldview.center = pos
+        self.optimal_camera = pos
+        self.camera[0] = self.optimal_camera[0]
+        self.camera[1] = self.optimal_camera[1]
+        self.zoom_locked = self.get_time() + 1000
 
 
     @staticmethod

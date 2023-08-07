@@ -27,5 +27,8 @@ class AnimatedSprite :
         else:
             return self.frames[frame_number]
 
+    def get_frame_count(self) :
+        return len(self.frames)
+
     def get_overlay(self) :
         return self.overlay
