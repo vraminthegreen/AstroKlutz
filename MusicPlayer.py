@@ -13,6 +13,7 @@ class MusicPlayer:
         self.music_dir = music_dir
         self.songs = self.get_songs()
         self.current_song = 0
+        self.selected_song = None
 
     def get_songs(self):
         # List all files in the directory
@@ -35,11 +36,16 @@ class MusicPlayer:
         self.play_song()
 
     def play_song(self):
+        print(f'Playing song: {self.songs[self.current_song]}')
         pygame.mixer.music.load(os.path.join(self.music_dir, self.songs[self.current_song]))
         pygame.mixer.music.play()
 
     def next_song(self):
-        self.current_song += 1
+        if self.selected_song != None :
+            self.current_song = self.selected_song
+            self.selected_song = None
+        else :
+            self.current_song += 1
         if self.current_song >= len(self.songs):
             self.current_song = 0
         self.play_song()
@@ -47,29 +53,37 @@ class MusicPlayer:
     def skip_next(self):
         print("MUSIC SKIP NEXT")
         # Fade out over 2000 milliseconds (2 seconds)
-        pygame.mixer.music.fadeout(2000)
-        # print("MUSIC SKIP NEXT (after fadeout)")
-        # pygame.time.set_timer(MusicPlayer.SONG_FADEOUT_END, 3000)
-        
-        # Load and play the next song
-        # self.current_song = (self.current_song + 1) % len(self.songs)
-        # self.play_song()
-        # print("MUSIC SKIP NEXT (after play)")
-        # pygame.mixer.music.load(self.songs[self.current_song])
-        # pygame.mixer.music.play()
+        pygame.mixer.music.fadeout(1000)
+
+    def skip_to(self, song_name) :
+        if song_name in self.songs :
+            self.selected_song = self.songs.index(song_name)
+            pygame.mixer.music.fadeout(1000)
+        else :
+            self.skip_next()
 
     def on_event(self, event) :
-        if event == MusicPlayer.SONG_END :
+        if event.type == MusicPlayer.SONG_END :
             self.next_song()
             return True
-        elif event == MusicPlayer.SONG_SKIP :
-            self.skip_next()
+        elif event.type == MusicPlayer.SONG_SKIP :
+            print(f"MediaPlayer: SONG_SKIP, message: {event.message}")
+            if event.message == None :
+                self.skip_next()
+            else :
+                self.skip_to(event.message)
             return True
         else :
             return False
 
     @staticmethod
     def skip_song() :
-        new_event = pygame.event.Event(MusicPlayer.SONG_SKIP, message="Song skip event")
+        new_event = pygame.event.Event(MusicPlayer.SONG_SKIP, message=None)
         pygame.event.post(new_event)
+
+    @staticmethod
+    def skip_to_song(song_name) :
+        new_event = pygame.event.Event(MusicPlayer.SONG_SKIP, message=song_name)
+        pygame.event.post(new_event)
+
 

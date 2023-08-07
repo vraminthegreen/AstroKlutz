@@ -130,7 +130,6 @@ class ComicPage ( StarObject ) :
 
     def add_speech( self, text, to_xy, from_xy ) :
         self.texts.append( (text, *from_xy, *to_xy))
-        print(f'texts now: {self.texts}')
 
     def on_stop_request(self) :
         self.stop_requested = True

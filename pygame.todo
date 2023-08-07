@@ -1,6 +1,5 @@
 pygame.todo
 
-- efekty dźwiękowe - rozmowy podczas lotu
 - ekekt dźwiękowy - detonacja
 - przejście do nowej galaktyki
 - dodanie wormhole, ale stabilniejszego z tej strony
@@ -205,4 +204,5 @@ x usuwanie ikony w backgroundzie
 + scen1, panel3
 + scen1, panel4
 + wprowadzenie dźwięków - muzyka tło
++ efekty dźwiękowe - rozmowy podczas lotu
 

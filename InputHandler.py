@@ -54,7 +54,7 @@ class InputHandler:
 
         for event in pygame.event.get():
             if event.type in InputHandler.event_handlers :
-                InputHandler.event_handlers[event.type].on_event(event.type)
+                InputHandler.event_handlers[event.type].on_event(event)
             elif event.type == pygame.MOUSEMOTION and mouse_tracking and self.control_enabled:
                 x, y = event.pos
                 self.game.mouse_track(x, y)

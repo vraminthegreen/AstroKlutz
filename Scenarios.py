@@ -220,7 +220,7 @@ class Scenario1 ( Scenario ) :
 
     def scene2( self ) :
         self.scene_no = 2
-        MusicPlayer.skip_song()
+        MusicPlayer.skip_to_song('hayden-folker-going-home.mp3')
 
         self.reset_game( Game(self.input_handler, self.win) )
         self.input_handler.set_game( self.game )
@@ -231,7 +231,7 @@ class Scenario1 ( Scenario ) :
         self.game.zoom_enabled = False
         self.input_handler.control_enabled = False
         self.wormhole_pos = (1000,-1000)
-        self.wormhole_pos = (400,-400)
+        #self.wormhole_pos = (400,-400)
 
         Dust.make_dust(self.game, 1)
 
@@ -273,6 +273,7 @@ class Scenario1 ( Scenario ) :
         self.explorer_group.order_guard( *self.wormhole_pos )
 
         self.game.paused = False
+        self.start_chatter_time = self.game.get_time() + 500
 
         self.game.game_loop()
 
@@ -283,6 +284,13 @@ class Scenario1 ( Scenario ) :
             self.game.camera[0] = self.game.optimal_camera[0]
             self.game.camera[1] = self.game.optimal_camera[1]
             self.game.zoom_locked = self.game.get_time() + 1000
+            if self.game.get_time() == self.start_chatter_time :
+                # Load the sound effect
+                print("START CHATTER")
+                chatter_sound = pygame.mixer.Sound('assets/audio/military-radio-communication-high-quality-sound-effect-made-with-Voicemod-technology.mp3')
+                chatter_sound.set_volume(0.5)
+                # Play the sound effect
+                chatter_sound.play()
             if self.game.get_time() % 50 == 0 :
                 if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 50 :
                     if self.wormhole.active :
@@ -293,7 +301,7 @@ class Scenario1 ( Scenario ) :
 
     def scene3(self) :
         self.scene_no = 3
-        MusicPlayer.skip_song()        
+        MusicPlayer.skip_to_song('darren-curtis-ignite-the-fire.mp3')        
         cp3 = ComicPage(self.game, 'sc1_2', 450, 350, 680)
         self.game.add_object( cp3 )
 

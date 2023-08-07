@@ -142,12 +142,12 @@ class TargetAttackMove ( TargetMove ) :
     def is_completed(self) :
         res = super().is_completed()
         if res and self.guarding_time > 0 : 
-            if self.guarding_time % 100 == 0 :
-                print(f'{self.owner.name} GUARDING ({self.guarding_time})  ({self}) ...')
+            # if self.guarding_time % 100 == 0 :
+            #     print(f'{self.owner.name} GUARDING ({self.guarding_time})  ({self}) ...')
             return
         if res :
             self.owner.ping_animation = None
-            print(f'{self.owner.name} GUARDING completed')
+            # print(f'{self.owner.name} GUARDING completed')
         return res
 
 
