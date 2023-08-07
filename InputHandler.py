@@ -9,6 +9,8 @@ from Menu import Menu
 
 class InputHandler:
 
+    event_handlers = {}
+
     def __init__(self):
         self.last_key = 0
         self.counter = 0
@@ -51,7 +53,9 @@ class InputHandler:
         running = True
 
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEMOTION and mouse_tracking and self.control_enabled:
+            if event.type in InputHandler.event_handlers :
+                InputHandler.event_handlers[event.type].on_event(event.type)
+            elif event.type == pygame.MOUSEMOTION and mouse_tracking and self.control_enabled:
                 x, y = event.pos
                 self.game.mouse_track(x, y)
             elif event.type == pygame.MOUSEBUTTONDOWN and self.control_enabled :
@@ -76,4 +80,7 @@ class InputHandler:
 
         return running
 
+    @staticmethod
+    def set_event_handler(event, handler) :
+        InputHandler.event_handlers[event] = handler
 

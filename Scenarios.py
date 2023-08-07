@@ -1,6 +1,7 @@
 
 import bisect
 import random
+import pygame
 
 from Targets import TargetAttackMove
 from ShipClass import Stationary
@@ -20,6 +21,7 @@ from StationaryObject import StationaryObject
 from ShipClass import Stationary, Background
 from ComicPage import ComicPage
 from AnimatedSprite import AnimatedSprite
+from MusicPlayer import MusicPlayer
 
 
 #################################################
@@ -179,6 +181,8 @@ class Scenario1 ( Scenario ) :
                 self.game.on_stop_request()
             elif self.scene_no == 3 :
                 self.scene4()
+            elif self.scene_no == 4 :
+                self.scene5()
             return True
         return False
 
@@ -216,6 +220,7 @@ class Scenario1 ( Scenario ) :
 
     def scene2( self ) :
         self.scene_no = 2
+        MusicPlayer.skip_song()
 
         self.reset_game( Game(self.input_handler, self.win) )
         self.input_handler.set_game( self.game )
@@ -226,7 +231,7 @@ class Scenario1 ( Scenario ) :
         self.game.zoom_enabled = False
         self.input_handler.control_enabled = False
         self.wormhole_pos = (1000,-1000)
-        self.wormhole_pos = (200,-200)
+        self.wormhole_pos = (400,-400)
 
         Dust.make_dust(self.game, 1)
 
@@ -288,21 +293,22 @@ class Scenario1 ( Scenario ) :
 
     def scene3(self) :
         self.scene_no = 3
-        cp2 = ComicPage(self.game, 'sc1_2', 450, 350, 680)
-        self.game.add_object( cp2 )
+        MusicPlayer.skip_song()        
+        cp3 = ComicPage(self.game, 'sc1_2', 450, 350, 680)
+        self.game.add_object( cp3 )
 
 
         self.at_time( self.game.get_time() + 150, 
             lambda : 
-            cp2.add_speech(
+            cp3.add_speech(
                 "PREPARE FOR ANALYSIS, CREW.\nTHAT FLASH IS UNLIKE ANYTHING WE'VE SEEN.",
                 (550,250),
                 (400,400)
             ) )
 
-        self.at_time( self.game.get_time() + 500,
+        self.at_time( self.game.get_time() + 1000,
             lambda :
-            cp2.add_text(
+            cp3.add_text(
                 "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
                 (450, 680 )
                 ) )
@@ -310,17 +316,42 @@ class Scenario1 ( Scenario ) :
     def scene4(self):
         self.scene_no = 4
 
-        cp3 = ComicPage(self.game, 'sc1_3', 490, 390, 630)
-        self.game.add_object( cp3 )
+        cp4 = ComicPage(self.game, 'sc1_3', 490, 390, 630)
+        self.game.add_object( cp4 )
 
         self.at_time( self.game.get_time() + 150, 
             lambda : 
-            cp3.add_text(
+            cp4.add_text(
                 "AS THE FLEET NEARS THE PHENOMENON, TENSION MOUNTS.\nSOMETHING DOESN'T FEEL RIGHT.",
                 (470,100)
             ) )
 
+        self.at_time( self.game.get_time() + 1000,
+            lambda :
+            cp4.add_text(
+                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
+                (450, 680 )
+                ) )
 
+    def scene5(self):
+        self.scene_no = 5
+
+        cp5 = ComicPage(self.game, 'sc1_4', 440, 360, 700)
+        self.game.add_object( cp5 )
+
+        self.at_time( self.game.get_time() + 150, 
+            lambda : 
+            cp5.add_text(
+                "IN AN INSTANT, CHAOS ERUPTS.\nTHE FLASH MATERIALIZES, ANNIHILATING ALL BUT ONE SHIP.",
+                (490,50)
+            ) )
+
+        self.at_time( self.game.get_time() + 200,
+            lambda :
+            cp5.add_text(
+                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
+                (550, 690 )
+                ) )
 
 
         
