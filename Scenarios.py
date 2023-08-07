@@ -132,6 +132,7 @@ class Wormhole ( StationaryObject ) :
         super().__init__(game, Stationary(None,96), x, y)
         # self.sprite = AnimatedSprite( "wormhole.png", 6, 6, 96, False )
         self.animation = None
+        self.active = True
         # self.animate( self.game.get_animation('wormhole'), Wormhole.on_animation_finished )
 
     def on_animation_finished(self) :
@@ -142,8 +143,14 @@ class Wormhole ( StationaryObject ) :
         self.animation = AnimatedSprite( "wormhole.png", 5, 6, random.randint(32,256), False )
         self.animate( self.animation, Wormhole.on_animation_finished, random.uniform(0.5, 3) )
 
+    def mega_burst(self) :
+        self.animation = AnimatedSprite( "wormhole.png", 5, 6, 320, False )
+        self.animate( self.animation, Wormhole.on_animation_finished, 1.5 )
+        self.active = False
+
+
     def ticktack(self) :
-        if self.animation == None and random.randint(0,2000) < 1 :
+        if self.active and self.animation == None and random.randint(0,500) < 1 :
             self.start_burst()
         super().ticktack()
 
@@ -155,61 +162,71 @@ class Scenario1 ( Scenario ) :
         self.input_handler = InputHandler()
         super().__init__( Comic(self, self.input_handler, win), win )
         self.input_handler.set_game( self.game )
+        self.game.register_key_handler(' ', self)
         self.background = DistantObject(self.game, Background( 1 ), 0, 0)
         self.game.add_object(self.background)
         Dust.make_dust(self.game, 1)
-        self.pages = []
         self.science_ship = None
+        self.scene_no = 1
 
     def start( self ) :
         self.scene1()
         self.scene2()
 
-    def command( self, command ) :
-        if command == ' ' :
-            self.game.on_stop_request()
+    def on_key_pressed( self, key ) :
+        if key == ' ' :
+            if self.scene_no == 1 :
+                self.game.on_stop_request()
+            elif self.scene_no == 3 :
+                self.scene4()
+            return True
+        return False
 
     def scene1( self ) :
+        self.scene_no = 1
         cp = ComicPage(self.game, 'sc1_1', 450, 350, 680)
         self.game.add_object( cp )
-        self.pages.append( cp )
 
         delay = 400
 
         self.at_time( 150, lambda : cp.add_text(
             """IN A KNOWN SOLAR SYSTEM, WHERE PATHS ARE WELL-CHARTED
             A SCOUTING MISSION EMBARKS TO INVESTIGATE AN ENIGMATIC COSMIC FLASH ...""", 
-            400, 100 
+            (700, 100 )
             ) )
         self.at_time( 150 + delay, lambda : cp.add_text(
             """AS A CO-PILOT INTERN ON A SCOUT SHIP, YOU ARE PART OF A SMALL FLEET
             COMPOSED OF ONE SCIENTIFIC VESSEL, TWO EXPLORATORY SCOUTS, AND AN ESCORT FIGHTER ...""", 
-            320, 160 
+            (620, 160 )
             ) )
         self.at_time( 150 + 2*delay, lambda : cp.add_text(
             "YOUR MISSION: TO INVESTIGATE THE OCCURRENCE OF AN ENIGMATIC COSMIC FLASH ...",
-            420, 220 
+            (720, 220 )
             ) )
         self.at_time( 150 + 3*delay, lambda : cp.add_text(
             "YOUR JOURNEY INTO THE UNKNOWN IS ABOUT TO BEGIN ...",
-            370, 270 
+            (750, 270 )
             ) )
         self.at_time( 150 + 4*delay, lambda : cp.add_text(
             "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
-            650, 480 
+            (900, 580 )
             ) )
 
         self.game.game_loop()
 
     def scene2( self ) :
+        self.scene_no = 2
 
         self.reset_game( Game(self.input_handler, self.win) )
         self.input_handler.set_game( self.game )
         self.background = DistantObject(self.game, Background( 1 ), 0, 0)
         self.game.add_object(self.background)
         self.game.add_ticktack_receiver(self)
+        self.game.register_key_handler(' ', self)
         self.game.zoom_enabled = False
         self.input_handler.control_enabled = False
+        self.wormhole_pos = (1000,-1000)
+        self.wormhole_pos = (200,-200)
 
         Dust.make_dust(self.game, 1)
 
@@ -242,25 +259,70 @@ class Scenario1 ( Scenario ) :
         self.game.add_object( self.explorer_group )
 
         planet = StationaryObject(self.game, Stationary("planet_1", 64), -420, 240)
+        planet.layer = 1
         self.game.add_object( planet )
 
-        wormhole = Wormhole(self.game, 2000, -2000)
-        self.game.add_object( wormhole )
+        self.wormhole = Wormhole(self.game, *self.wormhole_pos)
+        self.game.add_object( self.wormhole )
 
-        self.explorer_group.order_guard( 2000, -2000 )
+        self.explorer_group.order_guard( *self.wormhole_pos )
 
         self.game.paused = False
 
         self.game.game_loop()
 
     def ticktack( self ) :
-        if self.science_ship != None :
-            print(f'science_ship pos: {self.science_ship.get_pos()}')
+        if self.scene_no == 2 :
             self.game.optimal_fieldview.center = self.science_ship.get_pos()
             self.game.optimal_camera = self.science_ship.get_pos()
             self.game.camera[0] = self.game.optimal_camera[0]
             self.game.camera[1] = self.game.optimal_camera[1]
             self.game.zoom_locked = self.game.get_time() + 1000
+            if self.game.get_time() % 50 == 0 :
+                if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 50 :
+                    if self.wormhole.active :
+                        self.wormhole.mega_burst()
+                    else :
+                        self.scene3()
         super().ticktack()
+
+    def scene3(self) :
+        self.scene_no = 3
+        cp2 = ComicPage(self.game, 'sc1_2', 450, 350, 680)
+        self.game.add_object( cp2 )
+
+
+        self.at_time( self.game.get_time() + 150, 
+            lambda : 
+            cp2.add_speech(
+                "PREPARE FOR ANALYSIS, CREW.\nTHAT FLASH IS UNLIKE ANYTHING WE'VE SEEN.",
+                (550,250),
+                (400,400)
+            ) )
+
+        self.at_time( self.game.get_time() + 500,
+            lambda :
+            cp2.add_text(
+                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
+                (450, 680 )
+                ) )
+
+    def scene4(self):
+        self.scene_no = 4
+
+        cp3 = ComicPage(self.game, 'sc1_3', 490, 390, 630)
+        self.game.add_object( cp3 )
+
+        self.at_time( self.game.get_time() + 150, 
+            lambda : 
+            cp3.add_text(
+                "AS THE FLEET NEARS THE PHENOMENON, TENSION MOUNTS.\nSOMETHING DOESN'T FEEL RIGHT.",
+                (470,100)
+            ) )
+
+
+
+
+        
 
 

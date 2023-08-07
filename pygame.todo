@@ -1,12 +1,15 @@
 pygame.todo
 
-- scen1: warunek dotarcia na miejsce
-- scen1: odpalenie błysku
-- scen1: komiks
-
-- tryb wykonywania rozkazów grupowych natychmiast
+- scen1, panel4
+- przejście do nowej galaktyki, dodanie wormhole, ale stabilniejszego z tej strony
+- animacja wyrzuconego statku i detonacji
+- scen1, panel5
+- scen1, panel6
+- scen1, panel7
 
 - ordery przy zoom
+- tryb wykonywania rozkazów grupowych natychmiast
+
 - Rozkaz grupowy pozostały
 - implementacja animacji odrzutu (osobnej)
 - dodanie innych typów statków
@@ -193,4 +196,9 @@ x usuwanie ikony w backgroundzie
 + scen1: dodanie riftu
 + scen1: wydanie rozkazów, odpalenie
 + scen1: blokada edycji
++ scen1: warunek dotarcia na miejsce
++ scen1: odpalenie błysku
++ komiks - dymki mowy
++ scen1: komiks
++ scen1, panel3
 

@@ -32,6 +32,7 @@ class Game:
         }
         self.paused = True
         self.key_handlers = {}
+        self.font = pygame.font.Font('assets/Komika-Display/Komika_display.ttf', 18)
         self.reset_fieldview()
 
     def reset_fieldview( self ) :
@@ -297,8 +298,6 @@ class Game:
                 # self.pan_camera(bounding_rect)
             self.pan_camera()
 
-            print(f'camera: {self.camera}')
-
             for receiver in self.ticktack_receivers :
                 receiver.ticktack()
 
@@ -396,6 +395,11 @@ class Game:
         self.zoom = 1
         self.target_zoom = self.initial_zoom
         self.zoom_speed = 15
+
+    def get_font( self ) :
+        return self.font
+
+
 
     @staticmethod
     def is_acute_angle(dir1, dir2):

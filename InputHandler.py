@@ -64,7 +64,7 @@ class InputHandler:
                     # self.game.add_object(star_object)
                     # self.focus.set_order(star_object)
             elif event.type == pygame.KEYDOWN:
-                if event.unicode.isdigit() and self.control_enabled :
+                if event.unicode.isdigit() and self.control_enabled or event.unicode == ' ' :
                     self.game.on_key_pressed(event.unicode)
                 elif event.unicode.isalnum() or event.unicode == ' ':
                     if event.unicode == 'p' :
