@@ -51,10 +51,16 @@ class Scenario :
 
     def ticktack( self ) :
         while len(self.event_times) > 0 and self.event_times[0] < self.game.get_time() :
-            for f in self.events[self.event_times[0]] :
-                f()
-            del self.events[self.event_times[0]]
-            del self.event_times[0]
+            self.fire_next_event()
+
+    def fire_next_event( self ) :
+        if len(self.events) == 0 :
+            return False
+        for f in self.events[self.event_times[0]] :
+            f()
+        del self.events[self.event_times[0]]
+        del self.event_times[0]
+        return True
 
     def on_stop_request(self) :
         pass
@@ -233,6 +239,8 @@ class Scenario1 ( Scenario ) :
 
     def on_key_pressed( self, key ) :
         if key == ' ' :
+            if self.fire_next_event() :
+                return True
             if self.scene_no == 1 :
                 self.game.on_stop_request()
             elif self.scene_no == 3 :
@@ -296,7 +304,7 @@ class Scenario1 ( Scenario ) :
         self.game.register_key_handler(' ', self)
         self.game.zoom_enabled = False
         self.input_handler.control_enabled = False
-        self.wormhole_pos = (1000,-1000)
+        self.wormhole_pos = (800,-800)
         #self.wormhole_pos = (400,-400)
 
         Dust.make_dust(self.game, 1)

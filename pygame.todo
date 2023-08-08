@@ -1,6 +1,5 @@
 pygame.todo
 
-- space wymusza następne zdarzenie, ... jeśli nie ma zdarzeń dopiero przeskakuje do następnej sceny
 - scen1: latanie statkiem
 
 ! coś się dzieje niedobrego z gwiadkami przy skrolowaniu
@@ -216,4 +215,5 @@ x usuwanie ikony w backgroundzie
 + scen1, panel5
 + scen1, panel6
 + scen1, panel7
++ space wymusza następne zdarzenie, ... jeśli nie ma zdarzeń dopiero przeskakuje do następnej sceny
 
