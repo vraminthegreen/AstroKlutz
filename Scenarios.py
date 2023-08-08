@@ -225,9 +225,8 @@ class Scenario1 ( Scenario ) :
         self.open_pages = []
 
     def start( self ) :
-        # self.scene6()
-        self.scene1()
-        self.scene2()
+        # self.scene1()
+        # self.scene2()
         self.scene6()
 
     def ticktack( self ) :
@@ -574,6 +573,10 @@ QUICK, STEADY MOVEMENTS WILL KEEP YOU ON COURSE.""",
     def scene10( self ) :
         for page in self.open_pages :
             page.on_stop_request()
+        self.game.set_focused(self.player_ship)
+        self.game.zoom_locked = None
+        self.input_handler.control_enabled = True
+
 
 
 

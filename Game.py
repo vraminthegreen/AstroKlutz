@@ -136,6 +136,7 @@ class Game:
         max_height = self.game_window[1]
         important_objects = [obj for obj in self.objects[0] if obj.is_important]
         if len(important_objects)==0 :
+            print(f'compute_optimal_fieldview: NO IMPORTANT OBJECTS')
             self.reset_fieldview()
             return
         all_ships_fieldview = important_objects[0].get_rect()
@@ -161,6 +162,7 @@ class Game:
             max_height = 2 * self.game_window[1]
         focused_rect = all_ships_fieldview # guard
         if len(self.focused) > 0 :
+            print(f'    focused: {self.focused[0].get_pos()}')
             focused_rect = self.focused[0].get_rect().inflate(200,200)
             fv = all_ships_fieldview.union(focused_rect)
             if all_fit :
@@ -171,12 +173,8 @@ class Game:
                     all_ships_fieldview = fv
                 else :
                     all_ships_fieldview = focused_rect
-        # if not self.optimal_fieldview.contains(all_ships_fieldview) :
-        #     print(f'fieldview adjusting')
-        #     self.optimal_fieldview = self.move_to_contain(self.optimal_fieldview, all_ships_fieldview)
-        #     print(f'    optimal_fieldview: {self.optimal_fieldview}')
-        #     print(f'    all_ships: {all_ships_fieldview}')
-        #     print(f'    contains: {self.optimal_fieldview.contains(all_ships_fieldview)}')
+        if not self.optimal_fieldview.contains(all_ships_fieldview) :
+            self.optimal_fieldview = self.move_to_contain(self.optimal_fieldview, all_ships_fieldview)
         self.optimal_fieldview.inflate_ip(
             self.game_window[0] / self.target_zoom - self.optimal_fieldview.width,
             self.game_window[1] / self.target_zoom - self.optimal_fieldview.height )
