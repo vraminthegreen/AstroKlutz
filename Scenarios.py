@@ -226,8 +226,8 @@ class Scenario1 ( Scenario ) :
 
     def start( self ) :
         # self.scene1()
-        # self.scene2()
-        self.scene6()
+        self.scene2()
+        # self.scene6()
 
     def ticktack( self ) :
         if self.scene_no == 2 :

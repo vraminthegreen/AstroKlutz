@@ -162,7 +162,6 @@ class Game:
             max_height = 2 * self.game_window[1]
         focused_rect = all_ships_fieldview # guard
         if len(self.focused) > 0 :
-            print(f'    focused: {self.focused[0].get_pos()}')
             focused_rect = self.focused[0].get_rect().inflate(200,200)
             fv = all_ships_fieldview.union(focused_rect)
             if all_fit :
@@ -196,7 +195,7 @@ class Game:
     def pan_camera(self) :
         optimal_camera = self.get_optimal_camera()
         d = (optimal_camera[0]-self.camera[0], optimal_camera[1]-self.camera[1])
-        recompute_pans = d != (0,0)
+        recompute_pans = abs(d[0])>=1 or abs(d[1])>=1
         if not recompute_pans :
             return
         if abs(d[0]>10) or abs(d[1]>10) :
@@ -288,6 +287,7 @@ class Game:
         self.running = True
         while self.running:
             self.time += 1
+
 
             if self.stop_time != None and self.stop_time <= self.time :
                 self.running = False
@@ -419,7 +419,6 @@ class Game:
         self.camera[0] = self.optimal_camera[0]
         self.camera[1] = self.optimal_camera[1]
         self.zoom_locked = self.get_time() + 1000
-
 
     @staticmethod
     def is_acute_angle(dir1, dir2):

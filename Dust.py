@@ -29,17 +29,17 @@ class Dust ( StarObject ) :
     def repaint( self, win ) :
         rect = self.game.get_visible_rectangle( self.layer, self.game.target_zoom )
         if self.x < rect.left :
-            self.x = rect.right
-            self.y = random.randint(rect.top, rect.bottom)
+            self.x = rect.right - 1
+            self.y = random.randint(rect.top, rect.bottom - 1)
         elif self.x >= rect.right :
             self.x = rect.left
-            self.y = random.randint(rect.top, rect.bottom)
+            self.y = random.randint(rect.top, rect.bottom - 1)
         if self.y >= rect.bottom :
-            self.x = random.randint(rect.left, rect.right)
+            self.x = random.randint(rect.left, rect.right - 1)
             self.y = rect.top
         elif self.y < rect.top :
-            self.x = random.randint(rect.left, rect.right)
-            self.y = rect.bottom
+            self.x = random.randint(rect.left, rect.right - 1)
+            self.y = rect.bottom - 1
         center = self.game.get_display_xy(self.x, self.y, self.layer)
 
         col = (
