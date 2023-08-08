@@ -29,6 +29,8 @@ from AnimationObject import AnimationObject
 
 class Scenario :
 
+    flags = set()
+
     def __init__( self, game, win ) :
         self.win = win
         self.reset_game( game )
@@ -47,7 +49,7 @@ class Scenario :
             self.events[time].append(f)
         else :
             self.events[time] = [ f ]
-        bisect.insort( self.event_times, time )
+            bisect.insort( self.event_times, time )
 
     def ticktack( self ) :
         while len(self.event_times) > 0 and self.event_times[0] < self.game.get_time() :
@@ -56,6 +58,8 @@ class Scenario :
     def fire_next_event( self ) :
         if len(self.events) == 0 :
             return False
+        print(f'events: {self.events}')
+        print(f'events_times: {self.event_times}')
         for f in self.events[self.event_times[0]] :
             f()
         del self.events[self.event_times[0]]
@@ -226,14 +230,16 @@ class Scenario1 ( Scenario ) :
 
     def start( self ) :
         # self.scene1()
-        self.scene2()
-        # self.scene6()
+        # self.scene2()
+        self.scene6()
 
     def ticktack( self ) :
         if self.scene_no == 2 :
             self.ticktack2()
         elif self.scene_no == 6 :
             self.ticktack6()
+        elif self.scene_no == 10 :
+            self.ticktack10()
         super().ticktack()        
 
     def on_key_pressed( self, key ) :
@@ -253,6 +259,10 @@ class Scenario1 ( Scenario ) :
             elif self.scene_no == 8 :
                 self.scene9()
             elif self.scene_no == 9 :
+                self.scene10() # free flight
+            elif self.scene_no == 11 :
+                self.scene12()
+            elif self.scene_no == 12 :
                 self.scene10()
             return True
         return False
@@ -357,9 +367,9 @@ class Scenario1 ( Scenario ) :
             chatter_sound.set_volume(0.3)
             chatter_sound.play()
         if self.game.get_time() % 50 == 0 :
-            if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 700 :
+            if self.science_ship.disp_distance_to( self.wormhole ) < 700 :
                 self.wormhole.noises = True
-            if self.science_ship.distance_to_xy( *self.wormhole_pos ) < 50 :
+            if self.science_ship.disp_distance_to( self.wormhole ) < 50 :
                 if self.wormhole.active :
                     self.wormhole.mega_burst()
                 else :
@@ -455,9 +465,9 @@ class Scenario1 ( Scenario ) :
         self.player_ship = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -1000, 1000 )
         self.game.add_object( self.player_ship )
 
-        planet = StationaryObject(self.game, Stationary("planet_7", 48), 1000, -1000)
-        planet.layer = 1
-        self.game.add_object( planet )
+        self.planet = StationaryObject(self.game, Stationary("planet_7", 48), 1000, -1000)
+        self.planet.layer = 1
+        self.game.add_object( self.planet )
 
         self.wormhole = Wormhole(self.game, *self.wormhole_pos)
         self.game.add_object( self.wormhole )
@@ -571,12 +581,91 @@ QUICK, STEADY MOVEMENTS WILL KEEP YOU ON COURSE.""",
                 ) )
 
     def scene10( self ) :
+        self.scene_no = 10
         for page in self.open_pages :
             page.on_stop_request()
         self.game.set_focused(self.player_ship)
         self.game.zoom_locked = None
         self.input_handler.control_enabled = True
 
+    def ticktack10( self ) :
+        if self.game.get_time() % 50 == 0 :
+            # print(f'distance to planet: {self.player_ship.disp_distance_to( self.planet )}')
+            # print(f'    player_ship: {self.player_ship.get_pos()}')
+            # print(f'    planet: {self.planet.get_pos()}')
+            if (not 'planet7' in Scenario.flags) and self.player_ship.disp_distance_to( self.planet ) < 50 :
+                self.scene11()
+
+    def scene11( self ) :
+        self.scene_no = 11
+        self.game.pop_focused()
+        Scenario.flags.add('planet7')
+        self.game.zoom_locked = self.game.get_time() + 100000
+        self.input_handler.control_enabled = False
+        cp11 = ComicPage(self.game, 'sc2_1', 470, 360, 680)
+        self.open_pages.append( cp11 )
+        self.game.add_object( cp11 )
+
+        self.at_time( self.game.get_time() + 100, 
+            lambda : 
+            cp11.add_text(
+                "IN AN UNCHARTED STAR SYSTEM, THE SCOUT SHIP'S SENSORS DETECT A PROMISING SIGNAL.",
+                (490,50),
+            ) )
+
+        self.at_time( self.game.get_time() + 1000,
+            lambda :
+            cp11.add_text(
+                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
+                (550, 690 )
+                ) )
+
+    def scene12( self ) :
+        self.scene_no = 12
+        self.game.zoom_locked = self.game.get_time() + 100000
+        self.input_handler.control_enabled = False
+        cp12 = ComicPage(self.game, 'sc2_2', 480, 370, 670)
+        self.open_pages.append( cp12 )
+        self.game.add_object( cp12 )
+
+        self.at_time( self.game.get_time() + 100, 
+            lambda : 
+            cp12.add_speech(
+                "THE ATMOSPHERE COMPOSITION,\nGRAVITY... IT'S ALL WITHIN LIVABLE RANGE.",
+                (280,120),
+                (320,170)
+            ) )
+
+        self.at_time( self.game.get_time() + 300, 
+            lambda : 
+            cp12.add_speech(
+                "AND THERE'S MORE...\nTHESE READINGS INDICATE RICH DEPOSITS OF RESOURCES.",
+                (580,60),
+                (460,170)
+            ) )
+
+        self.at_time( self.game.get_time() + 500, 
+            lambda : 
+            cp12.add_speech(
+                "WE NEED TO RELAY THIS INFORMATION HOME.\nBUT FIRST, WE MUST FIND A WAY BACK.",
+                (250,670),
+                (470,580)
+            ) )
+
+        self.at_time( self.game.get_time() + 700, 
+            lambda : 
+            cp12.add_speech(
+                "AGREED. THIS DISCOVERY IS MONUMENTAL,\nBUT WE'RE STILL LOST IN THIS SYSTEM.",
+                (680,400),
+                (710,450)
+            ) )
+
+        self.at_time( self.game.get_time() + 1000,
+            lambda :
+            cp12.add_text(
+                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
+                (680, 690 )
+                ) )
 
 
 

@@ -192,6 +192,11 @@ class StarObject :
         distance = point1.distance_to(point2)
         return distance
 
+    def disp_distance_to(self, other) :
+        point1 = pygame.math.Vector2(*self.game.get_display_xy(*self.get_pos(),self.layer))
+        point2 = pygame.math.Vector2(*self.game.get_display_xy(*other.get_pos(),other.layer))
+        return point1.distance_to(point2)
+
     def distance_to_xy(self, x, y) :
         point1 = pygame.math.Vector2(self.x, self.y)
         point2 = pygame.math.Vector2(x, y)
