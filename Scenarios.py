@@ -225,6 +225,7 @@ class Scenario1 ( Scenario ) :
         self.science_ship = None
         self.scene_no = 1
         self.open_pages = []
+        self.liora = None
 
     def start( self ) :
         print("start SCENE1")
@@ -285,6 +286,26 @@ class Scenario1 ( Scenario ) :
 
         self.game.game_loop()
 
+    def liora_in( self ) :
+        if self.liora == None :
+            self.liora = ComicPage(self.game, 'portrait_liora', 1200, 610, 196)
+        walkie_talkie_sound = pygame.mixer.Sound('assets/audio/walkie-talkie-beep-made-with-Voicemod-technology.mp3')
+        walkie_talkie_sound.play()
+        self.game.add_object(self.liora)
+
+    def agent_says( self, agent, text ) :
+        agent.reset_texts()
+        walkie_talkie_sound = pygame.mixer.Sound('assets/audio/walkie-talkie-sound-effect-made-with-Voicemod-technology.mp3')
+        walkie_talkie_sound.play()
+        agent.add_speech( text, (900,680), (1160, 600) )
+
+    def liora_out( self ) :
+        if self.liora != None :
+            walkie_talkie_sound = pygame.mixer.Sound('assets/audio/walkie-talkie-beep-made-with-Voicemod-technology.mp3')
+            walkie_talkie_sound.play()
+            self.liora.on_stop_request()
+            self.liora = None
+
     def scene2( self ) :
         print("SCENE2 start")        
         self.scene_no = 2
@@ -298,7 +319,7 @@ class Scenario1 ( Scenario ) :
         self.game.register_key_handler(' ', self)
         self.game.zoom_enabled = False
         self.input_handler.control_enabled = False
-        self.wormhole_pos = (800,-800)
+        self.wormhole_pos = (1000,-1000)
         #self.wormhole_pos = (400,-400)
 
         Dust.make_dust(self.game, 1)
@@ -342,6 +363,18 @@ class Scenario1 ( Scenario ) :
 
         self.game.paused = False
         self.start_chatter_time = self.game.get_time() + 500
+
+
+        self.at_time( self.game.get_time() + 600, self.liora_in )
+        self.at_time( self.game.get_time() + 650, lambda: 
+            self.agent_says( self.liora, "HELLO, PILOT.\nI'M DR. LIORA CALYX, YOUR CHIEF SCIENCE OFFICER." ) )
+        self.at_time( self.game.get_time() + 950, lambda: 
+            self.agent_says( self.liora, "WE'RE HEADED TOWARDS THIS COSMIC FLASH,\nAN ANOMALY UNLIKE ANYTHING WE'VE SEEN." ) )
+        self.at_time( self.game.get_time() + 1250, lambda: 
+            self.agent_says( self.liora, "I'LL BE GUIDING YOU THROUGH THE SCIENTIFIC ASPECTS OF OUR MISSION." ) )
+        self.at_time( self.game.get_time() + 1550, lambda: 
+            self.agent_says( self.liora, "STAY ALERT AND TRUST IN OUR COLLECTIVE EXPERTISE." ) )
+        self.at_time( self.game.get_time() + 1800, self.liora_out )
 
         self.game.game_loop()
 

@@ -30,7 +30,7 @@ class ComicPage ( StarObject ) :
             if self.zoom == 0 :
                 self.game.remove_object(self)
         else :
-            self.zoom = self.game.approach_value(self.zoom, 1, 15)
+            self.zoom = self.game.approach_value(self.zoom, 1, 10)
 
     def paint_bubble_sq(self, win, text, x, y) :
         (lines,bubble_rect) = self.prepare_lines(text, x, y)
@@ -132,6 +132,9 @@ class ComicPage ( StarObject ) :
 
     def add_speech( self, text, to_xy, from_xy ) :
         self.texts.append( (text, *from_xy, *to_xy))
+
+    def reset_texts( self ) :
+        self.texts = []
 
     def on_stop_request(self) :
         self.stop_requested = True
