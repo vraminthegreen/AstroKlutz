@@ -33,9 +33,12 @@ class Scenario :
 
     def __init__( self, game, win ) :
         self.win = win
+        self.game = None
         self.reset_game( game )
 
     def reset_game( self, game ) :
+        if self.game != None :
+            Dust.remove_dust(self.game)
         self.game = game
         self.game.add_ticktack_receiver(self)
         self.event_times = []
@@ -58,12 +61,11 @@ class Scenario :
     def fire_next_event( self ) :
         if len(self.events) == 0 :
             return False
-        print(f'events: {self.events}')
-        print(f'events_times: {self.event_times}')
-        for f in self.events[self.event_times[0]] :
-            f()
+        events = self.events[self.event_times[0]]
         del self.events[self.event_times[0]]
         del self.event_times[0]
+        for f in events :
+            f()
         return True
 
     def on_stop_request(self) :
@@ -84,7 +86,6 @@ class BasicScenario ( Scenario ) :
     def get_order( self, ship ) :
         order = TargetAttackMove( self.game, ship, Stationary('protect', 32), ship.x, ship.y, None, 500 )
         order.weak = True
-        print(f'New weak order for {ship.name} -> guard ({ship.x},{ship.y})')
         return order
 
     def start( self ) :
@@ -154,12 +155,9 @@ class Wormhole ( StationaryObject ) :
         # self.animate( self.game.get_animation('wormhole'), Wormhole.on_animation_finished )
 
     def on_animation_finished(self) :
-        print("WORMHOLE on_animation_finished")
         self.animation = None
 
     def start_burst(self) :
-        print(f'Wormohole> start_burst')
-        
         size = random.uniform(0,1)
 
         if self.noises :
@@ -229,8 +227,11 @@ class Scenario1 ( Scenario ) :
         self.open_pages = []
 
     def start( self ) :
-        # self.scene1()
-        # self.scene2()
+        print("start SCENE1")
+        self.scene1()
+        print("start SCENE2")
+        self.scene2()
+        print("start SCENE6")
         self.scene6()
 
     def ticktack( self ) :
@@ -244,30 +245,12 @@ class Scenario1 ( Scenario ) :
 
     def on_key_pressed( self, key ) :
         if key == ' ' :
-            if self.fire_next_event() :
-                return True
-            if self.scene_no == 1 :
-                self.game.on_stop_request()
-            elif self.scene_no == 3 :
-                self.scene4()
-            elif self.scene_no == 4 :
-                self.scene5()
-            elif self.scene_no == 5 :
-                self.game.on_stop_request()
-            elif self.scene_no == 7 :
-                self.scene8()
-            elif self.scene_no == 8 :
-                self.scene9()
-            elif self.scene_no == 9 :
-                self.scene10() # free flight
-            elif self.scene_no == 11 :
-                self.scene12()
-            elif self.scene_no == 12 :
-                self.scene10()
+            self.fire_next_event()
             return True
         return False
 
     def scene1( self ) :
+        print("SCENE1 start")
         self.scene_no = 1
         MusicPlayer.skip_to_song('alexander-nakarada-twin-explorers.mp3')
 
@@ -276,32 +259,34 @@ class Scenario1 ( Scenario ) :
 
         delay = 400
 
-        self.at_time( 100, lambda : cp.add_text(
+        self.at_time( self.game.get_time() + 100, lambda : cp.add_text(
             """IN A KNOWN SOLAR SYSTEM, WHERE PATHS ARE WELL-CHARTED
             A SCOUTING MISSION EMBARKS TO INVESTIGATE AN ENIGMATIC COSMIC FLASH ...""", 
             (700, 100 )
             ) )
-        self.at_time( 150 + delay, lambda : cp.add_text(
+        self.at_time( self.game.get_time() + delay, lambda : cp.add_text(
             """AS A CO-PILOT INTERN ON A SCOUT SHIP, YOU ARE PART OF A SMALL FLEET
             COMPOSED OF ONE SCIENTIFIC VESSEL, TWO EXPLORATORY SCOUTS, AND AN ESCORT FIGHTER ...""", 
             (620, 160 )
             ) )
-        self.at_time( 150 + 2*delay, lambda : cp.add_text(
+        self.at_time( self.game.get_time() + 2*delay, lambda : cp.add_text(
             "YOUR MISSION: TO INVESTIGATE THE OCCURRENCE OF AN ENIGMATIC COSMIC FLASH ...",
             (720, 220 )
             ) )
-        self.at_time( 150 + 3*delay, lambda : cp.add_text(
+        self.at_time( self.game.get_time() + 3*delay, lambda : cp.add_text(
             "YOUR JOURNEY INTO THE UNKNOWN IS ABOUT TO BEGIN ...",
             (750, 270 )
             ) )
-        self.at_time( 150 + 4*delay, lambda : cp.add_text(
-            "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
+        self.at_time( self.game.get_time() + 4*delay, lambda : cp.add_text(
+            "USE THE [SPACE] KEY TO ADVANCE TO THE NEXT DIALOGUE OR SCENE AT ANY TIME.",
             (900, 580 )
             ) )
+        self.at_time( self.game.get_time() + 10000, self.game.on_stop_request )
 
         self.game.game_loop()
 
     def scene2( self ) :
+        print("SCENE2 start")        
         self.scene_no = 2
         MusicPlayer.skip_to_song('hayden-folker-going-home.mp3')
 
@@ -376,6 +361,7 @@ class Scenario1 ( Scenario ) :
                     self.scene3()
 
     def scene3(self) :
+        print("SCENE3 start")        
         self.scene_no = 3
         MusicPlayer.skip_to_song('darren-curtis-ignite-the-fire.mp3')        
         cp3 = ComicPage(self.game, 'sc1_2', 450, 350, 680)
@@ -390,14 +376,10 @@ class Scenario1 ( Scenario ) :
                 (400,400)
             ) )
 
-        self.at_time( self.game.get_time() + 1000,
-            lambda :
-            cp3.add_text(
-                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
-                (450, 680 )
-                ) )
+        self.at_time( self.game.get_time() + 10000, self.scene4 )
 
     def scene4(self):
+        print("SCENE4 start")
         self.scene_no = 4
 
         cp4 = ComicPage(self.game, 'sc1_3', 490, 390, 630)
@@ -410,14 +392,11 @@ class Scenario1 ( Scenario ) :
                 (470,100)
             ) )
 
-        self.at_time( self.game.get_time() + 1000,
-            lambda :
-            cp4.add_text(
-                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
-                (450, 680 )
-                ) )
+        self.at_time( self.game.get_time() + 10000, self.scene5 )
+
 
     def scene5(self):
+        print("SCENE5 start")        
         self.scene_no = 5
 
         explosion_sound = pygame.mixer.Sound('assets/audio/big-explosion-sound-effect-made-with-Voicemod-technology.mp3')
@@ -433,14 +412,10 @@ class Scenario1 ( Scenario ) :
                 (490,50)
             ) )
 
-        self.at_time( self.game.get_time() + 1000,
-            lambda :
-            cp5.add_text(
-                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
-                (550, 690 )
-                ) )
+        self.at_time( self.game.get_time() + 10000, self.game.on_stop_request )
 
     def scene6(self) :
+        print("SCENE6 start")        
         self.scene_no = 6
         MusicPlayer.skip_to_song("darren-curtis-the-ascension.mp3")
 
@@ -504,6 +479,7 @@ class Scenario1 ( Scenario ) :
             self.scene7()
 
     def scene7(self):
+        print("SCENE7 start")        
         self.scene_no = 7
 
         cp7 = ComicPage(self.game, 'sc1_5', 440, 360, 700)
@@ -519,15 +495,11 @@ class Scenario1 ( Scenario ) :
                 (500,600)
             ) )
 
-        self.at_time( self.game.get_time() + 1000,
-            lambda :
-            cp7.add_text(
-                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
-                (550, 690 )
-                ) )
+        self.at_time( self.game.get_time() + 10000, self.scene8 )
 
 
     def scene8(self):
+        print("SCENE8 start")        
         self.scene_no = 8
 
         cp8 = ComicPage(self.game, 'sc1_6', 460, 370, 700)
@@ -559,7 +531,11 @@ QUICK, STEADY MOVEMENTS WILL KEEP YOU ON COURSE.""",
                 (960,260)
             ) )
 
+        self.at_time( self.game.get_time() + 10000, self.scene9 )
+
+
     def scene9(self):
+        print("SCENE9 start")        
         self.scene_no = 9
 
         cp9 = ComicPage(self.game, 'sc1_7', 470, 360, 680)
@@ -573,20 +549,17 @@ QUICK, STEADY MOVEMENTS WILL KEEP YOU ON COURSE.""",
                 (490,650),
             ) )
 
-        self.at_time( self.game.get_time() + 1000,
-            lambda :
-            cp9.add_text(
-                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
-                (550, 690 )
-                ) )
+        self.at_time( self.game.get_time() + 10000, self.scene10 )
 
     def scene10( self ) :
+        print("SCENE10 start")        
         self.scene_no = 10
         for page in self.open_pages :
             page.on_stop_request()
         self.game.set_focused(self.player_ship)
         self.game.zoom_locked = None
         self.input_handler.control_enabled = True
+
 
     def ticktack10( self ) :
         if self.game.get_time() % 50 == 0 :
@@ -595,10 +568,14 @@ QUICK, STEADY MOVEMENTS WILL KEEP YOU ON COURSE.""",
             # print(f'    planet: {self.planet.get_pos()}')
             if (not 'planet7' in Scenario.flags) and self.player_ship.disp_distance_to( self.planet ) < 50 :
                 self.scene11()
+            if (not 'wormhole7' in Scenario.flags) and self.player_ship.disp_distance_to( self.wormhole ) < 50 :
+                self.scene13()
 
     def scene11( self ) :
+        print("SCENE11 start")        
         self.scene_no = 11
         self.game.pop_focused()
+        self.player_ship.v = pygame.Vector2(0, 0)
         Scenario.flags.add('planet7')
         self.game.zoom_locked = self.game.get_time() + 100000
         self.input_handler.control_enabled = False
@@ -613,14 +590,11 @@ QUICK, STEADY MOVEMENTS WILL KEEP YOU ON COURSE.""",
                 (490,50),
             ) )
 
-        self.at_time( self.game.get_time() + 1000,
-            lambda :
-            cp11.add_text(
-                "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
-                (550, 690 )
-                ) )
+        self.at_time( self.game.get_time() + 10000, self.scene12 )
+
 
     def scene12( self ) :
+        print("SCENE12 start")        
         self.scene_no = 12
         self.game.zoom_locked = self.game.get_time() + 100000
         self.input_handler.control_enabled = False
@@ -660,12 +634,78 @@ QUICK, STEADY MOVEMENTS WILL KEEP YOU ON COURSE.""",
                 (710,450)
             ) )
 
+        self.at_time( self.game.get_time() + 10000, self.scene10 )
+
+
+    def scene13( self ) :
+        print("SCENE13 start")        
+        self.scene_no = 13
+        self.game.pop_focused()
+        self.player_ship.v = pygame.Vector2(0, 0)
+        self.game.zoom_locked = self.game.get_time() + 100000
+        self.input_handler.control_enabled = False
+        cp13 = ComicPage(self.game, 'sc2_3', 480, 370, 670)
+        self.open_pages.append( cp13 )
+        self.game.add_object( cp13 )
+        self.at_time( self.game.get_time() + 100, 
+            lambda : 
+            cp13.add_text(
+                "AS THE SHIP JOURNEYS ONWARD,\nA BEACON OF HOPE EMERGES FROM THE COSMIC DEPTHS.",
+                (430,70),
+            ) )
+        self.at_time( self.game.get_time() + 300, 
+            lambda : 
+            cp13.add_speech(
+                "CAPTAIN, SENSORS ARE PICKING UP A STRONG ENERGY SOURCE.\nIT... IT LOOKS LIKE ANOTHER PORTAL!",
+                (500,350),
+                (660,570)
+            ) )
+        self.at_time( self.game.get_time() + 500, 
+            lambda : 
+            cp13.add_speech(
+                "BUT THIS ONE... IT'S DIFFERENT. MORE STABLE.",
+                (350,470),
+                (160,680)
+            ) )
         self.at_time( self.game.get_time() + 1000,
             lambda :
-            cp12.add_text(
+            cp13.add_text(
                 "WHEN YOU'RE READY, PRESS SPACE TO CONTINUE.",
-                (680, 690 )
+                (580, 690 )
                 ) )
+
+        self.at_time( self.game.get_time() + 10000, self.scene14 )
+
+    def scene14( self ) :
+        print("SCENE14 start")        
+        self.scene_no = 14
+        cp14 = ComicPage(self.game, 'sc2_4', 480, 360, 680)
+        self.open_pages.append( cp14 )
+        self.game.add_object( cp14 )
+
+        self.at_time( self.game.get_time() + 100, 
+            lambda : 
+            cp14.add_speech(
+                "THE ENERGY SIGNATURES MATCH\nTHOSE OF THE RIFT THAT BROUGHT US HERE.\nBUT THEY'RE MORE CONSISTENT.\nTHIS MIGHT BE OUR WAY OUT.",
+                (220,70),
+                (450,100)
+            ) )
+
+        self.at_time( self.game.get_time() + 300, 
+            lambda : 
+            cp14.add_speech(
+                "WE CAN'T JUMP IN BLINDLY AGAIN.\nWE NEED TO ANALYZE AND ENSURE IT'S SAFE.",
+                (900,50),
+                (720,100)
+            ) )
+
+        self.at_time( self.game.get_time() + 500,
+            lambda : 
+            cp14.add_speech(
+                "REGARDLESS, IT'S OUR BEST CHANCE.\nLET'S PREP FOR THE JUMP.",
+                (370,480),
+                (330,410)
+            ) )
 
 
 

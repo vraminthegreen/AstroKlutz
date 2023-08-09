@@ -1,6 +1,5 @@
 pygame.todo
 
-- odkrycie wormhola powrotnego (komiks)
 - powrót do macierzystego układu
 
 - ordery przy zoom
@@ -214,5 +213,7 @@ x usuwanie ikony w backgroundzie
 + coś się dzieje niedobrego z gwiadkami przy skrolowaniu
 + odkrycie planety (komiks)
 x szszsz statku
++ odkrycie wormhola powrotnego (komiks)
++ część gwiazdek w jednej z pierwszych scen w ogóle się nie rusza
 
 

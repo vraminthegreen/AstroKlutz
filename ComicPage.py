@@ -94,12 +94,12 @@ class ComicPage ( StarObject ) :
         """Draw the speech bubble"""
         RADIUS = 15
         (lines,bubble_rect) = self.prepare_lines(text, *to_xy)
-        bubble_rect.inflate_ip(30,30)
+        bubble_rect.inflate_ip(20,20)
         self.draw_rounded_rect(win, bubble_rect, ComicPage.WHITE, RADIUS+2)
         self.draw_tail(win, from_xy, to_xy, ComicPage.WHITE, ComicPage.BLACK)
         bubble_rect.inflate_ip(-4,-4)
         self.draw_rounded_rect(win, bubble_rect, ComicPage.BLACK, RADIUS)
-        self.render_lines(win, bubble_rect.left + 15, bubble_rect.top + 15, lines)
+        self.render_lines(win, bubble_rect.left + 7, bubble_rect.top + 7, lines)
 
     def repaint(self, win):
         # Scale the icon

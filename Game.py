@@ -33,7 +33,7 @@ class Game:
         }
         self.paused = True
         self.key_handlers = {}
-        self.font = pygame.font.Font('assets/Komika-Display/Komika_display.ttf', 18)
+        self.font = pygame.font.Font('assets/Komika-Display/Komika_display.ttf', 16)
         self.reset_fieldview()
 
     def reset_fieldview( self ) :
