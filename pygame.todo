@@ -1,7 +1,5 @@
 pygame.todo
 
-- oficer naukowy podpowiada żeby poszukać planety
-- oficer naukowy podpowiada żeby poszukać wormhola
 - powrót do macierzystego układu
 
 - ordery przy zoom
@@ -220,5 +218,7 @@ x szszsz statku
 + oficer naukowy
 + dźwięk włączonego radia
 + oficer naukowy przedstawia się podczas podróży do wormhola
-
++ oficer naukowy podpowiada żeby poszukać planety
++ DirectionObject
++ oficer naukowy podpowiada żeby poszukać wormhola
 

@@ -23,7 +23,7 @@ from ComicPage import ComicPage
 from AnimatedSprite import AnimatedSprite
 from MusicPlayer import MusicPlayer
 from AnimationObject import AnimationObject
-
+from DirectionObject import DirectionObject
 
 #################################################
 
@@ -228,11 +228,8 @@ class Scenario1 ( Scenario ) :
         self.liora = None
 
     def start( self ) :
-        print("start SCENE1")
-        self.scene1()
-        print("start SCENE2")
-        self.scene2()
-        print("start SCENE6")
+        # self.scene1()
+        # self.scene2()
         self.scene6()
 
     def ticktack( self ) :
@@ -297,7 +294,7 @@ class Scenario1 ( Scenario ) :
         agent.reset_texts()
         walkie_talkie_sound = pygame.mixer.Sound('assets/audio/walkie-talkie-sound-effect-made-with-Voicemod-technology.mp3')
         walkie_talkie_sound.play()
-        agent.add_speech( text, (900,680), (1160, 600) )
+        agent.add_speech( text, (random.randint(750,850),random.randint(530,680)), (1160, 600) )
 
     def liora_out( self ) :
         if self.liora != None :
@@ -363,7 +360,6 @@ class Scenario1 ( Scenario ) :
 
         self.game.paused = False
         self.start_chatter_time = self.game.get_time() + 500
-
 
         self.at_time( self.game.get_time() + 600, self.liora_in )
         self.at_time( self.game.get_time() + 650, lambda: 
@@ -592,6 +588,34 @@ QUICK, STEADY MOVEMENTS WILL KEEP YOU ON COURSE.""",
         self.game.set_focused(self.player_ship)
         self.game.zoom_locked = None
         self.input_handler.control_enabled = True
+        self.at_time( self.game.get_time() + 3000, self.scene10_liora_planet )
+        self.at_time( self.game.get_time() + 6000, self.scene10_liora_wormhole )
+
+    def scene10_liora_planet(self) :
+        if 'planet7' in Scenario.flags :
+            return
+        self.at_time( self.game.get_time(), self.liora_in )
+        self.at_time( self.game.get_time() + 50, lambda: 
+            self.agent_says( self.liora, 
+                f"ATTENTION, PILOT.\nOUR SCANNERS HAVE PICKED UP A POTENTIAL PLANETARY SIGNATURE"))
+        self.at_time( self.game.get_time() + 100, lambda: DirectionObject(self.game, self.player_ship, self.planet))
+        self.at_time( self.game.get_time() + 200, lambda: 
+            self.agent_says( self.liora, 
+                "I SUGGEST WE ADJUST OUR COURSE AND INVESTIGATE.\nTHIS COULD BE WHAT WE'RE LOOKING FOR." ) )
+        self.at_time( self.game.get_time() + 600, self.liora_out )
+
+    def scene10_liora_wormhole(self) :
+        if 'wormhole7' in Scenario.flags :
+            return
+        self.at_time( self.game.get_time(), self.liora_in )
+        self.at_time( self.game.get_time() + 50, lambda: self.agent_says( self.liora, f"ATTENTION, PILOT."))
+        self.at_time( self.game.get_time() + 200, lambda: self.agent_says( self.liora, f"OUR SENSORS HAVE JUST DETECTED AN ENERGY SIGNATURE\nREMINISCENT OF THE RIFT WE ENCOUNTERED EARLIER."))
+        self.at_time( self.game.get_time() + 200, lambda: DirectionObject(self.game, self.player_ship, self.wormhole))
+        self.at_time( self.game.get_time() + 350, lambda: 
+            self.agent_says( self.liora, "THIS COULD BE OUR WAY BACK.\nI RECOMMEND WE APPROACH WITH CAUTION AND INVESTIGATE FURTHER." ) )
+        self.at_time( self.game.get_time() + 600, self.liora_out )
+
+          
 
 
     def ticktack10( self ) :

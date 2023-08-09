@@ -177,6 +177,19 @@ class StarObject :
         pos = pygame.Vector2(self.x, self.y) + displacement
         return (pos.x, pos.y)
 
+    def get_display_xy( self ) :
+        return self.game.get_display_xy(self.x, self.y, self.layer)
+
+    def direction_to(self, other) :
+        target_vector = pygame.Vector2(other.x, -other.y) - pygame.Vector2(self.x, -self.y)
+        return math.degrees(math.atan2(target_vector.y, target_vector.x))
+
+    def get_display_direction_to(self, other) :
+        p1 = self.get_display_xy()
+        p2 = other.get_display_xy()
+        target_vector = pygame.Vector2(p2[0], -p2[1]) - pygame.Vector2(p1[0], -p1[1])
+        return math.degrees(math.atan2(target_vector.y, target_vector.x))
+
     def get_dogfight_chase_pos(self, enemy) :
         dist = self.distance_to(self.enemy)
         chase_pos = self.enemy.get_pos_in_front(random.randint(0,self.enemy.v.length() * dist // 3))
@@ -184,7 +197,6 @@ class StarObject :
         chase_vector.normalize_ip()
         chase_vector.scale_to_length(max(0,dist-100))
         return ( self.x + chase_vector.x, self.y + chase_vector.y )
-
 
     def distance_to(self, other) :
         point1 = pygame.math.Vector2(self.x, self.y)
