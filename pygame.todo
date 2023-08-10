@@ -1,6 +1,6 @@
 pygame.todo
 
-- powrót do macierzystego układu
+- select drag
 
 - ordery przy zoom
 - tryb wykonywania rozkazów grupowych natychmiast
@@ -221,4 +221,8 @@ x szszsz statku
 + oficer naukowy podpowiada żeby poszukać planety
 + DirectionObject
 + oficer naukowy podpowiada żeby poszukać wormhola
++ powrót do macierzystego układu
++ dialogi agentów
++ pierwszy dialog po macierzystym układzie
+
 

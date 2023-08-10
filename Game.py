@@ -414,10 +414,13 @@ class Game:
         return self.font
 
     def set_camera(self, pos) :
-        self.optimal_fieldview.center = pos
-        self.optimal_camera = pos
+        self.set_optimal_camera( pos )
         self.camera[0] = self.optimal_camera[0]
         self.camera[1] = self.optimal_camera[1]
+
+    def set_optimal_camera(self, pos) :
+        self.optimal_fieldview.center = pos
+        self.optimal_camera = pos
         self.zoom_locked = self.get_time() + 1000
 
     @staticmethod

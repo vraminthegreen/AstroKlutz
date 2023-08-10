@@ -4,7 +4,8 @@ import os
 import math
 import random
 
-from Scenarios import BasicScenario, Scenario1
+from Scenario1 import Scenario1
+from Scenario2 import Scenario2
 from MusicPlayer import MusicPlayer
 from InputHandler import InputHandler
 
@@ -24,6 +25,6 @@ InputHandler.set_event_handler(MusicPlayer.SONG_SKIP, music_player)
 
 # BasicScenario().start()
 
-Scenario1(win).start()
+Scenario2(win).start()
 
 pygame.quit()

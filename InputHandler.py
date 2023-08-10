@@ -16,6 +16,7 @@ class InputHandler:
         self.counter = 0
         self.menu = None
         self.control_enabled = True
+        self.dialog_mode = True
 
     def set_game(self, game):
         self.game = game
@@ -68,7 +69,7 @@ class InputHandler:
                     # self.game.add_object(star_object)
                     # self.focus.set_order(star_object)
             elif event.type == pygame.KEYDOWN:
-                if event.unicode.isdigit() and self.control_enabled or event.unicode == ' ' :
+                if event.unicode.isdigit() and self.control_enabled or event.unicode == ' ' and self.dialog_mode :
                     self.game.on_key_pressed(event.unicode)
                 elif event.unicode.isalnum() or event.unicode == ' ':
                     if event.unicode == 'p' :
