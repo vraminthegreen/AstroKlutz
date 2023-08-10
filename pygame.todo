@@ -1,6 +1,5 @@
 pygame.todo
 
-- drag dodaje do grupy 0
 - wyświetlanie grupy - osobno każdy statek
 - odzywa się Calix
 - Ctrl-n definicja grupy
@@ -231,5 +230,6 @@ x szszsz statku
 + dialogi agentów
 + pierwszy dialog po macierzystym układzie
 + drag handling
++ drag dodaje do grupy 0
 
 

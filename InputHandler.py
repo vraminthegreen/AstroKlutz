@@ -5,6 +5,7 @@ import math
 from StarObject import StarObject
 from ShipClass import Stationary
 from Menu import Menu
+from Group import Group
 
 
 class InputHandler:

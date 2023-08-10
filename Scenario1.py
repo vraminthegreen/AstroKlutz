@@ -26,6 +26,7 @@ from AnimationObject import AnimationObject
 from DirectionObject import DirectionObject
 from Scenarios import Scenario, Wormhole
 from Scenario2 import Scenario2
+from Group import Group
 
 
 class Scenario1 ( Scenario ) :
@@ -99,26 +100,6 @@ class Scenario1 ( Scenario ) :
 
         self.game.game_loop()
 
-    def liora_in( self ) :
-        if self.liora == None :
-            self.liora = ComicPage(self.game, 'portrait_liora', 1200, 610, 196)
-        walkie_talkie_sound = pygame.mixer.Sound('assets/audio/walkie-talkie-beep-made-with-Voicemod-technology.mp3')
-        walkie_talkie_sound.play()
-        self.game.add_object(self.liora)
-
-    def agent_says( self, agent, text ) :
-        agent.reset_texts()
-        walkie_talkie_sound = pygame.mixer.Sound('assets/audio/walkie-talkie-sound-effect-made-with-Voicemod-technology.mp3')
-        walkie_talkie_sound.play()
-        agent.add_speech( text, (random.randint(750,850),random.randint(530,680)), (1160, 600) )
-
-    def liora_out( self ) :
-        if self.liora != None :
-            walkie_talkie_sound = pygame.mixer.Sound('assets/audio/walkie-talkie-beep-made-with-Voicemod-technology.mp3')
-            walkie_talkie_sound.play()
-            self.liora.on_stop_request()
-            self.liora = None
-
     def scene2( self ) :
         print("SCENE2 start")        
         self.scene_no = 2
@@ -138,6 +119,7 @@ class Scenario1 ( Scenario ) :
         Dust.make_dust(self.game, 1)
 
         self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
+        self.game.set_team(self.team_blue, Group(self.game, self.team_blue, 0))
 
         self.explorer_group = Group(self.game, self.team_blue)
 
@@ -281,6 +263,8 @@ class Scenario1 ( Scenario ) :
         Dust.make_dust(self.game, 1)
 
         self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
+        self.game.set_team(self.team_blue, Group(self.game, self.team_blue, 0))
+
 
         self.player_ship = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -1000, 1000 )
         self.game.add_object( self.player_ship )

@@ -11,13 +11,16 @@ class Group( StarObject ) :
 
     groups = [ None, None, None, None, None, None, None, None, None ]
 
-    def __init__(self, game, team) :
+    def __init__(self, game, team, number = None) :
         super().__init__(game, ObjectClass(), 0, 0)
         self.visible = False
         self.focus_visible = True
         self.ships = []
         self.bounding_rect = pygame.Rect(0,0,0,0)
-        self.number = Group.groups.index(None) + 1
+        if number == None :
+            self.number = Group.groups.index(None) + 1
+        else :
+            self.number = number
         Group.groups[self.number-1] = self
         self.background_color = [0, 128, 128, 64]
         self.background_color2 = [0, 128, 128, 120]
@@ -31,6 +34,11 @@ class Group( StarObject ) :
         if ship in self.ships :
             return
         self.ships.append(ship)
+        print(f"add_ships, count: {len(self.ships)}")
+        if len(self.ships) == 1 :
+            print(f"Adding group to the game")
+            self.visible = True
+            self.game.add_object(self)
         ship.add_on_dead_listener( self )
         for order in self.orders :
             order.add_ship(ship)
@@ -48,10 +56,22 @@ class Group( StarObject ) :
         for order in self.orders :
             order.remove_ship(ship)
         if len(self.ships) == 0 :
+            print(f"Removing group from the game")
             self.visible = False
             self.game.remove_object( self )
             return
         self.update_bounding_rect()
+
+    def remove_all(self) :
+        for ship in self.ships :
+            ship.remove_on_read_listener(self)
+        self.orders = []
+        self.ships = []
+        self.visible = False
+        self.game.remove_object(self)
+
+    def is_empty(self) :
+        return len(self.ships) == 0
 
     def on_dead(self, ship) :
         self.remove_ship(ship)
@@ -82,7 +102,7 @@ class Group( StarObject ) :
     def repaint(self, win):
         # Calculate group's position and size based on its number
         group_height = self.minimized_size + 10  # 10 for padding
-        group_y = 10 + (self.number - 1) * group_height  # 10 for top margin
+        group_y = 10 + (self.number) * group_height  # 10 for top margin
         group_width = len(self.ships) * self.minimized_size + 30  # 30 for padding and number
 
         bg = self.background_color
@@ -95,9 +115,10 @@ class Group( StarObject ) :
         win.blit(background_rect, (10, group_y))  # 10 for left margin
 
         # Draw group number
-        font = pygame.font.Font(None, self.minimized_size)  # Use default font
-        number_surface = font.render(str(self.number), True, (50, 255, 200))
-        win.blit(number_surface, (15, group_y + 10))  # 15 for left margin, 5 for top padding
+        if self.number > 0 :
+            font = pygame.font.Font(None, self.minimized_size)  # Use default font
+            number_surface = font.render(str(self.number), True, (50, 255, 200))
+            win.blit(number_surface, (15, group_y + 10))  # 15 for left margin, 5 for top padding
 
         # Draw ship miniatures
         icon_x = 35

@@ -5,6 +5,7 @@ import math
 from AnimatedSprite import AnimatedSprite
 from Dust import Dust
 
+
 class Game:
 
     def __init__(self, input_handler, win):
@@ -36,6 +37,7 @@ class Game:
         self.font = pygame.font.Font('assets/Komika-Display/Komika_display.ttf', 16)
         self.drag_rect = None
         self.reset_fieldview()
+        self.team = None
 
     def reset_fieldview( self ) :
         max_width = self.game_window[0]
@@ -436,11 +438,27 @@ class Game:
         width = abs(self.drag_p1[0] - self.drag_p2[0])
         height = abs(self.drag_p1[1] - self.drag_p2[1])
         self.drag_rect = pygame.Rect(top_left_x, top_left_y, width, height)
+        self.default_group.remove_all()
+        for obj in self.objects[0] :
+            if not obj.is_selectable or obj.is_hostile(self.team) :
+                continue
+            if obj.is_inside_display_rect(self.drag_rect) :
+                self.default_group.add_ship(obj)
+        if self.default_group.is_empty() :
+            if len(self.focused) > 0 and self.focused[0]==self.default_group :
+                self.pop_focused()
+        else :
+            self.set_focused( self.default_group )
 
     def drag_stop(self, pos) :
         self.drag_p1 = None
         self.drag_p2 = None
         self.drag_rect = None
+
+    def set_team(self, team, default_group) :
+        self.team = team
+        self.default_group = default_group
+
 
     @staticmethod
     def is_acute_angle(dir1, dir2):

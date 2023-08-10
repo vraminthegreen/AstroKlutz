@@ -39,6 +39,7 @@ class Team :
         self.names = [ "Alfa", "Bravo", "Delta"]
         self.counter = 0
         self.scenario = scenario
+        self.team = self
 
     def get_filename_sufix(self) :
         return '_' + str(self.number)

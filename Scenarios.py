@@ -24,6 +24,7 @@ from AnimatedSprite import AnimatedSprite
 from MusicPlayer import MusicPlayer
 from AnimationObject import AnimationObject
 from DirectionObject import DirectionObject
+from Group import Group
 
 #################################################
 
@@ -180,6 +181,8 @@ class BasicScenario ( Scenario ) :
         self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
         self.team_green = Team( "Green", (0,255,0), 3, 0, self )
         self.team_yellow = Team( "Yellow", (255,255,0), 4, 1, self )
+
+        self.game.set_team(self.team_blue, Group(self.game, self.team_blue, 0))
 
         top = -320
         spac = 72

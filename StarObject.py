@@ -180,6 +180,9 @@ class StarObject :
     def get_display_xy( self ) :
         return self.game.get_display_xy(self.x, self.y, self.layer)
 
+    def is_inside_display_rect( self, rect ) :
+        return rect.collidepoint( self.get_display_xy() )
+
     def direction_to(self, other) :
         target_vector = pygame.Vector2(other.x, -other.y) - pygame.Vector2(self.x, -self.y)
         return math.degrees(math.atan2(target_vector.y, target_vector.x))

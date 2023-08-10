@@ -10,6 +10,7 @@ from MusicPlayer import MusicPlayer
 from Team import Team
 from Starship import Starship
 from Pilot import ScoutPilot, FighterPilot, SciencePilot
+from Group import Group
 
 
 class Scenario2 ( Scenario ) :
@@ -47,6 +48,9 @@ class Scenario2 ( Scenario ) :
 
         self.team_green = Team( "Green", (0,255,0), 3, 0, self )
         self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
+
+        self.game.set_team(self.team_blue, Group(self.game, self.team_blue, 0))
+
 
         self.player_ship = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), 900, -900 )
         self.player_ship.dir = 135
