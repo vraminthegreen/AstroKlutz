@@ -136,6 +136,8 @@ class Scenario :
     def agent_dialog(self, args) :
         time = self.game.get_time() + int(args['time_rel'])
         self.at_time(time, lambda: self.agent_in(args['agent']))
+        SPEECH_DELAY = 250
+        SPEECH_DELAY = 50
         obj = args.get('obj')
         if obj != None :
             self.at_time(time, lambda : self.game.set_focused(obj))
@@ -147,7 +149,7 @@ class Scenario :
         time += 50
         for line in args['text'] :
             self.at_time(time, lambda line=line: self.agent_says(line.upper()))
-            time += 250
+            time += SPEECH_DELAY
         self.at_time(time, self.agent_out)
         if obj != None :
             self.at_time(time, self.game.pop_focused )

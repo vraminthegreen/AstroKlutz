@@ -34,6 +34,7 @@ class Game:
         self.paused = True
         self.key_handlers = {}
         self.font = pygame.font.Font('assets/Komika-Display/Komika_display.ttf', 16)
+        self.drag_rect = None
         self.reset_fieldview()
 
     def reset_fieldview( self ) :
@@ -331,6 +332,8 @@ class Game:
                     focus_painted = True
                 if obj.visible :
                     obj.repaint_focused( self.win )
+            if self.drag_rect != None :
+                pygame.draw.rect(self.win, (0,180,255), self.drag_rect, 1)
 
             # Resize world_surface to achieve a zoom effect
             # zoomed_surface = pygame.transform.smoothscale(world_surface, self.game_window)
@@ -422,6 +425,22 @@ class Game:
         self.optimal_fieldview.center = pos
         self.optimal_camera = pos
         self.zoom_locked = self.get_time() + 1000
+
+    def drag_start(self, pos) :
+        self.drag_p1 = pos
+
+    def drag_continue(self, pos) :
+        self.drag_p2 = pos
+        top_left_x = min(self.drag_p1[0], self.drag_p2[0])
+        top_left_y = min(self.drag_p1[1], self.drag_p2[1])
+        width = abs(self.drag_p1[0] - self.drag_p2[0])
+        height = abs(self.drag_p1[1] - self.drag_p2[1])
+        self.drag_rect = pygame.Rect(top_left_x, top_left_y, width, height)
+
+    def drag_stop(self, pos) :
+        self.drag_p1 = None
+        self.drag_p2 = None
+        self.drag_rect = None
 
     @staticmethod
     def is_acute_angle(dir1, dir2):

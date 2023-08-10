@@ -17,6 +17,8 @@ class InputHandler:
         self.menu = None
         self.control_enabled = True
         self.dialog_mode = True
+        self.dragging = False
+        self.drag_start = None
 
     def set_game(self, game):
         self.game = game
@@ -56,18 +58,32 @@ class InputHandler:
         for event in pygame.event.get():
             if event.type in InputHandler.event_handlers :
                 InputHandler.event_handlers[event.type].on_event(event)
-            elif event.type == pygame.MOUSEMOTION and mouse_tracking and self.control_enabled:
-                x, y = event.pos
-                self.game.mouse_track(x, y)
+            elif event.type == pygame.MOUSEMOTION and ( mouse_tracking or self.drag_start != None ) and self.control_enabled:
+                if self.drag_start != None :
+                    pos = pygame.mouse.get_pos()
+                    if not self.dragging:
+                        if abs(pos[0] - self.drag_start[0]) + abs(pos[1] - self.drag_start[1]) > 5 :
+                            self.game.drag_start( self.drag_start )
+                            self.dragging = True
+                    if self.dragging :
+                        self.game.drag_continue( pos )
+                else :
+                    x, y = event.pos
+                    self.game.mouse_track(x, y)
             elif event.type == pygame.MOUSEBUTTONDOWN and self.control_enabled :
-                if  event.button == 1 :
+                if event.button == 1 :
                     self.game.click( *pygame.mouse.get_pos() )
+                    self.drag_start = pygame.mouse.get_pos()
                 elif event.button == 3 :
                     x, y = pygame.mouse.get_pos()
                     game_coords = self.game.get_xy_display( x, y )
                     # star_object = StarObject(self.game, Stationary('target', 48), game_coords[0], game_coords[1] )
                     # self.game.add_object(star_object)
                     # self.focus.set_order(star_object)
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and self.dragging and self.control_enabled :
+                self.dragging = False
+                self.drag_start = None
+                self.game.drag_stop( pygame.mouse.get_pos() )
             elif event.type == pygame.KEYDOWN:
                 if event.unicode.isdigit() and self.control_enabled or event.unicode == ' ' and self.dialog_mode :
                     self.game.on_key_pressed(event.unicode)
@@ -80,6 +96,9 @@ class InputHandler:
                 running = False
 
         return running
+
+    def set_control_enabled(self, value) :
+        self.control_enabled = value
 
     @staticmethod
     def set_event_handler(event, handler) :

@@ -199,7 +199,7 @@ class Scenario2 ( Scenario ) :
                 'time_rel' : time + 50
         })
 
-        
+        self.at_time( self.game.get_time() + time + 50, lambda: self.input_handler.set_control_enabled( True ) )
 
 
         self.game.game_loop()

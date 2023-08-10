@@ -1,6 +1,12 @@
 pygame.todo
 
-- select drag
+- drag dodaje do grupy 0
+- wyświetlanie grupy - osobno każdy statek
+- odzywa się Calix
+- Ctrl-n definicja grupy
+- odzywa się Calix
+- prawy klawisz - domyślna akcja
+- science vessel rusza na planetę
 
 - ordery przy zoom
 - tryb wykonywania rozkazów grupowych natychmiast
@@ -224,5 +230,6 @@ x szszsz statku
 + powrót do macierzystego układu
 + dialogi agentów
 + pierwszy dialog po macierzystym układzie
++ drag handling
 
 
