@@ -374,10 +374,17 @@ class Game:
         if len(objects_selectable) > 0 :
             self.set_focused( objects_selectable[0] )
 
-    def on_key_pressed(self, key) :
+    def click3( self, x, y ) :
+        if len(self.focused) > 0 :        
+            game_coords = self.get_xy_display( x, y )
+            objects_here = self.get_selections(pygame.Rect(*game_coords,1,1))
+            self.focused[0].default_action(game_coords, objects_here)
+
+    def on_key_pressed(self, key, mod = None) :
+        print(f"Game: on_key_pressed: {key}")
         handler = self.key_handlers.get( key )
         if handler != None :
-            handler.on_key_pressed( key )
+            handler.on_key_pressed( key, mod )
 
     def register_key_handler(self, key, handler) :
         self.key_handlers[ key ] = handler
@@ -439,6 +446,10 @@ class Game:
         self.team = team
         self.default_group = default_group
 
+    def set_default_group(self, default_group) :
+        print(f"Set default group: {default_group.number}")
+        self.default_group = default_group
+        self.set_focused(self.default_group)
 
     @staticmethod
     def is_acute_angle(dir1, dir2):

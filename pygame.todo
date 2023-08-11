@@ -1,9 +1,6 @@
 pygame.todo
 
-- odzywa się Calix
-- Ctrl-n definicja grupy
-- odzywa się Calix
-- prawy klawisz - domyślna akcja
+- zdefiniowanie grupowej akcji GuardFriend
 - science vessel rusza na planetę
 
 - ordery przy zoom
@@ -231,5 +228,9 @@ x szszsz statku
 + drag handling
 + drag dodaje do grupy 0
 + wyświetlanie grupy - osobno każdy statek
++ odzywa się Calix
++ Ctrl-n definicja grupy
++ odzywa się Calix
++ prawy klawisz - domyślna akcja
 
 

@@ -10,7 +10,7 @@ from MusicPlayer import MusicPlayer
 from Team import Team
 from Starship import Starship
 from Pilot import ScoutPilot, FighterPilot, SciencePilot
-from Group import Group
+from Group import Group, GroupKeyHandler
 
 
 class Scenario2 ( Scenario ) :
@@ -30,8 +30,20 @@ class Scenario2 ( Scenario ) :
     def start( self ) :
         self.scene1()
 
+    def ticktack( self ) :
+        if self.scene_no == 1 :
+            self.ticktack1()
+        elif self.scene_no == 2 :
+            self.ticktack2()
+        super().ticktack()
+
+    def on_key_pressed( self, key, mod = None ) :
+        if key == ' ' :
+            self.fire_next_dlg_event()
+            return True
+        return False
+
     def scene1( self ) :
-        print("SCENE1 start")        
         self.scene_no = 1
         MusicPlayer.skip_song()
         self.game.zoom_enabled = False
@@ -50,7 +62,7 @@ class Scenario2 ( Scenario ) :
         self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
 
         self.game.set_team(self.team_blue, Group(self.game, self.team_blue, 0))
-
+        GroupKeyHandler.register( self.game )
 
         self.player_ship = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), 900, -900 )
         self.player_ship.dir = 135
@@ -83,11 +95,80 @@ class Scenario2 ( Scenario ) :
                 'text' : [ 
                     'This is Captain Elena Voss of the SS Orionis.', 
                     "We had assumed you were lost in that cosmic flash.\nIt's good to see you back, Pilot."
+                    "For now, follow our lead.\nWe're heading back to the planet.",
+                    "All vessels, set a course for home."                    
                 ],
                 'obj' : self.science_ship,
                 'time_rel' : 100
         } )
 
+        time = self.agent_dialog( {
+                'agent' : 'jack',
+                'text' : [ 
+                    "You heard the Captain. Escorts,\nform up and follow the SS Orionis.", 
+                ],
+                'obj' : self.fighter_ship,
+                'time_rel' : time + 50
+        })
+
+        time = self.agent_dialog( {
+                'agent' : 'liora',
+                'text' : [ 
+                    "Drag your mouse cursor over both scout ships\nand the fighter to select them.",
+                ],
+                'obj' : self.player_ship,
+                'time_rel' : time + 50
+        })
+
+        self.at_time( self.game.get_time() + time, lambda: self.input_handler.set_control_enabled( True ) )
+
+        self.game.game_loop()
+
+    def ticktack1(self) :
+        if self.game.get_time() % 50 == 0 :
+            return
+        selected_ships = self.game.default_group.ships
+        if self.game.drag_rect == None and len(selected_ships)==3 :
+            if self.player_ship in selected_ships and self.scout_ship in selected_ships and self.fighter_ship in selected_ships :
+                self.scene2()
+
+    def scene2(self) :
+        self.scene_no = 2
+        time = self.agent_dialog( {
+                'agent' : 'liora',
+                'text' : [ 
+                    "Now, press Alt-1 to create a group with them.\nYou can activate this group later by simply pressing the number key\nthat corresponds to the group's number, from 1 to 9.",
+                ],
+                'obj' : self.player_ship,
+                'time_rel' : 50
+        })
+        self.at_time( self.game.get_time() + time, lambda: self.game.set_default_group(Group.get_group(0)))
+
+    def ticktack2(self) :
+        if self.game.get_time() % 50 == 0 :
+            return
+        if Group.get_group(1) == None :
+            return
+        if self.game.get_focused() != Group.get_group(1) :
+            return
+        selected_ships = Group.get_group(1).ships
+        if len(selected_ships)==3 :
+            if self.player_ship in selected_ships and self.scout_ship in selected_ships and self.fighter_ship in selected_ships :
+                self.scene3()
+
+    def scene3(self) :
+        self.scene_no = 3
+        time = self.agent_dialog( {
+                'agent' : 'liora',
+                'text' : [ 
+                    "With your group selected,\nright-click on the science vessel to command them to escort it.",
+                ],
+                'obj' : self.player_ship,
+                'time_rel' : 50
+        })
+        self.at_time( self.game.get_time() + time, lambda: self.game.set_default_group(Group.get_group(1)))
+
+    def scene10(self) :
         time = self.agent_dialog( {
                 'agent' : 'jack',
                 'text' : [ 
@@ -131,22 +212,11 @@ class Scenario2 ( Scenario ) :
                 'agent' : 'elena',
                 'text' : [ 
                     "We'll analyze your data and decide our next course of action.",
-                    "For now, follow our lead. We're heading back to the planet.",
-                    "All vessels, set a course for home."
                 ],
                 'obj' : self.science_ship,
                 'time_rel' : time + 50
         })
 
-        time = self.agent_dialog( {
-                'agent' : 'jack',
-                'text' : [ 
-                    "You heard the Captain. Escorts, form up and follow the SS Orionis.", 
-                ],
-                'obj' : self.fighter_ship,
-                'time_rel' : time + 50
-        })
-        
         time = self.agent_dialog( {
                 'agent' : 'liora',
                 'text' : [ 
@@ -176,35 +246,7 @@ class Scenario2 ( Scenario ) :
                 'time_rel' : time + 50
         })
         
-        time = self.agent_dialog( {
-                'agent' : 'liora',
-                'text' : [ 
-                    "Drag your mouse cursor over both scout ships\nand the fighter to select them.",
-                ],
-                'obj' : self.player_ship,
-                'time_rel' : time + 50
-        })
-
-        time = self.agent_dialog( {
-                'agent' : 'liora',
-                'text' : [ 
-                    "Now, press Control-1 to create a group with them.\nYou can activate this group later by simply pressing the number key\nthat corresponds to the group's number, from 1 to 9.",
-                ],
-                'obj' : self.player_ship,
-                'time_rel' : time + 50
-        })
-
-        time = self.agent_dialog( {
-                'agent' : 'liora',
-                'text' : [ 
-                    "With your group selected,\nright-click on the science vessel to command them to escort it.",
-                ],
-                'obj' : self.player_ship,
-                'time_rel' : time + 50
-        })
-
-        self.at_time( self.game.get_time() + time + 50, lambda: self.input_handler.set_control_enabled( True ) )
 
 
-        self.game.game_loop()
+
 

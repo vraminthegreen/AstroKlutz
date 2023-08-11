@@ -424,3 +424,5 @@ class StarObject :
     def on_stop_request(self) :
         pass
 
+    def default_action(self, coords, objects) :
+        pass

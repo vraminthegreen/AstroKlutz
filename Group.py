@@ -7,6 +7,7 @@ from Menu import Menu, MenuItem
 from Targets import TargetGroupMove, TargetGroupAttackMove, TargetGroupPatrolMove, TargetGroupEnemyEscape
 
 
+
 class Group( StarObject ) :
 
     groups = [ None, None, None, None, None, None, None, None, None ]
@@ -21,7 +22,6 @@ class Group( StarObject ) :
             self.number = Group.groups.index(None) + 1
         else :
             self.number = number
-        Group.groups[self.number-1] = self
         self.background_color = [0, 128, 128, 64]
         self.background_color2 = [0, 128, 128, 120]
         self.minimized_size = 32
@@ -29,6 +29,7 @@ class Group( StarObject ) :
         self.select_animation = None
         self.team = team
         self.name = "Team-" + self.team.get_new_name()
+        Group.groups[self.number] = self
 
     def add_ship(self,ship) :
         if ship in self.ships :
@@ -130,12 +131,6 @@ class Group( StarObject ) :
         for ship in self.ships :
             ship.draw_select( win, color )
 
-    def on_key_pressed( self, key ) :
-        if key != str(self.number) :
-            return
-        self.game.set_focused( self )
-        self.select_animation = 20
-
     def is_hostile(self, other) :
         return self.team != other.team
 
@@ -195,6 +190,14 @@ class Group( StarObject ) :
         if order != None :
             self.append_order( order )
 
+    def default_action(self, coords, objects) :
+        if len(objects) == 0 :
+            self.order_guard( *coords )
+        elif objects[0].is_hostile(self.team) :
+            print(f"TODO ATTACK {objects[0].name}")
+        else :
+            print(f"TODO GUARD {objects[0].name}")
+
 
     @staticmethod
     def new(game, ship) :
@@ -204,5 +207,42 @@ class Group( StarObject ) :
         game.set_focused(group)
         return group
 
+    @staticmethod
+    def get_group(number) :
+        return Group.groups[number]
 
+#################################################
+
+class GroupKeyHandler :
+
+    instance = None
+    game = None
+
+    def on_key_pressed( self, key, mod = None ) :
+        # if group == None :
+        #     new_group
+        # if key != str(self.number) :
+        #     return
+        number = int(key)
+        if mod != None and mod & pygame.KMOD_ALT :
+            new_group = Group.groups[0]
+            Group.groups[number] = new_group
+            new_group.number = number
+            GroupKeyHandler.game.set_focused( new_group )
+            new_group.select_animation = 20
+            Group(GroupKeyHandler.game, new_group.team, 0)
+        else :
+            group = Group.get_group(int(key))
+            if group == None :
+                group = Group(GroupKeyHandler.game, new_group.team, number)
+            GroupKeyHandler.game.set_focused( group )
+            group.select_animation = 20
+
+    @staticmethod
+    def register( game ) :
+        GroupKeyHandler.game = game
+        if GroupKeyHandler.instance == None : 
+            GroupKeyHandler.instance = GroupKeyHandler()
+        for i in range(1,10) :
+            game.register_key_handler(str(i), GroupKeyHandler.instance)
 

@@ -26,7 +26,7 @@ from AnimationObject import AnimationObject
 from DirectionObject import DirectionObject
 from Scenarios import Scenario, Wormhole
 from Scenario2 import Scenario2
-from Group import Group
+from Group import Group, GroupKeyHandler
 
 
 class Scenario1 ( Scenario ) :
@@ -58,7 +58,7 @@ class Scenario1 ( Scenario ) :
             self.ticktack10()
         super().ticktack()        
 
-    def on_key_pressed( self, key ) :
+    def on_key_pressed( self, key, mod = None ) :
         if key == ' ' :
             self.fire_next_dlg_event()
             return True
@@ -120,6 +120,7 @@ class Scenario1 ( Scenario ) :
 
         self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
         self.game.set_team(self.team_blue, Group(self.game, self.team_blue, 0))
+        GroupKeyHandler.register( game )
 
         self.explorer_group = Group(self.game, self.team_blue)
 
@@ -264,7 +265,7 @@ class Scenario1 ( Scenario ) :
 
         self.team_blue = Team( "Blue", (0,0,255), 2, 0, self )
         self.game.set_team(self.team_blue, Group(self.game, self.team_blue, 0))
-
+        GroupKeyHandler.register( game )
 
         self.player_ship = Starship(self.game, self.team_blue, ScoutClass(), ScoutPilot(self.game), -1000, 1000 )
         self.game.add_object( self.player_ship )

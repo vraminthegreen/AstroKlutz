@@ -75,18 +75,37 @@ class InputHandler:
                 if event.button == 1 :
                     self.game.click( *pygame.mouse.get_pos() )
                     self.drag_start = pygame.mouse.get_pos()
+                elif event.button == 2 :
+                    print(f"Event button 2")
                 elif event.button == 3 :
+                    print(f"Event button 3")
                     x, y = pygame.mouse.get_pos()
                     game_coords = self.game.get_xy_display( x, y )
+                    self.game.click3( *pygame.mouse.get_pos() )
                     # star_object = StarObject(self.game, Stationary('target', 48), game_coords[0], game_coords[1] )
                     # self.game.add_object(star_object)
                     # self.focus.set_order(star_object)
-            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and self.dragging and self.control_enabled :
-                self.dragging = False
-                self.drag_start = None
-                self.game.drag_stop( pygame.mouse.get_pos() )
-            elif event.type == pygame.KEYDOWN:
-                if event.unicode.isdigit() and self.control_enabled or event.unicode == ' ' and self.dialog_mode :
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and self.control_enabled :
+                if self.dragging  :
+                    self.dragging = False
+                    self.drag_start = None
+                    self.game.drag_stop( pygame.mouse.get_pos() )
+                else :
+                    self.drag_start = None
+            elif event.type == pygame.KEYDOWN:                  
+                alt_pressed = pygame.key.get_mods() & pygame.KMOD_ALT
+                ctrl_digit = None
+                keys_pressed = pygame.key.get_pressed()
+                if alt_pressed and self.control_enabled:
+                    for i in range(10):  # Loop from 0 to 9
+                        if keys_pressed[pygame.K_0 + i]:
+                            ctrl_digit = i
+                            break
+                if ctrl_digit != None :
+                    # digit = event.key - pygame.K_0
+                    # print(f"InputHandler> controll digit <{digit}> pressed")
+                    self.game.on_key_pressed(str(ctrl_digit), pygame.KMOD_ALT)
+                elif event.unicode.isdigit() and self.control_enabled or event.unicode == ' ' and self.dialog_mode :
                     self.game.on_key_pressed(event.unicode)
                 elif event.unicode.isalnum() or event.unicode == ' ':
                     if event.unicode == 'p' :

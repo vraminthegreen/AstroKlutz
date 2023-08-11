@@ -24,7 +24,7 @@ from AnimatedSprite import AnimatedSprite
 from MusicPlayer import MusicPlayer
 from AnimationObject import AnimationObject
 from DirectionObject import DirectionObject
-from Group import Group
+from Group import Group, GroupKeyHandler
 
 #################################################
 
@@ -76,11 +76,13 @@ class Scenario :
     def fire_next_event( self ) :
         if len(self.events) == 0 :
             return False
+        # print(f"fire_next_event: {self.event_times}")
         events = self.events[self.event_times[0]]
         del self.events[self.event_times[0]]
         del self.event_times[0]
         for f in events :
             f()
+        # print(f"        => {self.event_times}")
         return True
 
     def fire_next_dlg_event( self ) :
@@ -116,14 +118,9 @@ class Scenario :
         else :
             self.agent_out()
         self.current_agent = agent
-        #if not agent in self.agents :
-        #self.agents[agent] = ComicPage(self.game, 'portrait_' + agent, 1200, 610, 196)
         self.agent = ComicPage(self.game, 'portrait_' + agent, 1200, 610, 196)
-        # if self.agent != self.agents[agent] :
-        #     self.agent_out()
         walkie_talkie_sound = pygame.mixer.Sound('assets/audio/walkie-talkie-beep-made-with-Voicemod-technology.mp3')
         walkie_talkie_sound.play()
-        # self.agent = self.agents[agent]
         self.game.add_object(self.agent)
 
     def agent_out( self ) :
@@ -135,10 +132,11 @@ class Scenario :
             self.current_agent = None
 
     def agent_dialog(self, args) :
-        time = self.game.get_time() + int(args['time_rel'])
+        gt = self.game.get_time()
+        time = gt + int(args['time_rel'])
         self.at_time(time, lambda: self.agent_in(args['agent']))
         SPEECH_DELAY = 250
-        # SPEECH_DELAY = 50
+        SPEECH_DELAY = 50
         obj = args.get('obj')
         if obj != None :
             self.at_time(time, lambda : self.game.set_focused(obj))
@@ -154,7 +152,7 @@ class Scenario :
         self.at_time(time, self.agent_out)
         if obj != None :
             self.at_time(time, self.game.pop_focused )
-        return time
+        return time - gt
 
 
 #################################################
@@ -183,6 +181,7 @@ class BasicScenario ( Scenario ) :
         self.team_yellow = Team( "Yellow", (255,255,0), 4, 1, self )
 
         self.game.set_team(self.team_blue, Group(self.game, self.team_blue, 0))
+        GroupKeyHandler.register( game )        
 
         top = -320
         spac = 72
