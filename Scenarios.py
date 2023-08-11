@@ -138,7 +138,7 @@ class Scenario :
         time = self.game.get_time() + int(args['time_rel'])
         self.at_time(time, lambda: self.agent_in(args['agent']))
         SPEECH_DELAY = 250
-        SPEECH_DELAY = 50
+        # SPEECH_DELAY = 50
         obj = args.get('obj')
         if obj != None :
             self.at_time(time, lambda : self.game.set_focused(obj))

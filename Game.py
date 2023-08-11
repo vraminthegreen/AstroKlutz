@@ -330,7 +330,7 @@ class Game:
             focus_painted = False
             for obj in self.focused :
                 if obj.focus_visible and not focus_painted :
-                    self.draw_select(obj, (0,255,0))
+                    obj.draw_select(self.win, (0,255,0))
                     focus_painted = True
                 if obj.visible :
                     obj.repaint_focused( self.win )
@@ -344,26 +344,6 @@ class Game:
             # self.win.blit(zoomed_surface, (0, 0))
 
             pygame.display.flip()
-
-
-    def draw_select(self, obj, color):
-        # Get the object's rectangle and create a larger rectangle
-        obj_rect = self.get_display_rect( obj.get_rect(), 0 )
-        select_rect = obj_rect.inflate(10, 10)  # Increase size by 5 pixels in each direction
-        # Compute the transparency based on the current time
-        transparency = int((math.sin(self.get_time()/15) + 1) / 2 * 255)  # Scale to range 0-255
-        # Create a surface with the same size as the selection rectangle
-        select_surface = pygame.Surface((select_rect.width, select_rect.height), pygame.SRCALPHA)
-        # Draw the selection rectangle on the selection surface
-        corner_length = min(select_rect.width, select_rect.height) // 3  # Adjust as needed
-        # for i in range(2):
-        #     for j in range(2):
-        #         start_pos = (i * (select_rect.width - corner_length), j * (select_rect.height - corner_length))
-        #         end_pos = (start_pos[0] + corner_length * i, start_pos[1] + corner_length * j)
-        #         pygame.draw.line(select_surface, (*color, transparency), start_pos, end_pos, 1)
-        pygame.draw.rect(select_surface, (*color, transparency), pygame.Rect(0, 0, *select_rect.size), 1)
-        # Draw the selection surface on the window at the position of the selection rectangle
-        self.win.blit(select_surface, select_rect.topleft)
 
     def get_animation(self, animation_name) :
         return self.animations[animation_name]

@@ -123,6 +123,20 @@ class StarObject :
         for order in self.weak_orders :
             order.repaint( win )
 
+    def draw_select(self, win, color):
+        # Get the object's rectangle and create a larger rectangle
+        obj_rect = self.game.get_display_rect( self.get_rect(), 0 )
+        select_rect = obj_rect.inflate(10, 10)  # Increase size by 5 pixels in each direction
+        # Compute the transparency based on the current time
+        transparency = int((math.sin(self.game.get_time()/15) + 1) / 2 * 255)  # Scale to range 0-255
+        # Create a surface with the same size as the selection rectangle
+        select_surface = pygame.Surface((select_rect.width, select_rect.height), pygame.SRCALPHA)
+        # Draw the selection rectangle on the selection surface
+        corner_length = min(select_rect.width, select_rect.height) // 3  # Adjust as needed
+        pygame.draw.rect(select_surface, (*color, transparency), pygame.Rect(0, 0, *select_rect.size), 1)
+        # Draw the selection surface on the window at the position of the selection rectangle
+        win.blit(select_surface, select_rect.topleft)
+
     def get_order(self) :
         if len(self.orders) > 0 :
             return self.orders[0]

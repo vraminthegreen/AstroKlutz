@@ -1,6 +1,5 @@
 pygame.todo
 
-- wyświetlanie grupy - osobno każdy statek
 - odzywa się Calix
 - Ctrl-n definicja grupy
 - odzywa się Calix
@@ -231,5 +230,6 @@ x szszsz statku
 + pierwszy dialog po macierzystym układzie
 + drag handling
 + drag dodaje do grupy 0
++ wyświetlanie grupy - osobno każdy statek
 
 

@@ -34,9 +34,7 @@ class Group( StarObject ) :
         if ship in self.ships :
             return
         self.ships.append(ship)
-        print(f"add_ships, count: {len(self.ships)}")
         if len(self.ships) == 1 :
-            print(f"Adding group to the game")
             self.visible = True
             self.game.add_object(self)
         ship.add_on_dead_listener( self )
@@ -56,7 +54,6 @@ class Group( StarObject ) :
         for order in self.orders :
             order.remove_ship(ship)
         if len(self.ships) == 0 :
-            print(f"Removing group from the game")
             self.visible = False
             self.game.remove_object( self )
             return
@@ -128,6 +125,10 @@ class Group( StarObject ) :
             rotated_icon = pygame.transform.rotate(icon, 90)  # Rotate icon by -90 degrees
             win.blit(rotated_icon, (icon_x, group_y + 5 + (self.minimized_size - ship.minimized_size)/2))  # 5 for top padding
             icon_x += ship.minimized_size + 5  # 30 for left margin and number
+
+    def draw_select( self, win, color ) :
+        for ship in self.ships :
+            ship.draw_select( win, color )
 
     def on_key_pressed( self, key ) :
         if key != str(self.number) :
